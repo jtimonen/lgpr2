@@ -6,5 +6,5 @@
 ## Installation
 
 ```r
-devtools::install_github('jtimonen/lgpr2', ref = "no-biarch")
+devtools::install_github('jtimonen/lgpr2')
 ``` 
