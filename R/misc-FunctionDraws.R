@@ -336,48 +336,6 @@ FunctionDraws <- R6::R6Class("FunctionDraws",
     exp = function() {
       new_name <- paste0("exp(", private$name, ")")
       FunctionDraws$new(private$input, exp(private$output), new_name)
-    },
-
-    #' @description
-    #' Offset every function draw so that they start from zero
-    #' @return a new object of class \code{\link{FunctionDraws}}
-    zero_offset = function() {
-      new_out <- zero_offset_fd_rvar(self$get_output())
-      FunctionDraws$new(private$input, new_out, private$name)
-    },
-
-    #' @description
-    #' Split to groups
-    #' @return a list of objects of class \code{\link{FunctionDraws}},
-    #' one for each group/id
-    #' @param id_var Name of the subject identifier factor.
-    split_by_id = function(id_var) {
-      split_to_subjects(self, id_var)
-    },
-
-    #' @description
-    #' Offset every function draw for each subject so that they start from zero
-    #' @return a new object of class \code{\link{FunctionDraws}}
-    #' @param id_var Name of the subject identifier factor.
-    zero_offset_by_id = function(id_var) {
-      checkmate::assert_character(id_var, min.chars = 1)
-      splits <- self$split_by_id(id_var)
-      out <- splits[[1]]$zero_offset()$get_output()
-      inp <- splits[[1]]$get_input()
-      id_new <- rep(names(splits)[1], nrow(inp))
-      L <- length(splits)
-      if (L > 1) {
-        for (j in 2:L) {
-          out_j <- splits[[j]]$zero_offset()$get_output()
-          inp_j <- splits[[j]]$get_input()
-          id_new_j <- rep(names(splits)[j], nrow(inp_j))
-          out <- c(out, out_j)
-          inp <- rbind(inp, inp_j)
-          id_new <- c(id_new, id_new_j)
-        }
-      }
-      inp[[id_var]] <- as.factor(id_new)
-      FunctionDraws$new(inp, out, self$get_name())
     }
   )
 )
@@ -398,42 +356,4 @@ FunctionDraws <- R6::R6Class("FunctionDraws",
 #' @return the difference \code{f1 - f2}
 `-.FunctionDraws` <- function(f1, f2) {
   f1$subtract(f2)
-}
-
-# Split function draws to groups by id
-split_to_subjects <- function(fd, id_var) {
-  inp <- fd$get_input()
-  out <- fd$get_output()
-  levs <- unique(inp[[id_var]])
-  ret <- list()
-  j <- 0
-  ids_found <- c()
-  for (id in levs) {
-    idx_rows <- which(inp[[id_var]] == id)
-
-    if (length(idx_rows) > 0) {
-      j <- j + 1
-      ids_found <- c(ids_found, id)
-      input <- inp[idx_rows, , drop = FALSE]
-      output <- out[idx_rows]
-      name <- paste0("(", fd$get_name(), ")_", id)
-      ret[[j]] <- FunctionDraws$new(input = input, output = output, name = name)
-    }
-  }
-  names(ret) <- ids_found
-  ret
-}
-
-# make every function draw start from zero
-zero_offset_fd_rvar <- function(fd) {
-  fd <- posterior::as_draws_array(fd) # dim n_draws x n_chains x n_points
-  S <- dim(fd)[1]
-  C <- dim(fd)[2]
-  for (s in seq_len(S)) {
-    for (j in seq_len(C)) {
-      x <- as.numeric(fd[s, j, ])
-      fd[s, j, ] <- x - x[1]
-    }
-  }
-  posterior::as_draws_rvars(fd)$x
 }

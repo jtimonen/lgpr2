@@ -28,9 +28,6 @@ The 'FunctionDraws' class
 \item \href{#method-FunctionDraws-subtract}{\code{FunctionDraws$subtract()}}
 \item \href{#method-FunctionDraws-log}{\code{FunctionDraws$log()}}
 \item \href{#method-FunctionDraws-exp}{\code{FunctionDraws$exp()}}
-\item \href{#method-FunctionDraws-zero_offset}{\code{FunctionDraws$zero_offset()}}
-\item \href{#method-FunctionDraws-split_by_id}{\code{FunctionDraws$split_by_id()}}
-\item \href{#method-FunctionDraws-zero_offset_by_id}{\code{FunctionDraws$zero_offset_by_id()}}
 \item \href{#method-FunctionDraws-clone}{\code{FunctionDraws$clone()}}
 }
 }
@@ -309,60 +306,6 @@ Exponentiate function draws.
 \if{html}{\out{<div class="r">}}\preformatted{FunctionDraws$exp()}\if{html}{\out{</div>}}
 }
 
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-FunctionDraws-zero_offset"></a>}}
-\if{latex}{\out{\hypertarget{method-FunctionDraws-zero_offset}{}}}
-\subsection{Method \code{zero_offset()}}{
-Offset every function draw so that they start from zero
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{FunctionDraws$zero_offset()}\if{html}{\out{</div>}}
-}
-
-\subsection{Returns}{
-a new object of class \code{\link{FunctionDraws}}
-}
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-FunctionDraws-split_by_id"></a>}}
-\if{latex}{\out{\hypertarget{method-FunctionDraws-split_by_id}{}}}
-\subsection{Method \code{split_by_id()}}{
-Split to groups
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{FunctionDraws$split_by_id(id_var)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{id_var}}{Name of the subject identifier factor.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-a list of objects of class \code{\link{FunctionDraws}},
-one for each group/id
-}
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-FunctionDraws-zero_offset_by_id"></a>}}
-\if{latex}{\out{\hypertarget{method-FunctionDraws-zero_offset_by_id}{}}}
-\subsection{Method \code{zero_offset_by_id()}}{
-Offset every function draw for each subject so that they start from zero
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{FunctionDraws$zero_offset_by_id(id_var)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{id_var}}{Name of the subject identifier factor.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-a new object of class \code{\link{FunctionDraws}}
-}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-FunctionDraws-clone"></a>}}
