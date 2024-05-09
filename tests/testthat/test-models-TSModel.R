@@ -40,7 +40,7 @@ test_that("creating the Stan data works", {
 
 
 test_that("fitting a model and plotting function draws work", {
-  m <- TSModel$new(hello ~ gp(foo) + gp(foo, bar), delta = 0.05)
+  m <- TSModel$new(hello ~ gp(foo) + gp(foo, bar))
   a <- data.frame(
     foo = c(1, 2, 3, 4),
     hello = c(0, 3, 2, 1),
@@ -50,7 +50,6 @@ test_that("fitting a model and plotting function draws work", {
   fit <- m$fit(data = a, refresh = 0, num_bf = num_bf)
   B_foo <- fit$term_confs[["f_gp_foo"]]$num_bf
   expect_equal(B_foo, num_bf)
-  expect_equal(m$get_delta(), 0.05)
   fd <- fit$function_draws()
   f1 <- fit$function_draws("f_gp_foo")
   f2 <- fit$function_draws("f_gp_fooXbar")
@@ -85,12 +84,12 @@ test_that("a gp example works", {
     iter_warmup = 500, iter_sampling = 500, chains = 1
   )
   p1 <- r$plot()
-  p2 <- (r$function_draws(data_scale = FALSE) - r$function_draws("f_gp_x"))$plot()
+  p2 <- (r$function_draws() - r$function_draws("f_gp_x"))$plot()
   p3 <- (r$function_draws("f_gp_x") + r$function_draws("f_baseline_id"))$plot()
   expect_s3_class(p1, "ggplot")
   expect_s3_class(p2, "ggplot")
   expect_s3_class(p3, "ggplot")
-  p4 <- r$predict()$plot(predictive = FALSE, capped = FALSE)
+  p4 <- r$predict()$plot(predictive = FALSE)
   expect_s3_class(p4, "ggplot")
 })
 
