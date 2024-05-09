@@ -1,0 +1,180 @@
+---
+title: "Mathematical description of lgpr2 models"
+author: "Juho Timonen"
+output: 
+  rmarkdown::html_vignette:
+    toc: true
+    toc_depth: 3
+    number_sections: true
+vignette: >
+  %\VignetteIndexEntry{Mathematical description of lgpr2 models}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(ggplot2)
+library(lgpr2)
+```
+
+# Longitudinal model
+
+This section describes mathematically the model corresponding to 
+the `TSModel` class.
+
+## Observation model
+The likelihood of observation $i$ is
+$$
+\log(y_i + \delta) \sim \mathcal{N}(f_i, \sigma^2),
+$$
+where 
+
+$$
+f_i = f(\mathbf{x}_i)= \sum_{j=1}^J f^{(j)}(\mathbf{x}_i),
+$$
+$\sigma$ is an unknown parameter, and 
+the $\delta$ value is a constant. We use $y_i$ to denote the observed
+longitudinal measurement, and $\mathbf{x}_i$ the corresponding covariate
+vector. Typically, $\mathbf{x}_i$ includes a subject
+identifier $\text{id}_i$, measurement time $t_i$ 
+and possible other factors or continuous covariates.
+The functions $f^{(j)}$, $j=1, \ldots, J$ are the additive function
+components and they are detailed next.
+
+## Model terms
+
+
+```{r}
+create_term <- function(term_str) {
+  m <- TSModel$new(y ~ ., baseline = term_str, compile = FALSE)
+  m$term_list$terms[[1]]
+}
+```
+
+The model can have a different number $J$ of terms, depending on the 
+`formula` that is given.
+
+### `GroupedOffsetTerm`
+
+```{r}
+term <- create_term("offset(g)")
+print(term)
+cat(term$latex())
+```
+
+The `GroupedOffsetTerm` for a grouping variable $g$ is
+$$
+f^{\text{BAS}} \left(\text{g} \mid \mathbf{c}_{0}\right)
+$$
+where $\mathbf{c}_{0}$ is an unknown parameter vector containing one
+parameter for each level of the grouping variable. These parameters have
+independent priors.
+
+### `HierOffsetTerm`
+
+```{r}
+term <- create_term("offset(g | h)")
+print(term)
+cat(term$latex())
+```
+
+The `HierOffsetTerm` for grouping variables $z$ and $h$ is
+$$
+f^{\text{BAS}} \left(\text{g}, \text{h} \mid \mathbf{c}_{0}\right)
+$$
+where $\mathbf{c}_{0}$ is again an unknown parameter vector containing one
+parameter for each level of the grouping variable. The difference to
+`GroupedOffsetTerm` is that the prior is hierarchical. It is assumed that
+for the value of $h = h[g]$ is always determined by $g$. So for example $g$ 
+can be the subject identifier and $h[g]$ the treatment arm for that subject. The 
+prior is parametrized so that for group $g$ the parameter is
+
+$$
+\mathbf{c}_{0, g} = z_{g} \cdot \sigma_{h[g]} + \mu_{h[g]}
+$$
+where by default 
+$\mu_{h} \sim \mathcal{N}(0,1), \sigma_{h} \sim \mathcal{N}(0,5)$ independently
+over all $h$ and $z_g \sim \mathcal{N}(0,1)$ independently over all $g$.
+
+```{r}
+cat(term$stancode_model())
+```
+
+### Shared GP terms (`GPTerm`)
+
+```{r}
+term <- create_term("gp(x)")
+print(term)
+cat(term$latex())
+```
+
+Let $x$ be some continuous variable. We use
+$$
+f^{\text{GP}}(x \mid \alpha, \ell) \sim \mathcal{GP}(0,\ k_{\text{EQ}}(x,x' \mid \alpha, \ell)).
+$$
+to denote that a function is modeled as a zero-mean Gaussian process (GP),
+with the exponentiated quadratic kernel function
+$$
+k_{\text{EQ}}(x, x' \mid \alpha, \ell) = \alpha^2 \exp\left( -\frac{(x-x')^2}{2\ell^2}\right),
+$$
+where the parameters $\alpha > 0$ and $\ell > 0$ are the kernel magnitude and 
+lengthscale parameters, respectively. For GP terms, we use a Hilbert space
+basis function approximation
+$$
+f^{\text{GP}}(x \mid \alpha, \ell) \approx f^{\text{HSGP}}(x \mid \mathbf{\xi}, \alpha, \ell, B, L) = \sum_{b=1}^{B} \xi_b S_{\text{EQ}}\left(\sqrt{\lambda_{L,b}} \mid \alpha, \ell \right) \phi_{L,b}(x),
+$$
+ where the auxiliary parameters 
+$\mathbf{\xi} = \left\{\xi_1, \ldots, \xi_B\right\}$ are a priori standard
+normal distributed $\xi_b \sim \mathcal{N}(0,1)$. This approximation approaches
+the exact GP in the limit $L \rightarrow \infty$, $B \rightarrow \infty$. The 
+basis functions 
+$$
+\phi_{L,b}(x) = \frac{1}{\sqrt{L}} \sin \left( \frac{\pi b (x + L)}{2L}\right)
+$$
+are eigenfunctions of a certain Dirichlet boundary value problem,
+and $\lambda_{L, b} = \left(\frac{\pi b}{2 L} \right)^2$ are their
+corresponding eigenvalues. The function
+$$
+S_{\text{EQ}}(\omega \mid \alpha, \ell) = \alpha^2 \ell \sqrt{2 \pi} \exp \left(-\frac{\ell^2 \omega^2 }{2}  \right)
+$$
+is the spectral density of the exponentiated quadratic kernel.The approximation 
+domain size $L$ and number of basis functions $B$ are 
+constants that are set beforehand. The approximation is accurate only on
+the interval $x \in (-L, L)$.
+
+The unknown parameters of a shared GP term are $\alpha, \ell$ and 
+$\mathbf{\xi} \in \mathbb{R}^B$.
+
+### Group-specific GP terms (`GPTerm`)
+
+```{r}
+term <- create_term("gp(x, z)")
+print(term)
+cat(term$latex())
+```
+
+Let $x$ be some continuous variable and $z$ some grouping factor, which can
+without loss of generality take integer values $z \in \{1, \ldots, G\}$. A 
+group-specific GP term is
+$$
+f^{\text{HSGP}}(x, z \mid \mathbf{\xi}_1, \ldots, \mathbf{\xi}_G, \alpha, \ell, B, L) = 
+\begin{cases}
+f^{\text{HSGP}}(x \mid \mathbf{\xi}_1, \alpha, \ell, B, L) & \text{if } z = 1\\
+\vdots \\
+f^{\text{HSGP}}(x \mid \mathbf{\xi}_G, \alpha, \ell, B, L) & \text{if } z = G
+\end{cases}
+$$
+which approximates the GP
+$$
+f^{\text{GP}}(x,z) \sim \mathcal{GP}(0,\ k_{\text{CAT}}(z,z') \cdot k_{\text{EQ}}(x,x')),
+$$
+where $k_{\text{CAT}}(z,z') = 1$ if $z=z'$ and zero otherwise. The unknown
+parameters of a group-specific GP term are $\alpha, \ell$ and a different vector 
+$\mathbf{\xi}_g \in \mathbb{R}^B$ for each group $g=1, \ldots, G$.

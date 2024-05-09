@@ -108,3 +108,42 @@ stancode_loglik <- function(model_suffixes) {
   code <- "\n  // Likelihood\n"
   paste0(code, "  if(prior_only == 0){\n    target += ", ll, ";\n  }")
 }
+
+
+# Stan code for raw parameters
+raw_params_stancode <- function(param_name, G_hier, G_id) {
+  line1 <- paste0("  vector[", G_hier, "] log_mu_", param_name, ";")
+  line2 <- paste0("  vector[", G_hier, "] log_sigma_", param_name, ";")
+  line3 <- paste0("  vector[", G_id, "] log_z_", param_name, ";")
+  paste(line1, line2, line3, "\n", sep = "\n")
+}
+
+# Hierarchical parameters to vectors with length equal to data
+param_vecs_log_hier <- function(param_name, h_name, z_name) {
+  pn_z <- param_name
+  list(
+    z = paste0("log_z_", pn_z, "[", z_name, "]"),
+    mu = paste0("log_mu_", param_name, "[", h_name, "]"),
+    sigma = paste0("log_sigma_", param_name, "[", h_name, "]")
+  )
+}
+
+# Hierarchical prior on log scale
+hier_prior_stancode <- function(param_name, prior) {
+  z <- paste0("log_z_", param_name)
+  m <- paste0("log_mu_", param_name)
+  s <- paste0("log_sigma_", param_name)
+  line1 <- paste0("  ", z, " ~ ", prior$log_z, ";")
+  line2 <- paste0("  ", m, " ~ ", prior$log_mu, ";")
+  line3 <- paste0("  ", s, " ~ ", prior$log_sigma, ";")
+  paste(line1, line2, line3, "\n", sep = "\n")
+}
+
+# kg/ks parameter on natural scale
+par_to_nat_scale <- function(f_sum_name, pn, datanames) {
+  paste0("  vector[n_", datanames, "] ", pn, "_",
+    datanames, " = exp(log_C_", pn, " + ",
+    f_sum_name, "_", datanames, ");",
+    collapse = "\n"
+  )
+}

@@ -1,0 +1,53 @@
+---
+title: "Simple GP model"
+author: "Juho Timonen"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Simple GP model}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(ggplot2)
+library(sfgp)
+```
+
+This is probably the simplest possible GP model.
+```{r model}
+m <- TSModel$new(y ~ gp(x))
+m
+```
+
+We create rapidly wiggling data.
+```{r data}
+set.seed(123)
+xx <- seq(1, 10, by = 0.15)
+ff <- 20 + 5 * sin(xx) + 2 * sin(5 * xx) + xx
+yy <- ff + rnorm(n = length(xx), mean = 0, sd = 1)
+a <- data.frame(x = xx, y = yy)
+head(a)
+```
+
+We fit the model using different numbers of basis functions (`num_bf`).
+```{r fits, fig.width=7, fig.height=4}
+B <- seq(12, 32, by = 4)
+fitter <- function(b) {
+  fit <- m$fit(data = a, refresh = 0, num_bf = b, chains = 1)
+  fit$plot(f_reference = ff) + ggtitle(paste0("num_bf = ", b))
+}
+plots <- lapply(as.list(B), fitter)
+names(plots) <- paste0("num_bf = ", B)
+plots
+```
+
+We notice that a too low number of basis functions is not enough to recover the
+true signal well.
+

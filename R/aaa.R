@@ -54,25 +54,3 @@ example <- function(num_bf = 32, scale_bf = 1.5, formula = "y ~ gp(x)",
   tc <- list(f_gp_x = tc1)
   m$fit(data = a, term_confs = tc, ...)
 }
-
-#' Run an example
-#'
-#' @description Fits a model to \code{testdata}.
-#' @export
-#' @param num_bf Number of basis functions.
-#' @param scale_bf Basis function domain scale.
-#' @param formula The model formula.
-#' @param ... Other arguments to the \code{$fit()} method of
-#' \code{\link{TSModel}}.
-#' @return An \code{\link{TSModelFit}} object.
-example2 <- function(num_bf = 24, scale_bf = 1.5,
-                     formula = "y ~ gp(time) + gp(time,arm) + gp(time,id)",
-                     ...) {
-  form <- stats::as.formula(formula)
-  dat <- testdata
-  m <- TSModel$new(form)
-  dat <- add_sff_input(dat, m)
-  tc1 <- list(num_bf = num_bf, scale_bf = scale_bf)
-  tc <- list(gp_x = tc1)
-  m$fit(data = dat, term_confs = tc, ...)
-}

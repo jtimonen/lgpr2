@@ -1,0 +1,57 @@
+---
+title: "GP model with more variables"
+author: "Juho Timonen"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{GP model with more variables}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(ggplot2)
+library(sfgp)
+```
+
+## Test data
+
+We load test data.
+```{r data}
+dat <- testdata
+head(dat)
+```
+
+## GP model
+
+We create a GP model with many terms.
+
+```{r model}
+m <- TSModel$new(y ~ gp(time) + gp(time, arm) + gp(time, id) + gp(time, sex) + gp(weight))
+```
+
+
+We fit the model.
+```{r fit, fig.width=7, fig.height=6}
+f <- m$fit(data = dat, chains = 1, iter_warmup = 600, iter_sampling = 600)
+f$plot(facet_by = "id")
+```
+
+We visualize individual components
+```{r plots, fig.width=7, fig.height=3.7}
+f$function_draws("f_gp_time")$plot()
+f$function_draws("f_gp_timeXarm")$plot()
+f$function_draws("f_gp_timeXsex")$plot()
+f$function_draws("f_gp_weight")$plot()
+```
+
+```{r plots2, fig.width=7, fig.height=6}
+f$function_draws("f_gp_timeXid")$plot()
+```
+
