@@ -21,13 +21,6 @@ Time series (longitudinal) model class (R6 class)
 \item{\code{id_var}}{Name of the subject identifier variable.}
 
 \item{\code{prior_sigma}}{Prior for the noise parameter.}
-
-\item{\code{sigma_upper}}{Upper bound for the noise parameter.}
-
-\item{\code{sigma_lower}}{Lower for the noise parameter.}
-
-\item{\code{log_y_cap}}{Upper bound on log scale for creating a capped
-predicted signal or predicted observations.}
 }
 \if{html}{\out{</div>}}
 }
@@ -37,7 +30,6 @@ predicted signal or predicted observations.}
 \item \href{#method-TSModel-new}{\code{TSModel$new()}}
 \item \href{#method-TSModel-stanname_y}{\code{TSModel$stanname_y()}}
 \item \href{#method-TSModel-string}{\code{TSModel$string()}}
-\item \href{#method-TSModel-get_delta}{\code{TSModel$get_delta()}}
 \item \href{#method-TSModel-term_names}{\code{TSModel$term_names()}}
 \item \href{#method-TSModel-create_standata}{\code{TSModel$create_standata()}}
 \item \href{#method-TSModel-fit}{\code{TSModel$fit()}}
@@ -73,13 +65,10 @@ Create model
   formula,
   id_var = "id",
   compile = TRUE,
-  delta = 0,
   baseline = NULL,
   prior_baseline = NULL,
   prior_terms = NULL,
-  prior_sigma = "normal(0, 2)",
-  sigma_upper = 3,
-  sigma_lower = 0
+  prior_sigma = "lognormal(1, 1)"
 )}\if{html}{\out{</div>}}
 }
 
@@ -93,8 +82,6 @@ variable (longitudinal observation).}
 
 \item{\code{compile}}{Should the 'Stan' model code be created and compiled.}
 
-\item{\code{delta}}{Offset for log transform (\code{y_log = log(y + delta)}).}
-
 \item{\code{baseline}}{Baseline term definition. Created automatically based
 on \code{id_var} if \code{NULL} (default).}
 
@@ -104,10 +91,6 @@ on \code{id_var} if \code{NULL} (default).}
 names of the model terms. Can be used to edit priors of term parameters.}
 
 \item{\code{prior_sigma}}{Prior for sigma}
-
-\item{\code{sigma_upper}}{Upper bound for sigma}
-
-\item{\code{sigma_lower}}{Lower bound for sigma}
 }
 \if{html}{\out{</div>}}
 }
@@ -129,16 +112,6 @@ Get name of y variable in Stan code.
 The model description as a string
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{TSModel$string()}\if{html}{\out{</div>}}
-}
-
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-TSModel-get_delta"></a>}}
-\if{latex}{\out{\hypertarget{method-TSModel-get_delta}{}}}
-\subsection{Method \code{get_delta()}}{
-Get value of \code{delta}.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{TSModel$get_delta()}\if{html}{\out{</div>}}
 }
 
 }

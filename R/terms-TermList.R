@@ -189,7 +189,8 @@ TermList <- R6::R6Class("TermList",
     #' \code{GPTerm}s are updated with this value.
     #' @return The updated model object (invisibly).
     fill_term_confs = function(term_confs = NULL,
-                               num_bf = NULL, scale_bf = NULL) {
+                               num_bf = NULL,
+                               scale_bf = NULL) {
       stannames <- names(self$terms)
       confs <- list()
       j <- 0
@@ -332,16 +333,4 @@ stancode_f_sum <- function(datanames, terms, fsum_name) {
     code <- paste(code, code_j, sep = "\n")
   }
   code
-}
-
-
-# Get sff term of a model
-get_sff_term <- function(model) {
-  terms <- model$term_list$terms
-  cl <- sapply(terms, function(x) class(x)[1] == "FormulaSFTerm")
-  idx <- which(cl)
-  if (length(idx) != 1) {
-    stop("The model should have one FormulaSFTerm")
-  }
-  terms[[which(cl)]]
 }

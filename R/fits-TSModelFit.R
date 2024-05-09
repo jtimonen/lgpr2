@@ -39,14 +39,8 @@ TSModelFit <- R6::R6Class("TSModelFit",
     #' @param component Name of the component (term). Valid names can
     #' be checked using \code{$model$term_names()}. Alternatively, can be
     #' an integer that is the component index.
-    #' @param capped Should a capped version of the draws be taken? This
-    #' is useful if the fit/prediction explodes to infinity. Only has effect
-    #' if \code{component="f_sum"} or \code{component="y_log_pred"}.
-    #' @param data_scale Transform to data scale? Has no effect if
-    #' extracting a single component.
     #' @param dataname name of data set used to evaluate the function
-    function_draws = function(component = "f_sum", data_scale = TRUE,
-                              capped = FALSE) {
+    function_draws = function(component = "f_sum") {
       mod <- self$get_model("lon")
       dat <- self$get_data("LON")
       if (is.numeric(component)) {
@@ -60,32 +54,17 @@ TSModelFit <- R6::R6Class("TSModelFit",
           f_name <- paste0(mod$y_var, "_log_pred")
         }
         # The total sum or predictive
-        if (capped) {
-          message(
-            "Draws capped at max ", mod$log_y_cap,
-            " on log scale (if they exceed it)"
-          )
-          f_name <- paste0(f_name, "_capped")
-        }
         f <- private$extract_f_comp(f_name)
         covs <- mod$term_list$input_vars()
         x <- dat[, covs, drop = FALSE]
         fd <- FunctionDraws$new(x, f, f_name)
       } else {
-        if (data_scale) {
-          data_scale <- FALSE
-        }
         # A single component
         t <- mod$term_list$get_term(f_name)
         covs <- t$input_vars()
         x <- dat[, covs, drop = FALSE]
         f <- private$extract_f_comp(f_name)
         fd <- FunctionDraws$new(x, f, f_name)
-      }
-      if (data_scale) {
-        message("Transforming to data scale")
-        delta <- mod$get_delta()
-        fd <- fd$exp()$scale(a = 1, b = -delta)
       }
       fd
     },
@@ -148,8 +127,6 @@ TSModelFit <- R6::R6Class("TSModelFit",
     #'
     #' @param f_reference Reference function to plot against the fit.
     #' @param plot_y Should y data be plotted?
-    #' @param capped Should a capped version of the fit be plotted? This
-    #' is useful if the fit explodes to infinity.
     #' @param f_ref_name Name of the reference function.
     #' @param predictive Should this plot the predictive distribution for
     #' new observations? Otherwise the inferred signal is plotted.
@@ -158,7 +135,7 @@ TSModelFit <- R6::R6Class("TSModelFit",
     #' @param ... Arguments passed to the plot method of
     #' \code{\link{FunctionDraws}}.
     plot = function(f_reference = NULL, plot_y = TRUE,
-                    capped = TRUE, predictive = TRUE,
+                    predictive = TRUE,
                     f_ref_name = "the true signal",
                     filter_by = NULL,
                     kept_vals = NULL,
@@ -170,7 +147,7 @@ TSModelFit <- R6::R6Class("TSModelFit",
       } else {
         f_name <- "f_sum"
       }
-      f <- self$function_draws(capped = capped, component = f_name)
+      f <- self$function_draws(component = f_name)
       plt <- f$plot(filter_by = filter_by, kept_vals = kept_vals, ...)
       x_var <- rlang::as_name(plt$mapping$x)
       dat <- df_filter_rows(dat, filter_by, kept_vals)

@@ -24,10 +24,6 @@ stancode_ts <- function(formula, print = TRUE, ...) {
 #' @field y_var Name of the y variable.
 #' @field id_var Name of the subject identifier variable.
 #' @field prior_sigma Prior for the noise parameter.
-#' @field sigma_upper Upper bound for the noise parameter.
-#' @field sigma_lower Lower for the noise parameter.
-#' @field log_y_cap Upper bound on log scale for creating a capped
-#' predicted signal or predicted observations.
 TSModel <- R6::R6Class("TSModel",
   inherit = StanModel,
 
@@ -64,8 +60,7 @@ TSModel <- R6::R6Class("TSModel",
       paste(c1, c2, sep = "\n")
     },
     stancode_pars_impl = function() {
-      scb_sigma <- stancode_bounds(self$sigma_lower, upper = self$sigma_upper)
-      c1 <- paste0("  real", scb_sigma, " sigma; // noise magnitude \n")
+      c1 <- paste0("  real<lower=0> sigma; // noise magnitude \n")
       c2 <- self$term_list$stancode_pars()
       paste(c1, c2, sep = "\n")
     },
@@ -87,8 +82,7 @@ TSModel <- R6::R6Class("TSModel",
     stancode_gq_impl = function() {
       terms_gq <- self$term_list$stancode_gq()
       stancode_ts_gq(self, self$stanname_y(), terms_gq)
-    },
-    delta = NULL
+    }
   ),
 
   # PUBLIC
@@ -96,10 +90,7 @@ TSModel <- R6::R6Class("TSModel",
     id_var = NULL,
     term_list = NULL,
     y_var = NULL,
-    prior_sigma = "normal(0, 2)",
-    sigma_upper = 3,
-    sigma_lower = 0,
-    log_y_cap = 7,
+    prior_sigma = "lognormal(1, 1)",
 
     #' @description
     #' Create model
@@ -108,22 +99,17 @@ TSModel <- R6::R6Class("TSModel",
     #' variable (longitudinal observation).
     #' @param id_var Name of the subject identifier variable.
     #' @param compile Should the 'Stan' model code be created and compiled.
-    #' @param delta Offset for log transform (\code{y_log = log(y + delta)}).
     #' @param prior_sigma Prior for sigma
     #' @param prior_terms A list with names equal to a subset of the
     #' names of the model terms. Can be used to edit priors of term parameters.
     #' @param prior_baseline Prior for the baseline term.
-    #' @param sigma_upper Upper bound for sigma
-    #' @param sigma_lower Lower bound for sigma
     #' @param baseline Baseline term definition. Created automatically based
     #' on \code{id_var} if \code{NULL} (default).
-    initialize = function(formula, id_var = "id", compile = TRUE, delta = 0,
+    initialize = function(formula, id_var = "id", compile = TRUE,
                           baseline = NULL,
                           prior_baseline = NULL,
                           prior_terms = NULL,
-                          prior_sigma = "normal(0, 2)",
-                          sigma_upper = 3,
-                          sigma_lower = 0) {
+                          prior_sigma = "lognormal(1, 1)") {
       checkmate::assert_character(id_var, min.chars = 1)
       checkmate::assert_class(formula, "formula")
 
@@ -135,12 +121,9 @@ TSModel <- R6::R6Class("TSModel",
 
       # Set fields
       self$prior_sigma <- prior_sigma
-      self$sigma_upper <- sigma_upper
-      self$sigma_lower <- sigma_lower
       self$term_list <- create_termlist(formula, prior_terms)
       self$y_var <- FormulaParser$new(formula)$get_y_name()
       self$id_var <- id_var
-      private$delta <- delta
 
       # Compile
       super$initialize(compile)
@@ -157,15 +140,10 @@ TSModel <- R6::R6Class("TSModel",
     string = function() {
       str <- paste0(
         class_name_hl(self), ":\n    ",
-        "log(", self$y_var, "+", self$get_delta(), ") ~ N(f, sigma^2)"
+        self$y_var, " ~ N(f, sigma^2)"
       )
       tls <- self$term_list$string()
       paste0(str, ", where \n", "    f = ", hl_string(tls))
-    },
-
-    #' @description Get value of \code{delta}.
-    get_delta = function() {
-      private$delta
     },
 
     #' @description Get term names in Stan code.
@@ -223,8 +201,7 @@ TSModel <- R6::R6Class("TSModel",
 
       # Create final data list
       stan_data <- standata_ts(
-        data, dataname, self$term_list, full_term_confs, self$y_var,
-        private$delta
+        data, dataname, self$term_list, full_term_confs, self$y_var
       )
 
       # Return
@@ -284,8 +261,8 @@ TSModel <- R6::R6Class("TSModel",
 
 
 # Stan data for TS model
-standata_ts <- function(data, dataname, term_list, term_confs, y_name, delta) {
-  sd_y <- standata_ts_y(data, y_name, delta)
+standata_ts <- function(data, dataname, term_list, term_confs, y_name) {
+  sd_y <- standata_ts_y(data, y_name)
   sd_x <- term_list$create_standata(data, dataname, term_confs)
   sd <- c(sd_x, sd_y)
   sd$prior_only <- 0
@@ -293,12 +270,12 @@ standata_ts <- function(data, dataname, term_list, term_confs, y_name, delta) {
 }
 
 # Stan data specific to TS model
-standata_ts_y <- function(data, y_name, delta) {
+standata_ts_y <- function(data, y_name) {
   checkmate::assert_character(y_name)
   y <- data[[y_name]]
   checkmate::assert_numeric(y)
-  out <- list(y, delta)
-  names(out) <- c(paste0("dat_", y_name), "delta")
+  out <- list(y)
+  names(out) <- paste0("dat_", y_name)
   out
 }
 

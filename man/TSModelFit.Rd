@@ -91,11 +91,7 @@ Print object description.
 \subsection{Method \code{function_draws()}}{
 Extract one component as a \code{FunctionDraws} object.
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{TSModelFit$function_draws(
-  component = "f_sum",
-  data_scale = TRUE,
-  capped = FALSE
-)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{TSModelFit$function_draws(component = "f_sum")}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
@@ -104,13 +100,6 @@ Extract one component as a \code{FunctionDraws} object.
 \item{\code{component}}{Name of the component (term). Valid names can
 be checked using \code{$model$term_names()}. Alternatively, can be
 an integer that is the component index.}
-
-\item{\code{data_scale}}{Transform to data scale? Has no effect if
-extracting a single component.}
-
-\item{\code{capped}}{Should a capped version of the draws be taken? This
-is useful if the fit/prediction explodes to infinity. Only has effect
-if \code{component="f_sum"} or \code{component="y_log_pred"}.}
 
 \item{\code{dataname}}{name of data set used to evaluate the function}
 }
@@ -193,7 +182,6 @@ Plot fit or predictive distribution
 \if{html}{\out{<div class="r">}}\preformatted{TSModelFit$plot(
   f_reference = NULL,
   plot_y = TRUE,
-  capped = TRUE,
   predictive = TRUE,
   f_ref_name = "the true signal",
   filter_by = NULL,
@@ -208,9 +196,6 @@ Plot fit or predictive distribution
 \item{\code{f_reference}}{Reference function to plot against the fit.}
 
 \item{\code{plot_y}}{Should y data be plotted?}
-
-\item{\code{capped}}{Should a capped version of the fit be plotted? This
-is useful if the fit explodes to infinity.}
 
 \item{\code{predictive}}{Should this plot the predictive distribution for
 new observations? Otherwise the inferred signal is plotted.}

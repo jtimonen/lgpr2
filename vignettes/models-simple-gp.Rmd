@@ -17,7 +17,7 @@ knitr::opts_chunk$set(
 
 ```{r setup}
 library(ggplot2)
-library(sfgp)
+library(lgpr2)
 ```
 
 This is probably the simplest possible GP model.
@@ -38,9 +38,9 @@ head(a)
 
 We fit the model using different numbers of basis functions (`num_bf`).
 ```{r fits, fig.width=7, fig.height=4}
-B <- seq(12, 32, by = 4)
+B <- seq(12, 36, by = 6)
 fitter <- function(b) {
-  fit <- m$fit(data = a, refresh = 0, num_bf = b, chains = 1)
+  fit <- m$fit(data = a, refresh = 0, num_bf = b, chains = 1, adapt_delta = 0.9)
   fit$plot(f_reference = ff) + ggtitle(paste0("num_bf = ", b))
 }
 plots <- lapply(as.list(B), fitter)
