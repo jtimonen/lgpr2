@@ -32,7 +32,7 @@ the `TSModel` class.
 ## Observation model
 The likelihood of observation $i$ is
 $$
-\log(y_i + \delta) \sim \mathcal{N}(f_i, \sigma^2),
+y_i\sim \mathcal{N}(f_i, \sigma^2),
 $$
 where 
 

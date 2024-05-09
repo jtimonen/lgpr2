@@ -38,7 +38,7 @@ head(a)
 
 We fit the model using different numbers of basis functions (`num_bf`).
 ```{r fits, fig.width=7, fig.height=4}
-B <- seq(12, 36, by = 6)
+B <- seq(12, 30, by = 6)
 fitter <- function(b) {
   fit <- m$fit(data = a, refresh = 0, num_bf = b, chains = 1, adapt_delta = 0.9)
   fit$plot(f_reference = ff) + ggtitle(paste0("num_bf = ", b))
