@@ -1,4 +1,4 @@
 library(testthat)
-library(sfgp)
+library(lgpr2)
 
-test_check("sfgp")
+test_check("lgpr2")

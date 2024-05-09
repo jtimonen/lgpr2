@@ -12,30 +12,6 @@ extend_df <- function(df, t, time_var) {
   df
 }
 
-#' Extend data frame and add a constant continuous variable
-#'
-#' @export
-#' @param df original data frame
-#' @param t vector of new time values
-#' @param time_var name of time variable
-#' @param x value of other continuous variable (will be constant)
-#' @param x_var name of other continuous variable
-#' @param id_var name of id variable
-#' @return new data frame
-extend_df2 <- function(df, t, time_var, x, x_var, id_var) {
-  checkmate::assert_number(x)
-  test_dat <- df
-  t_test <- t
-  N <- length(t_test)
-  test_dat[[x_var]] <- x
-  split_data <- split(test_dat, test_dat[[id_var]])
-  first_rows <- lapply(split_data, function(x) x[1, ])
-  test_dat <- do.call(rbind, first_rows)
-  R <- nrow(test_dat)
-  test_dat <- test_dat[rep(1:R, each = N), ]
-  test_dat[[time_var]] <- rep(t_test, R)
-  test_dat
-}
 
 # Union of data frames
 df_union <- function(x, y) {
