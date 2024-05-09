@@ -85,7 +85,7 @@ TSModelFit <- R6::R6Class("TSModelFit",
     #' Compute estimate of the measurement error percentage of each observation
     #' as 'rvars'.
     measurement_error = function() {
-      f <- self$function_draws(data_scale = TRUE, capped = FALSE)
+      f <- self$function_draws()
       f_rvars <- f$get_output()
       orig_data <- self$get_data("LON")
       mod <- self$get_model("lon")
