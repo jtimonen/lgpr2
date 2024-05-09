@@ -5,22 +5,6 @@ GPTerm <- R6::R6Class("GPTerm",
   private = list(
     stanfiles_functions_impl = function() {
       c("gp/basisfun", "gp/shared", "gp/group")
-    },
-    latex_xi = function(z_name) {
-      if (is.null(z_name)) {
-        out <- "\\mathbf{\\xi}"
-      } else {
-        G <- paste0("G_{", z_name, "}")
-        out <- c(
-          "\\mathbf{\\xi}^{(1)}", "\\ldots",
-          paste0("\\mathbf{\\xi}^{(", G, ")}")
-        )
-      }
-      return(out)
-    },
-    latex_type = "HSGP",
-    latex_param_names = function() {
-      c(private$latex_xi(self$z_name), "\\alpha", "\\ell", "B", "L")
     }
   ),
   public = list(
@@ -37,7 +21,6 @@ GPTerm <- R6::R6Class("GPTerm",
       self$z_name <- z_name
       private$typename <- "gp"
       private$suffix <- stancode_suffix_interact(x_name, z_name)
-      private$latex_param_subscript <- latex_subscript_interact(x_name, z_name)
     },
     default_conf = function() {
       list(scale_bf = 1.5, num_bf = 30)

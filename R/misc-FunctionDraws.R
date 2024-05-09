@@ -147,19 +147,19 @@ FunctionDraws <- R6::R6Class("FunctionDraws",
       S <- self$num_draws()
       P <- self$num_points()
       cat("An R6 object of class FunctionDraws (",
-        number_string(S), " draws, ", number_string(P), " points). \n",
+        S, " draws, ", P, " points). \n",
         sep = ""
       )
       v1 <- private$cont_vars()
       s1 <- paste(v1, collapse = ", ")
       cat(" - Name:", private$name, "\n")
       if (length(v1) > 0) {
-        cat(" - Continuous inputs:", hl_string(s1), "\n")
+        cat(" - Continuous inputs:", s1, "\n")
       }
       v2 <- private$categ_vars()
       s2 <- paste(v2, collapse = ", ")
       if (length(v2) > 0) {
-        cat(" - Categorical inputs:", hl_string(s2), "\n")
+        cat(" - Categorical inputs:", s2, "\n")
       }
     },
 

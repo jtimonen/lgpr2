@@ -11,11 +11,9 @@ create_termlist <- function(formula, priors) {
   pr_names <- names(priors)
   for (pr in pr_names) {
     t <- list$get_term(pr)
-    message("Editing term ", hl_string(pr))
     prior <- priors[[pr]]
     checkmate::assert_list(prior)
     for (nam in names(prior)) {
-      message(" * Editing field ", hl_string(nam))
       t[[nam]] <- prior[[nam]]
     }
   }
@@ -135,21 +133,6 @@ TermList <- R6::R6Class("TermList",
       self$terms[[idx]]
     },
 
-    #' @description
-    #' Latex code, mathematical notation for the terms
-    latex = function() {
-      J <- length(self$terms)
-      fs <- paste0("f^{(", seq_len(J), ")}(\\mathbf{x})")
-      math <- sapply(self$terms, function(x) x$latex())
-      latex_terms <- paste0(fs, " &= ", math)
-      paste(
-        "\\begin{align}\n  ",
-        paste(latex_terms, collapse = "\\\\ \n  "),
-        "\\end{align}",
-        sep = "\n"
-      )
-    },
-
     #' @description List length
     length = function() {
       length(self$terms)
@@ -198,10 +181,6 @@ TermList <- R6::R6Class("TermList",
         j <- j + 1
         term <- self$terms[[tn]]
         tc <- term$ensure_conf(term_confs[[tn]])
-        if (is(term, "FormulaSFTerm")) {
-          tc$kg <- term$term_list_kg$fill_term_confs(tc, num_bf, scale_bf)
-          tc$ks <- term$term_list_ks$fill_term_confs(tc, num_bf, scale_bf)
-        }
         if (is(term, "GPTerm")) {
           tc <- fill_term_conf_gpterm(tc, num_bf, scale_bf)
         }
@@ -224,55 +203,12 @@ TermList <- R6::R6Class("TermList",
       for (tn in names(ts)) {
         term <- ts[[tn]]
         transf <- term$x_transform
-        msg <- paste0("Setting transform for ", hl_string(tn), "... ")
         if (tn %in% names_skip) {
-          msg <- paste0(msg, "skipped!")
         } else {
           if (inherits(transf, settable)) {
             x_data <- get_x_from_data(data, term$x_name)
             term$x_transform <- transf$set_using_data(x_data)
-            transf_name <- class(transf)[1]
-            msg <- paste0(msg, "done (", hl_string(transf_name), ")!")
-          } else {
-            msg <- paste0(msg, "not needed.")
           }
-        }
-        message(msg)
-
-        # Handle FormulaSFTerm
-        if (inherits(term, "FormulaSFTerm")) {
-          message("Setting transforms for the terms inside of FormulaSFTerm")
-          term$term_list_kg$set_transforms(data, names_skip)
-          term$term_list_ks$set_transforms(data, names_skip)
-        }
-      }
-    },
-
-
-    #' @description
-    #' Check how data transforms using the current model transforms.
-    #'
-    #' @param data A data frame.
-    check_transforms = function(data) {
-      settable <- c("Normalizing", "MaxScale", "UnitScale")
-      settable <- paste0(settable, "Transform")
-      ts <- self$terms
-      for (tn in names(ts)) {
-        term <- ts[[tn]]
-        transf <- term$x_transform
-        msg <- paste0("Checking transform for ", hl_string(tn), "... ")
-        if (inherits(transf, settable)) {
-          x_data <- get_x_from_data(data, term$x_name)
-          r1 <- range(x_data)
-          r2 <- range(transf$forward(x_data))
-          transf_name <- class(transf)[1]
-          msg <- paste0(msg, "(", hl_string(transf_name), ")!")
-          message(msg)
-          message("Data range is [", r1[1], ", ", r1[2], "]")
-          message("Transformed range is [", r2[1], ", ", r2[2], "]")
-        } else {
-          msg <- paste0(msg, "no transform.")
-          message(msg)
         }
       }
     }
@@ -296,8 +232,8 @@ find_term_index <- function(f_name_stan, term_names_stan, strict) {
   tn_str <- paste(sn, collapse = ", ")
   if (!(f_name_stan %in% sn) && strict) {
     msg <- paste0(
-      hl_string(f_name_stan), " is not a Stan variable name of any",
-      " term in this model. Valid names are {", hl_string(tn_str), "}."
+      "'", f_name_stan, "' is not a Stan variable name of any",
+      " term in this model. Valid names are {", tn_str, "}."
     )
     stop(msg)
   }

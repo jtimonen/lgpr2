@@ -12,8 +12,8 @@ Approximate longitudinal GP modeling using 'Stan'.
 
 See the following \code{R6} classes.
 \itemize{
- \item \code{\link{TSModel}}: Main model class.
- \item \code{\link{TSModelFit}}: Fit class.
+ \item \code{\link{LonModel}}: Main model class.
+ \item \code{\link{LonModelFit}}: Fit class.
  \item \code{\link{TermList}}: Class describing model terms.
  \item \code{\link{FunctionDraws}}: Class to hold fitted function
  distributions.

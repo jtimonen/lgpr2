@@ -14,10 +14,10 @@ example(num_bf = 32, scale_bf = 1.5, formula = "y ~ gp(x)", ...)
 \item{formula}{The model formula.}
 
 \item{...}{Other arguments to the \code{$fit()} method of
-\code{\link{TSModel}}.}
+\code{\link{LonModel}}.}
 }
 \value{
-An \code{\link{TSModelFit}} object.
+An \code{\link{LonModelFit}} object.
 }
 \description{
 Fits a model to simple simulated data.

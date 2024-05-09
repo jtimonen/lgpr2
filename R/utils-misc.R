@@ -21,3 +21,9 @@ stanmodel_functions <- function(stan_file, ...) {
   sf <- cmdstanr::write_stan_file(sc)
   cmdstanr::cmdstan_model(sf, ...)
 }
+
+
+# Main class name
+class_name <- function(x) {
+  class(x)[1]
+}

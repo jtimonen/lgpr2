@@ -9,8 +9,8 @@
 #' @section Getting started:
 #' See the following \code{R6} classes.
 #' \itemize{
-#'  \item \code{\link{TSModel}}: Main model class.
-#'  \item \code{\link{TSModelFit}}: Fit class.
+#'  \item \code{\link{LonModel}}: Main model class.
+#'  \item \code{\link{LonModelFit}}: Fit class.
 #'  \item \code{\link{TermList}}: Class describing model terms.
 #'  \item \code{\link{FunctionDraws}}: Class to hold fitted function
 #'  distributions.
@@ -40,12 +40,12 @@
 #' @param scale_bf Basis function domain scale.
 #' @param formula The model formula.
 #' @param ... Other arguments to the \code{$fit()} method of
-#' \code{\link{TSModel}}.
-#' @return An \code{\link{TSModelFit}} object.
+#' \code{\link{LonModel}}.
+#' @return An \code{\link{LonModelFit}} object.
 example <- function(num_bf = 32, scale_bf = 1.5, formula = "y ~ gp(x)",
                     ...) {
   form <- stats::as.formula(formula)
-  m <- TSModel$new(form)
+  m <- LonModel$new(form)
   xx <- seq(1, 10, by = 0.15)
   ff <- 20 + 5 * sin(xx) + 2 * sin(5 * xx) + xx
   yy <- ff + stats::rnorm(n = length(xx), mean = 0, sd = 1)

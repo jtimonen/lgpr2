@@ -16,9 +16,6 @@ create_offsetterm <- function(covariates, hierarchy) {
 OffsetTerm <- R6::R6Class("OffsetTerm",
   inherit = FormulaTerm,
   lock_class = TRUE,
-  private = list(
-    latex_type = "BAS"
-  ),
   public = list(
     prior_intercept = "student_t(4, 0, 5)",
     initialize = function() {
@@ -39,18 +36,12 @@ OffsetTerm <- R6::R6Class("OffsetTerm",
 GroupedOffsetTerm <- R6::R6Class("GroupedOffsetTerm",
   inherit = OffsetTerm,
   lock_class = TRUE,
-  private = list(
-    latex_param_names = function() {
-      "\\mathbf{c}"
-    }
-  ),
   public = list(
     initialize = function(z_name) {
       super$initialize()
       checkmate::assert_character(z_name)
       self$z_name <- z_name
       private$suffix <- z_name
-      private$latex_param_subscript <- "0"
     },
     stancode_data = function(used_names, datanames) {
       z <- self$stanlines_data_z(datanames)
@@ -82,11 +73,6 @@ GroupedOffsetTerm <- R6::R6Class("GroupedOffsetTerm",
 HierOffsetTerm <- R6::R6Class("HierOffsetTerm",
   inherit = OffsetTerm,
   lock_class = TRUE,
-  private = list(
-    latex_param_names = function() {
-      "\\mathbf{c}"
-    }
-  ),
   public = list(
     prior_log_z = "std_normal()",
     prior_log_mu = "std_normal()",
@@ -98,7 +84,6 @@ HierOffsetTerm <- R6::R6Class("HierOffsetTerm",
       self$z_name <- z_name
       self$h_name <- h_name
       private$suffix <- z_name
-      private$latex_param_subscript <- "0"
     },
     stancode_data = function(used_names, datanames) {
       z <- self$stanlines_data_z(datanames)

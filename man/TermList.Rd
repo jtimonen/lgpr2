@@ -27,12 +27,10 @@ function components.}
 \item \href{#method-TermList-input_vars}{\code{TermList$input_vars()}}
 \item \href{#method-TermList-stan_names}{\code{TermList$stan_names()}}
 \item \href{#method-TermList-get_term}{\code{TermList$get_term()}}
-\item \href{#method-TermList-latex}{\code{TermList$latex()}}
 \item \href{#method-TermList-length}{\code{TermList$length()}}
 \item \href{#method-TermList-create_standata}{\code{TermList$create_standata()}}
 \item \href{#method-TermList-fill_term_confs}{\code{TermList$fill_term_confs()}}
 \item \href{#method-TermList-set_transforms}{\code{TermList$set_transforms()}}
-\item \href{#method-TermList-check_transforms}{\code{TermList$check_transforms()}}
 \item \href{#method-TermList-clone}{\code{TermList$clone()}}
 }
 }
@@ -117,16 +115,6 @@ can be checked using the `$stan_names()` method.}
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-TermList-latex"></a>}}
-\if{latex}{\out{\hypertarget{method-TermList-latex}{}}}
-\subsection{Method \code{latex()}}{
-Latex code, mathematical notation for the terms
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{TermList$latex()}\if{html}{\out{</div>}}
-}
-
-}
-\if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-TermList-length"></a>}}
 \if{latex}{\out{\hypertarget{method-TermList-length}{}}}
 \subsection{Method \code{length()}}{
@@ -207,23 +195,6 @@ Set variable transforms using data.
 
 \item{\code{names_skip}}{Names of terms whose input transform should be
 skipped.}
-}
-\if{html}{\out{</div>}}
-}
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-TermList-check_transforms"></a>}}
-\if{latex}{\out{\hypertarget{method-TermList-check_transforms}{}}}
-\subsection{Method \code{check_transforms()}}{
-Check how data transforms using the current model transforms.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{TermList$check_transforms(data)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{data}}{A data frame.}
 }
 \if{html}{\out{</div>}}
 }

@@ -4,29 +4,7 @@ FormulaTerm <- R6::R6Class("FormulaTerm",
   lock_class = TRUE,
   private = list(
     typename = NULL,
-    suffix = NULL,
-    latex_type = "UNKNOWN",
-    latex_param_names = function() {
-      NULL
-    },
-    latex_param_subscript = NULL,
-    latex_params = function() {
-      pn <- private$latex_param_names()
-      sub <- private$latex_param_subscript
-      if (is.null(sub)) {
-        codes <- pn
-      } else {
-        codes <- sapply(pn, function(x) {
-          suffix <- paste0("_{", sub, "}")
-          if (x == "\\ldots") {
-            return(x)
-          } else {
-            return(paste0(x, suffix))
-          }
-        })
-      }
-      paste(codes, collapse = ", ")
-    }
+    suffix = NULL
   ),
   public = list(
     x_name = NULL,
@@ -73,13 +51,6 @@ FormulaTerm <- R6::R6Class("FormulaTerm",
     name_long = function() {
       paste0(self$stanname_base(), " (", class_name(self), ")")
     },
-    latex = function() {
-      cov_names <- c(self$x_name, self$z_name, self$h_name)
-      vars <- paste(paste0("\\text{", cov_names, "}"), collapse = ", ")
-      pars <- private$latex_params()
-      typ <- private$latex_type
-      paste0("f^{\\text{", typ, "}} \\left(", vars, " \\mid ", pars, "\\right)")
-    },
     stancode_data = function(used_names, datanames) {
       list(code = "", stannames = character(0))
     },
@@ -92,7 +63,7 @@ FormulaTerm <- R6::R6Class("FormulaTerm",
     },
     print = function() {
       cat(class_name(self), "(base name in Stan code = ",
-        hl_string(self$stanname_base()), ").\n",
+        self$stanname_base(), ").\n",
         sep = ""
       )
     },
@@ -165,15 +136,8 @@ FormulaTerm <- R6::R6Class("FormulaTerm",
 
     # this should not be overridden by inheriting class
     ensure_conf = function(conf) {
-      str <- hl_string(self$stanname_base())
       if (length(conf) == 0) {
-        message(
-          "Configuration not supplied for term ",
-          str, ", using default configuration"
-        )
         conf <- self$default_conf()
-      } else {
-        message("Configuration found for term ", str, "!")
       }
       checkmate::assert_list(conf, names = "named")
       cn <- self$required_conf_names()
@@ -265,15 +229,6 @@ stancode_suffix_interact <- function(x_name, z_name) {
   ts <- x_name
   if (!is.null(z_name)) {
     ts <- paste0(ts, "X", z_name)
-  }
-  ts
-}
-
-# Latex subscript for interaction term
-latex_subscript_interact <- function(x_name, z_name) {
-  ts <- paste0("\\text{", x_name, "}")
-  if (!is.null(z_name)) {
-    ts <- paste0(ts, " \\times ", paste0("\\text{", z_name, "}"))
   }
   ts
 }

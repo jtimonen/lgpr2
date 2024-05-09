@@ -1,8 +1,8 @@
-#' The 'TSModelFit' class
+#' The 'LonModelFit' class
 #'
 #' @export
 #' @field term_confs The term configurations used.
-TSModelFit <- R6::R6Class("TSModelFit",
+LonModelFit <- R6::R6Class("LonModelFit",
   inherit = StanModelFit,
   private = list(
 
@@ -30,7 +30,7 @@ TSModelFit <- R6::R6Class("TSModelFit",
 
     #' @description Print object description.
     print = function() {
-      cat("An R6 object of class TSModelFit.\n")
+      cat("An R6 object of class LonModelFit.\n")
     },
 
     #' @description
@@ -79,47 +79,6 @@ TSModelFit <- R6::R6Class("TSModelFit",
       x <- dat[, input_vars]
       f <- private$extract_f_comp(f_name)
       FunctionDraws$new(x, f, f_name)
-    },
-
-    #' @description
-    #' Compute estimate of the measurement error percentage of each observation
-    #' as 'rvars'.
-    measurement_error = function() {
-      f <- self$function_draws()
-      f_rvars <- f$get_output()
-      orig_data <- self$get_data("LON")
-      mod <- self$get_model("lon")
-      f_diff_rvars <- f_rvars - orig_data[[mod$y_var]]
-      abs(f_diff_rvars) / abs(f_rvars)
-    },
-
-    #' @description
-    #' Get a data frame that is useful for assessing fit quality.
-    fit_quality_df = function() {
-      ll <- self$loglik()
-      me <- self$measurement_error()
-      a <- self$get_data("LON")
-      a$loglik <- stats::median(ll)
-      a$error_perc <- stats::median(me)
-      a
-    },
-
-    #' @description
-    #' Get summary statistics useful for assessing fit quality.
-    #'
-    #' @param metric Metric used to assess quality. Can be \code{"error_perc"}
-    #' or \code{"loglik"}.
-    #' @param by The factor by which to aggregate. If \code{NULL}, the id
-    #' variable of the model is used.
-    #' @param fun Function used to aggregate.
-    fit_quality_summary = function(metric = "error_perc",
-                                   by = NULL, fun = stats::median) {
-      if (is.null(by)) {
-        by <- self$get_model("lon")$id_var
-      }
-      df <- self$fit_quality_df()
-      form <- paste0(metric, " ~ ", by)
-      stats::aggregate(as.formula(form), df, FUN = fun)
     },
 
     #' @description
@@ -208,7 +167,7 @@ TSModelFit <- R6::R6Class("TSModelFit",
 
       # Return
       data_orig <- list(LON = dat$orig_data)
-      TSModelFit$new(
+      LonModelFit$new(
         model, gq, data_orig, dat$stan_data, dat$full_term_confs
       )
     },

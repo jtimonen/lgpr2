@@ -1,30 +1,11 @@
-#' Can be used to just generate Stan code for a TS model
-# given a formula
-#'
-#' @export
-#' @param formula model formula
-#' @param print Should the code be printed?
-#' @param ... Arguments passed to the \code{$create_stancode()} method
-#' of \code{\link{TSModel}}.
-#' @return Stan code as character string (invisibly)
-stancode_ts <- function(formula, print = TRUE, ...) {
-  checkmate::assert_class(formula, "formula")
-  m <- TSModel$new(formula, compile = F)
-  code <- m$create_stancode(...)
-  if (print) {
-    cat(code)
-  }
-  invisible(code)
-}
-
-#' Time series (longitudinal) model class (R6 class)
+#' Longitudinal model class (R6 class)
 #'
 #' @export
 #' @field term_list The additive model terms.
 #' @field y_var Name of the y variable.
 #' @field id_var Name of the subject identifier variable.
 #' @field prior_sigma Prior for the noise parameter.
-TSModel <- R6::R6Class("TSModel",
+LonModel <- R6::R6Class("LonModel",
   inherit = StanModel,
 
   # PRIVATE
@@ -139,11 +120,11 @@ TSModel <- R6::R6Class("TSModel",
     #' The model description as a string
     string = function() {
       str <- paste0(
-        class_name_hl(self), ":\n    ",
+        class_name(self), ":\n    ",
         self$y_var, " ~ N(f, sigma^2)"
       )
       tls <- self$term_list$string()
-      paste0(str, ", where \n", "    f = ", hl_string(tls))
+      paste0(str, ", where \n", "    f = ", tls)
     },
 
     #' @description Get term names in Stan code.
@@ -229,7 +210,7 @@ TSModel <- R6::R6Class("TSModel",
     #' @param prior_only Sample from prior only.
     #' @param ... Arguments passed to \code{sample} method of the
     #' 'CmdStanR' model.
-    #' @return An \code{\link{TSModelFit}} object.
+    #' @return An \code{\link{LonModelFit}} object.
     fit = function(data,
                    term_confs = NULL,
                    num_bf = NULL,
@@ -254,7 +235,7 @@ TSModel <- R6::R6Class("TSModel",
 
       # Return
       dat_list <- list(LON = d$orig_data)
-      TSModelFit$new(self, stan_fit, dat_list, d$stan_data, d$full_term_confs)
+      LonModelFit$new(self, stan_fit, dat_list, d$stan_data, d$full_term_confs)
     }
   )
 )
@@ -295,7 +276,6 @@ complete_formula_ts <- function(formula, id_var, baseline) {
   ff <- as.character(formula)
   if (is.null(baseline)) {
     baseline <- paste0("offset(", id_var, ")")
-    message("baseline was NULL, setting baseline = ", hl_string(baseline))
   }
   checkmate::assert_character(baseline, min.chars = 1)
   if (ff[3] == ".") {

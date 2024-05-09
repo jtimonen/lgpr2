@@ -1,14 +1,6 @@
-test_that("generating only the Stan code works", {
-  code1 <- stancode_ts(y ~ gp(x), print = FALSE)
-  expect_match(code1, "Term f_gp_x")
-  expect_gt(nchar(code1), 20)
-})
-
-
-test_that("creating a TSModel works", {
-  m <- TSModel$new(hello ~ gp(foo) + gp(foo, bar))
-  expect_output(m$print(), "TSModel")
-  expect_output(cat(m$term_list$latex()), "alpha")
+test_that("creating a LonModel works", {
+  m <- LonModel$new(hello ~ gp(foo) + gp(foo, bar))
+  expect_output(m$print(), "LonModel")
   expect_output(m$term_list$terms[[1]]$print())
   expect_equal(m$y_var, "hello")
   expect_equal(m$term_list$length(), 3)
@@ -18,7 +10,7 @@ test_that("creating a TSModel works", {
 })
 
 test_that("creating the Stan data works", {
-  m <- TSModel$new(hello ~ gp(foo) + gp(foo, bar), compile = F, id_var = "bar")
+  m <- LonModel$new(hello ~ gp(foo) + gp(foo, bar), compile = F, id_var = "bar")
   a <- data.frame(
     foo = c(-100, 2, 3, 4),
     hello = c(0, 3, 2, 1),
@@ -40,7 +32,7 @@ test_that("creating the Stan data works", {
 
 
 test_that("fitting a model and plotting function draws work", {
-  m <- TSModel$new(hello ~ gp(foo) + gp(foo, bar))
+  m <- LonModel$new(hello ~ gp(foo) + gp(foo, bar))
   a <- data.frame(
     foo = c(1, 2, 3, 4),
     hello = c(0, 3, 2, 1),
@@ -94,7 +86,7 @@ test_that("a gp example works", {
 })
 
 test_that("simplest model with empty formula (only grouped offset) works", {
-  a <- TSModel$new(y ~ .)
+  a <- LonModel$new(y ~ .)
   r <- a$fit(testdata)
   expect_equal(ncol(r$function_draws()$get_input()), 1)
 })
