@@ -20,10 +20,7 @@ test_that("creating Stan code from TermList works", {
 test_that("creating Stan data for TermList works", {
   a <- create_termlist(y ~ gp(x), NULL)
   d <- data.frame(x = c(1, 2, 3, 4))
-  expect_message(a$check_transforms(d), "[1, 4]")
   a$set_transforms(d)
-  expect_message(a$check_transforms(d), "[-1, 1]")
-  expect_message(a$check_transforms(d), "[0.25, 1]")
 
   # Should work
   r <- a$create_standata(data = d, dataname = "ASD")

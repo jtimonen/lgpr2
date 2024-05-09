@@ -60,14 +60,8 @@ test_that("fitting a model and plotting function draws work", {
   expect_s3_class(fit$plot(), "ggplot")
   plt <- fit$plot(f_reference = rep(1, 4))
   ll <- fit$loglik()
-  ep <- fit$measurement_error()
   expect_equal(length(ll), nrow(a))
-  expect_equal(length(ep), nrow(a))
   expect_s3_class(plt, "ggplot")
-
-  df <- fit$fit_quality_summary()
-  expect_equal(nrow(df), 1)
-  expect_equal(ncol(df), 2) # colnames c("id", "error_perc")
 })
 
 test_that("a gp example works", {

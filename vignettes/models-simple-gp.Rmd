@@ -22,7 +22,7 @@ library(lgpr2)
 
 This is probably the simplest possible GP model.
 ```{r model}
-m <- TSModel$new(y ~ gp(x))
+m <- LonModel$new(y ~ gp(x))
 m
 ```
 

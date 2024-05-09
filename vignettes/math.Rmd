@@ -27,7 +27,7 @@ library(lgpr2)
 # Longitudinal model
 
 This section describes mathematically the model corresponding to 
-the `TSModel` class.
+the `LonModel` class.
 
 ## Observation model
 The likelihood of observation $i$ is
@@ -53,7 +53,7 @@ components and they are detailed next.
 
 ```{r}
 create_term <- function(term_str) {
-  m <- TSModel$new(y ~ ., baseline = term_str, compile = FALSE)
+  m <- LonModel$new(y ~ ., baseline = term_str, compile = FALSE)
   m$term_list$terms[[1]]
 }
 ```
