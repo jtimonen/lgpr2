@@ -38,16 +38,16 @@ test_that("creating Stan data for TermList works", {
 })
 
 test_that("A custom prior can be given", {
-  prior_gp <- list(alpha = "normal(3, 4)")
+  prior_0 <- list(f_baseline_x = list(prior_intercept = "normal(3, 4)"))
   prior_invalid <- list(prior_asd = "normal(3, 4)")
-  a <- create_termlist(y ~ gp(x), list(f_gp_x = prior_gp))
+  a <- create_termlist(y ~ offset(x), prior_0)
   expect_output(cat(a$stancode_model()), "3, 4")
   expect_error(
     create_termlist(y ~ gp(x), list(f_gp_x = prior_invalid)),
     "cannot add bindings to a locked environment"
   )
   expect_error(
-    create_termlist(y ~ gp(x), list(FOO = prior_sf)),
+    create_termlist(y ~ gp(x), list(FOO = prior_0)),
     "is not a Stan variable name"
   )
 })

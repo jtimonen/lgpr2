@@ -1,5 +1,5 @@
 test_that("different types of OffsetTerm work correctly", {
-  m <- TSModel$new(y ~ offset(id2 | arm) + gp(t))
+  m <- TSModel$new(y ~ offset(id2 | arm) + gp(time))
   dat <- testdata
   dat$id2 <- dat$id
   fit <- m$fit(dat, chains = 1)
