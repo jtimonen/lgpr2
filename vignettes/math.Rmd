@@ -66,7 +66,6 @@ The model can have a different number $J$ of terms, depending on the
 ```{r}
 term <- create_term("offset(g)")
 print(term)
-cat(term$latex())
 ```
 
 The `GroupedOffsetTerm` for a grouping variable $g$ is
@@ -82,7 +81,6 @@ independent priors.
 ```{r}
 term <- create_term("offset(g | h)")
 print(term)
-cat(term$latex())
 ```
 
 The `HierOffsetTerm` for grouping variables $z$ and $h$ is
@@ -112,7 +110,6 @@ cat(term$stancode_model())
 ```{r}
 term <- create_term("gp(x)")
 print(term)
-cat(term$latex())
 ```
 
 Let $x$ be some continuous variable. We use
@@ -157,7 +154,6 @@ $\mathbf{\xi} \in \mathbb{R}^B$.
 ```{r}
 term <- create_term("gp(x, z)")
 print(term)
-cat(term$latex())
 ```
 
 Let $x$ be some continuous variable and $z$ some grouping factor, which can
