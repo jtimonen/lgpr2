@@ -89,17 +89,6 @@ FormulaTerm <- R6::R6Class("FormulaTerm",
       )
       list(lines = lines, stannames = c(dnz, dnG))
     },
-    stanlines_data_h = function(datanames) {
-      dnh <- self$stanname_h(datanames)
-      dnG <- paste0("G_", self$h_name)
-      nn <- paste0("n_", datanames)
-      hlines <- paste0("  array[", nn, "] int ", dnh, "; // categ input")
-      lines <- c(
-        as.list(hlines),
-        list(paste0("  int<lower=1> ", dnG, "; // num of groups"))
-      )
-      list(lines = lines, stannames = c(dnh, dnG))
-    },
     create_standata_x = function(datasets) {
       checkmate::assert_list(datasets, min.len = 1)
       datanames <- names(datasets)
@@ -121,11 +110,6 @@ FormulaTerm <- R6::R6Class("FormulaTerm",
       checkmate::assert_list(datasets, min.len = 1)
       nn <- names(datasets)
       create_standata_categorical(datasets, self$z_name, self$stanname_z(nn))
-    },
-    create_standata_h = function(datasets) {
-      checkmate::assert_list(datasets, min.len = 1)
-      nn <- names(datasets)
-      create_standata_categorical(datasets, self$h_name, self$stanname_h(nn))
     },
     default_conf = function() {
       list()

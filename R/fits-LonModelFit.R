@@ -39,8 +39,11 @@ LonModelFit <- R6::R6Class("LonModelFit",
     #' @param component Name of the component (term). Valid names can
     #' be checked using \code{$model$term_names()}. Alternatively, can be
     #' an integer that is the component index.
+    #' @param input_vars Column names in the data. Only has effect if
+    #' getting a single component. If \code{NULL}, determined automatically
+    #' from the component.
     #' @param dataname name of data set used to evaluate the function
-    function_draws = function(component = "f_sum") {
+    function_draws = function(component = "f_sum", input_vars = NULL) {
       mod <- self$get_model("lon")
       dat <- self$get_data("LON")
       if (is.numeric(component)) {
@@ -56,29 +59,22 @@ LonModelFit <- R6::R6Class("LonModelFit",
         # The total sum or predictive
         f <- private$extract_f_comp(f_name)
         covs <- mod$term_list$input_vars()
+
         x <- dat[, covs, drop = FALSE]
         fd <- FunctionDraws$new(x, f, f_name)
       } else {
         # A single component
         t <- mod$term_list$get_term(f_name)
-        covs <- t$input_vars()
+        if (is.null(input_vars)) {
+          covs <- t$input_vars()
+        } else {
+          covs <- input_vars
+        }
         x <- dat[, covs, drop = FALSE]
         f <- private$extract_f_comp(f_name)
         fd <- FunctionDraws$new(x, f, f_name)
       }
       fd
-    },
-
-    #' @description
-    #' Initialize a \code{\link{FunctionDraws}} object from the fit.
-    #'
-    #' @param input_vars Column names in the data.
-    #' @param f_name Name of function in 'Stan' code.
-    create_functiondraws = function(input_vars, f_name) {
-      dat <- self$get_data("LON")
-      x <- dat[, input_vars]
-      f <- private$extract_f_comp(f_name)
-      FunctionDraws$new(x, f, f_name)
     },
 
     #' @description

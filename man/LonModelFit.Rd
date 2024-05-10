@@ -24,7 +24,6 @@ The 'LonModelFit' class
 \item \href{#method-LonModelFit-new}{\code{LonModelFit$new()}}
 \item \href{#method-LonModelFit-print}{\code{LonModelFit$print()}}
 \item \href{#method-LonModelFit-function_draws}{\code{LonModelFit$function_draws()}}
-\item \href{#method-LonModelFit-create_functiondraws}{\code{LonModelFit$create_functiondraws()}}
 \item \href{#method-LonModelFit-plot}{\code{LonModelFit$plot()}}
 \item \href{#method-LonModelFit-predict}{\code{LonModelFit$predict()}}
 \item \href{#method-LonModelFit-predict_time}{\code{LonModelFit$predict_time()}}
@@ -87,7 +86,7 @@ Print object description.
 \subsection{Method \code{function_draws()}}{
 Extract one component as a \code{FunctionDraws} object.
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{LonModelFit$function_draws(component = "f_sum")}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{LonModelFit$function_draws(component = "f_sum", input_vars = NULL)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
@@ -97,26 +96,11 @@ Extract one component as a \code{FunctionDraws} object.
 be checked using \code{$model$term_names()}. Alternatively, can be
 an integer that is the component index.}
 
+\item{\code{input_vars}}{Column names in the data. Only has effect if
+getting a single component. If \code{NULL}, determined automatically
+from the component.}
+
 \item{\code{dataname}}{name of data set used to evaluate the function}
-}
-\if{html}{\out{</div>}}
-}
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-LonModelFit-create_functiondraws"></a>}}
-\if{latex}{\out{\hypertarget{method-LonModelFit-create_functiondraws}{}}}
-\subsection{Method \code{create_functiondraws()}}{
-Initialize a \code{\link{FunctionDraws}} object from the fit.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{LonModelFit$create_functiondraws(input_vars, f_name)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{input_vars}}{Column names in the data.}
-
-\item{\code{f_name}}{Name of function in 'Stan' code.}
 }
 \if{html}{\out{</div>}}
 }
