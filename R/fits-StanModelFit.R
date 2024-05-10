@@ -31,8 +31,7 @@ StanModelFit <- R6::R6Class("StanModelFit",
     #' @description
     #' Get model.
     #'
-    #' @param name Name of model. Only has effect for
-    #' \code{\link{JointModelFit}} objects.
+    #' @param name Name of model. Currently as no effect.
     get_model = function(name) {
       private$model
     },

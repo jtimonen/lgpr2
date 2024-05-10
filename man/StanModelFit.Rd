@@ -63,8 +63,7 @@ Get model.
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{name}}{Name of model. Only has effect for
-\code{\link{JointModelFit}} objects.}
+\item{\code{name}}{Name of model. Currently as no effect.}
 }
 \if{html}{\out{</div>}}
 }
