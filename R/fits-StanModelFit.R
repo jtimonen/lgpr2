@@ -76,14 +76,6 @@ StanModelFit <- R6::R6Class("StanModelFit",
     },
 
     #' @description
-    #' Full names of parameters that start with 'log_z_'.
-    log_z_pars = function() {
-      nams <- names(self$draws())
-      match <- grepl(nams, pattern = "log_z_")
-      nams[which(match)]
-    },
-
-    #' @description
     #' Extract log likelihood as 'rvars'.
     loglik = function() {
       self$draws("log_lik")

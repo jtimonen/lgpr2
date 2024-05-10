@@ -29,14 +29,14 @@ LonModel <- R6::R6Class("LonModel",
       paste(
         paste(code, collapse = "\n"),
         self$term_list$stancode_data(datanames),
-        stancode_ts_data(self$stanname_y(), "LON"),
+        stancode_lon_data(self$stanname_y(), "LON"),
         sep = "\n"
       )
     },
     stancode_tdata_impl = function(datanames) {
       datanames <- private$default_dataname(datanames)
       dn_def <- private$default_dataname(NULL)
-      c1 <- stancode_ts_tdata(self$stanname_y(), dn_def)
+      c1 <- stancode_lon_tdata(self$stanname_y(), dn_def)
       c2 <- self$term_list$stancode_tdata(datanames)
       paste(c1, c2, sep = "\n")
     },
@@ -50,7 +50,7 @@ LonModel <- R6::R6Class("LonModel",
       code <- self$term_list$stancode_tpars(datanames)
       dn_def <- private$default_dataname(NULL)
       paste(code,
-        stancode_ts_likelihood(self$stanname_y(), dn_def),
+        stancode_lon_likelihood(self$stanname_y(), dn_def),
         sep = "\n"
       )
     },
@@ -62,7 +62,7 @@ LonModel <- R6::R6Class("LonModel",
     },
     stancode_gq_impl = function() {
       terms_gq <- self$term_list$stancode_gq()
-      stancode_ts_gq(self, self$stanname_y(), terms_gq)
+      stancode_lon_gq(self, self$stanname_y(), terms_gq)
     }
   ),
 
@@ -95,7 +95,7 @@ LonModel <- R6::R6Class("LonModel",
       checkmate::assert_class(formula, "formula")
 
       # Handle adding the baseline term
-      complete <- complete_formula_ts(formula, id_var, baseline)
+      complete <- complete_formula_lon(formula, id_var, baseline)
       formula <- complete$formula
       baseline <- complete$baseline
       prior_terms <- complete_prior_terms(prior_terms, prior_baseline, baseline)
@@ -181,7 +181,7 @@ LonModel <- R6::R6Class("LonModel",
       data <- ensure_id_var_exists(data, self$id_var)
 
       # Create final data list
-      stan_data <- standata_ts(
+      stan_data <- standata_lon(
         data, dataname, self$term_list, full_term_confs, self$y_var
       )
 
@@ -242,8 +242,8 @@ LonModel <- R6::R6Class("LonModel",
 
 
 # Stan data for TS model
-standata_ts <- function(data, dataname, term_list, term_confs, y_name) {
-  sd_y <- standata_ts_y(data, y_name)
+standata_lon <- function(data, dataname, term_list, term_confs, y_name) {
+  sd_y <- standata_lon_y(data, y_name)
   sd_x <- term_list$create_standata(data, dataname, term_confs)
   sd <- c(sd_x, sd_y)
   sd$prior_only <- 0
@@ -251,7 +251,7 @@ standata_ts <- function(data, dataname, term_list, term_confs, y_name) {
 }
 
 # Stan data specific to TS model
-standata_ts_y <- function(data, y_name) {
+standata_lon_y <- function(data, y_name) {
   checkmate::assert_character(y_name)
   y <- data[[y_name]]
   checkmate::assert_numeric(y)
@@ -272,7 +272,7 @@ ensure_id_var_exists <- function(data, id_var) {
 }
 
 # Complete the formula for TS model
-complete_formula_ts <- function(formula, id_var, baseline) {
+complete_formula_lon <- function(formula, id_var, baseline) {
   ff <- as.character(formula)
   if (is.null(baseline)) {
     baseline <- paste0("offset(", id_var, ")")

@@ -64,7 +64,7 @@ test_that("fitting a model and plotting function draws work", {
   expect_s3_class(plt, "ggplot")
 })
 
-test_that("a gp example works", {
+test_that("a gp example works with predict", {
   r <- example(
     formula = "y ~ gp(x)",
     iter_warmup = 500, iter_sampling = 500, chains = 1
@@ -77,6 +77,18 @@ test_that("a gp example works", {
   expect_s3_class(p3, "ggplot")
   p4 <- r$predict()$plot(predictive = FALSE)
   expect_s3_class(p4, "ggplot")
+
+  # Predict works
+  p <- r$predict_time(t_test = seq(0, 12, by = 0.1), t_var = "x")
+  expect_s3_class(p$plot(), "ggplot")
+
+  # Should not work outside [-L, L]
+  expect_error(
+    {
+      p <- r$predict_time(t_test = seq(0, 22, by = 0.2), t_var = "x")
+    },
+    " GP approximation not valid for this input"
+  )
 })
 
 test_that("simplest model with empty formula (only grouped offset) works", {

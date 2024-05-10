@@ -31,24 +31,8 @@ read_file_lines <- function(file) {
   paste(a, collapse = "\n")
 }
 
-# Bounds
-stancode_bounds <- function(lower = NULL, upper = NULL) {
-  if (is.null(lower) && is.null(upper)) {
-    return("")
-  }
-  if (is.null(lower) && !is.null(upper)) {
-    return(paste0("<upper=", upper, ">"))
-  }
-  if (!is.null(lower) && is.null(upper)) {
-    return(paste0("<lower=", lower, ">"))
-  }
-  if (!is.null(lower) && !is.null(upper)) {
-    return(paste0("<lower=", lower, ", upper=", upper, ">"))
-  }
-}
-
 # Likelihood in model block
-stancode_ts_likelihood <- function(stanname_y, dataname) {
+stancode_lon_likelihood <- function(stanname_y, dataname) {
   code <- "  // Gaussian likelihood\n"
   paste0(
     code, "  real log_lik_lon = normal_lpdf(", stanname_y, " | f_sum_",
@@ -57,7 +41,7 @@ stancode_ts_likelihood <- function(stanname_y, dataname) {
 }
 
 # Log likelihood in generated quantities
-stancode_ts_gq <- function(mod, stanname_y, sc_terms_gq) {
+stancode_lon_gq <- function(mod, stanname_y, sc_terms_gq) {
   y_var <- mod$y_var
   def_ll <- paste0("  vector[n_LON] log_lik;")
   sylp <- paste0(y_var, "_log_pred")
@@ -73,7 +57,7 @@ stancode_ts_gq <- function(mod, stanname_y, sc_terms_gq) {
 }
 
 # Data block
-stancode_ts_data <- function(stanname_y, dataname) {
+stancode_lon_data <- function(stanname_y, dataname) {
   line0 <- "  // Observation model"
   y_decl <- paste0("  vector<lower=0>[n_", dataname, "] ")
   line1 <- paste0(y_decl, stanname_y, "; // TS model observations")
@@ -81,7 +65,7 @@ stancode_ts_data <- function(stanname_y, dataname) {
 }
 
 # Transformed data block
-stancode_ts_tdata <- function(stanname_y, dataname) {
+stancode_lon_tdata <- function(stanname_y, dataname) {
   c1 <- paste0("  real y_loc = mean(", stanname_y, ");")
   c2 <- paste0("  real y_scale = sd(", stanname_y, ");")
   paste(c1, c2, sep = "\n")
@@ -92,43 +76,4 @@ stancode_loglik <- function(model_suffixes) {
   ll <- paste0("log_lik_", model_suffixes, collapse = " + ")
   code <- "\n  // Likelihood\n"
   paste0(code, "  if(prior_only == 0){\n    target += ", ll, ";\n  }")
-}
-
-
-# Stan code for raw parameters
-raw_params_stancode <- function(param_name, G_hier, G_id) {
-  line1 <- paste0("  vector[", G_hier, "] log_mu_", param_name, ";")
-  line2 <- paste0("  vector[", G_hier, "] log_sigma_", param_name, ";")
-  line3 <- paste0("  vector[", G_id, "] log_z_", param_name, ";")
-  paste(line1, line2, line3, "\n", sep = "\n")
-}
-
-# Hierarchical parameters to vectors with length equal to data
-param_vecs_log_hier <- function(param_name, h_name, z_name) {
-  pn_z <- param_name
-  list(
-    z = paste0("log_z_", pn_z, "[", z_name, "]"),
-    mu = paste0("log_mu_", param_name, "[", h_name, "]"),
-    sigma = paste0("log_sigma_", param_name, "[", h_name, "]")
-  )
-}
-
-# Hierarchical prior on log scale
-hier_prior_stancode <- function(param_name, prior) {
-  z <- paste0("log_z_", param_name)
-  m <- paste0("log_mu_", param_name)
-  s <- paste0("log_sigma_", param_name)
-  line1 <- paste0("  ", z, " ~ ", prior$log_z, ";")
-  line2 <- paste0("  ", m, " ~ ", prior$log_mu, ";")
-  line3 <- paste0("  ", s, " ~ ", prior$log_sigma, ";")
-  paste(line1, line2, line3, "\n", sep = "\n")
-}
-
-# kg/ks parameter on natural scale
-par_to_nat_scale <- function(f_sum_name, pn, datanames) {
-  paste0("  vector[n_", datanames, "] ", pn, "_",
-    datanames, " = exp(log_C_", pn, " + ",
-    f_sum_name, "_", datanames, ");",
-    collapse = "\n"
-  )
 }

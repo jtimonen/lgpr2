@@ -41,7 +41,6 @@ The 'LonModelFit' class
 <li><span class="pkg-link" data-pkg="lgpr2" data-topic="StanModelFit" data-id="get_stan_data"><a href='../../lgpr2/html/StanModelFit.html#method-StanModelFit-get_stan_data'><code>lgpr2::StanModelFit$get_stan_data()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="lgpr2" data-topic="StanModelFit" data-id="get_stan_fit"><a href='../../lgpr2/html/StanModelFit.html#method-StanModelFit-get_stan_fit'><code>lgpr2::StanModelFit$get_stan_fit()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="lgpr2" data-topic="StanModelFit" data-id="gq"><a href='../../lgpr2/html/StanModelFit.html#method-StanModelFit-gq'><code>lgpr2::StanModelFit$gq()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="lgpr2" data-topic="StanModelFit" data-id="log_z_pars"><a href='../../lgpr2/html/StanModelFit.html#method-StanModelFit-log_z_pars'><code>lgpr2::StanModelFit$log_z_pars()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="lgpr2" data-topic="StanModelFit" data-id="loglik"><a href='../../lgpr2/html/StanModelFit.html#method-StanModelFit-loglik'><code>lgpr2::StanModelFit$loglik()</code></a></span></li>
 </ul>
 </details>

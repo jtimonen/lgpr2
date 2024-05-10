@@ -18,7 +18,6 @@ The Fit class
 \item \href{#method-StanModelFit-get_stan_fit}{\code{StanModelFit$get_stan_fit()}}
 \item \href{#method-StanModelFit-get_stan_data}{\code{StanModelFit$get_stan_data()}}
 \item \href{#method-StanModelFit-draws}{\code{StanModelFit$draws()}}
-\item \href{#method-StanModelFit-log_z_pars}{\code{StanModelFit$log_z_pars()}}
 \item \href{#method-StanModelFit-loglik}{\code{StanModelFit$loglik()}}
 \item \href{#method-StanModelFit-gq}{\code{StanModelFit$gq()}}
 \item \href{#method-StanModelFit-clone}{\code{StanModelFit$clone()}}
@@ -128,16 +127,6 @@ Extract draws as \code{rvar}s
 }
 \if{html}{\out{</div>}}
 }
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-StanModelFit-log_z_pars"></a>}}
-\if{latex}{\out{\hypertarget{method-StanModelFit-log_z_pars}{}}}
-\subsection{Method \code{log_z_pars()}}{
-Full names of parameters that start with 'log_z_'.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{StanModelFit$log_z_pars()}\if{html}{\out{</div>}}
-}
-
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-StanModelFit-loglik"></a>}}
