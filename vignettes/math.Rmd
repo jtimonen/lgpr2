@@ -76,34 +76,6 @@ where $\mathbf{c}_{0}$ is an unknown parameter vector containing one
 parameter for each level of the grouping variable. These parameters have
 independent priors.
 
-### `HierOffsetTerm`
-
-```{r}
-term <- create_term("offset(g | h)")
-print(term)
-```
-
-The `HierOffsetTerm` for grouping variables $z$ and $h$ is
-$$
-f^{\text{BAS}} \left(\text{g}, \text{h} \mid \mathbf{c}_{0}\right)
-$$
-where $\mathbf{c}_{0}$ is again an unknown parameter vector containing one
-parameter for each level of the grouping variable. The difference to
-`GroupedOffsetTerm` is that the prior is hierarchical. It is assumed that
-for the value of $h = h[g]$ is always determined by $g$. So for example $g$ 
-can be the subject identifier and $h[g]$ the treatment arm for that subject. The 
-prior is parametrized so that for group $g$ the parameter is
-
-$$
-\mathbf{c}_{0, g} = z_{g} \cdot \sigma_{h[g]} + \mu_{h[g]}
-$$
-where by default 
-$\mu_{h} \sim \mathcal{N}(0,1), \sigma_{h} \sim \mathcal{N}(0,5)$ independently
-over all $h$ and $z_g \sim \mathcal{N}(0,1)$ independently over all $g$.
-
-```{r}
-cat(term$stancode_model())
-```
 
 ### Shared GP terms (`GPTerm`)
 
