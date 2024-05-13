@@ -124,7 +124,7 @@ FunctionDraws <- R6::R6Class("FunctionDraws",
       N <- self$num_points()
       row_idx <- rep(1:N, each = S)
       draw_idx <- rep(1:S, times = N)
-      df <- self$get_input()[row_idx, ]
+      df <- self$get_input()[row_idx, , drop = FALSE]
       df[[".draw_idx"]] <- as.factor(draw_idx)
       df$value <- as.vector(self$get_output(as_matrix = TRUE))
       df

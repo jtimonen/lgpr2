@@ -204,6 +204,37 @@ LonModelFit <- R6::R6Class("LonModelFit",
         noise_amt[s] <- compute_noise_amount(y_data, hs$value)
       }
       noise_amt
+    },
+
+    #' Estimate component variances for each draw
+    #'
+    #' @return A matrix with n_draws rows and n_comps columns
+    comp_vars = function() {
+      m <- self$get_model()
+      cn <- m$term_names()
+      out <- list()
+      for (comp_idx in 1:length(cn)) {
+        fd <- self$function_draws(component = cn[comp_idx])
+        df <- fd$as_data_frame_long() %>% dplyr::group_by(.draw_idx)
+        df <- df %>% dplyr::summarize(var = stats::var(value))
+        out[[comp_idx]] <- df$var
+      }
+      names(out) <- cn
+      sapply(out, function(x) x)
+    },
+
+    #' Estimate component relevances
+    #'
+    #' @param rvar return an \code{rvar} vector?
+    relevances = function(rvar = TRUE) {
+      p_noise <- self$noise_amount()
+      p_comp <- self$comp_vars()
+      p_comp <- p_comp / rowSums(p_comp) * (1 - p_noise)
+      out <- cbind(p_comp, p_noise)
+      if (rvar) {
+        out <- posterior::rvar(out)
+      }
+      out
     }
   )
 )

@@ -28,6 +28,8 @@ The 'LonModelFit' class
 \item \href{#method-LonModelFit-predict}{\code{LonModelFit$predict()}}
 \item \href{#method-LonModelFit-predict_time}{\code{LonModelFit$predict_time()}}
 \item \href{#method-LonModelFit-noise_amount}{\code{LonModelFit$noise_amount()}}
+\item \href{#method-LonModelFit-comp_vars}{\code{LonModelFit$comp_vars()}}
+\item \href{#method-LonModelFit-relevances}{\code{LonModelFit$relevances()}}
 \item \href{#method-LonModelFit-clone}{\code{LonModelFit$clone()}}
 }
 }
@@ -216,6 +218,36 @@ Estimate amount of noise
 \subsection{Returns}{
 A vector with length equal to number of draws. Values
 are between 0 (no noise) and 1 (data is only noise).
+Estimate component variances for each draw
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-LonModelFit-comp_vars"></a>}}
+\if{latex}{\out{\hypertarget{method-LonModelFit-comp_vars}{}}}
+\subsection{Method \code{comp_vars()}}{
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{LonModelFit$comp_vars()}\if{html}{\out{</div>}}
+}
+
+\subsection{Returns}{
+A matrix with n_draws rows and n_comps columns
+Estimate component relevances
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-LonModelFit-relevances"></a>}}
+\if{latex}{\out{\hypertarget{method-LonModelFit-relevances}{}}}
+\subsection{Method \code{relevances()}}{
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{LonModelFit$relevances(rvar = TRUE)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{rvar}}{return an \code{rvar} vector?}
+}
+\if{html}{\out{</div>}}
 }
 }
 \if{html}{\out{<hr>}}
