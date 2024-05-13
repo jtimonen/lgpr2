@@ -27,6 +27,7 @@ The 'LonModelFit' class
 \item \href{#method-LonModelFit-plot}{\code{LonModelFit$plot()}}
 \item \href{#method-LonModelFit-predict}{\code{LonModelFit$predict()}}
 \item \href{#method-LonModelFit-predict_time}{\code{LonModelFit$predict_time()}}
+\item \href{#method-LonModelFit-noise_amount}{\code{LonModelFit$noise_amount()}}
 \item \href{#method-LonModelFit-clone}{\code{LonModelFit$clone()}}
 }
 }
@@ -201,6 +202,20 @@ Compute predictions at given time points
 }
 \subsection{Returns}{
 A new fit object
+Estimate amount of noise
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-LonModelFit-noise_amount"></a>}}
+\if{latex}{\out{\hypertarget{method-LonModelFit-noise_amount}{}}}
+\subsection{Method \code{noise_amount()}}{
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{LonModelFit$noise_amount()}\if{html}{\out{</div>}}
+}
+
+\subsection{Returns}{
+A vector with length equal to number of draws. Values
+are between 0 (no noise) and 1 (data is only noise).
 }
 }
 \if{html}{\out{<hr>}}

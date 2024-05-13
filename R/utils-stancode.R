@@ -32,11 +32,14 @@ read_file_lines <- function(file) {
 }
 
 # Likelihood in model block
-stancode_lon_likelihood <- function(stanname_y, dataname) {
+stancode_lon_likelihood <- function(stanname_y, dataname, obs_model) {
+  if (obs_model != "gaussian") {
+    stop("invalid obs_model")
+  }
   code <- "  // Gaussian likelihood\n"
   paste0(
     code, "  real log_lik_lon = normal_lpdf(", stanname_y, " | f_sum_",
-    dataname, ", sigma);"
+    dataname, ", disp);"
   )
 }
 
@@ -47,7 +50,7 @@ stancode_lon_gq <- function(mod, stanname_y, sc_terms_gq) {
   sylp <- paste0(y_var, "_log_pred")
   def_yp <- paste0("  vector[n_LON] ", sylp, ";")
   line_yp <- paste0(
-    "    ", sylp, "[i] = normal_rng(", "f_sum[i], sigma);"
+    "    ", sylp, "[i] = normal_rng(", "f_sum[i], disp);"
   )
   loop <- paste0("  for(i in 1:n_LON) {\n", line_yp, "\n  }")
   paste(sc_terms_gq, "\n  // Other generated quantities",
@@ -62,13 +65,6 @@ stancode_lon_data <- function(stanname_y, dataname) {
   y_decl <- paste0("  vector<lower=0>[n_", dataname, "] ")
   line1 <- paste0(y_decl, stanname_y, "; // TS model observations")
   paste(line0, line1, sep = "\n")
-}
-
-# Transformed data block
-stancode_lon_tdata <- function(stanname_y, dataname) {
-  c1 <- paste0("  real y_loc = mean(", stanname_y, ");")
-  c2 <- paste0("  real y_scale = sd(", stanname_y, ");")
-  paste(c1, c2, sep = "\n")
 }
 
 # Stan code always in the model block

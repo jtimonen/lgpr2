@@ -186,6 +186,24 @@ LonModelFit <- R6::R6Class("LonModelFit",
         y_test, y_name
       )
       self$predict(df_test, ...)
+    },
+
+    #' Estimate amount of noise
+    #'
+    #' @return A vector with length equal to number of draws. Values
+    #' are between 0 (no noise) and 1 (data is only noise).
+    noise_amount = function() {
+      m <- self$get_model()
+      y_data <- self$get_data()[[m$y_var]]
+      fd <- self$function_draws()
+      S <- fd$num_draws()
+      h <- fd$as_data_frame_long()
+      noise_amt <- rep(0, S)
+      for (s in 1:S) {
+        hs <- h %>% dplyr::filter(.draw_idx == s)
+        noise_amt[s] <- compute_noise_amount(y_data, hs$value)
+      }
+      noise_amt
     }
   )
 )

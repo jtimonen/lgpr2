@@ -4,6 +4,7 @@
 #' @field term_list The additive model terms.
 #' @field y_var Name of the y variable.
 #' @field id_var Name of the subject identifier variable.
+#' @field obs_model Name of the observation model.
 #' @field prior_disp Prior for the dispersion parameter.
 LonModel <- R6::R6Class("LonModel",
   inherit = StanModel,
@@ -35,13 +36,10 @@ LonModel <- R6::R6Class("LonModel",
     },
     stancode_tdata_impl = function(datanames) {
       datanames <- private$default_dataname(datanames)
-      dn_def <- private$default_dataname(NULL)
-      c1 <- stancode_lon_tdata(self$stanname_y(), dn_def)
-      c2 <- self$term_list$stancode_tdata(datanames)
-      paste(c1, c2, sep = "\n")
+      self$term_list$stancode_tdata(datanames)
     },
     stancode_pars_impl = function() {
-      c1 <- paste0("  real<lower=0> sigma; // noise magnitude \n")
+      c1 <- paste0("  real<lower=0> disp; // dispersion parameter \n")
       c2 <- self$term_list$stancode_pars()
       paste(c1, c2, sep = "\n")
     },
@@ -50,13 +48,13 @@ LonModel <- R6::R6Class("LonModel",
       code <- self$term_list$stancode_tpars(datanames)
       dn_def <- private$default_dataname(NULL)
       paste(code,
-        stancode_lon_likelihood(self$stanname_y(), dn_def),
+        stancode_lon_likelihood(self$stanname_y(), dn_def, self$obs_model),
         sep = "\n"
       )
     },
     stancode_model_impl = function() {
-      c1 <- paste0("  sigma ~ ", self$prior_disp, ";\n")
-      c2 <- self$term_list$stancode_model()
+      c1 <- self$term_list$stancode_model()
+      c2 <- paste0("  disp ~ ", self$prior_disp, ";\n")
       c3 <- stancode_loglik(private$loglik_suffix)
       paste(c1, c2, c3, sep = "\n")
     },
@@ -72,6 +70,7 @@ LonModel <- R6::R6Class("LonModel",
     term_list = NULL,
     y_var = NULL,
     prior_disp = "lognormal(1, 1)",
+    obs_model = NULL,
 
     #' @description
     #' Create model
@@ -86,13 +85,16 @@ LonModel <- R6::R6Class("LonModel",
     #' @param prior_baseline Prior for the baseline term.
     #' @param baseline Baseline term definition. Created automatically based
     #' on \code{id_var} if \code{NULL} (default).
+    #' @param obs_model Name of the observation model.
     initialize = function(formula, id_var = "id", compile = TRUE,
                           baseline = NULL,
                           prior_baseline = NULL,
                           prior_terms = NULL,
-                          prior_disp = "lognormal(1, 1)") {
+                          prior_disp = "lognormal(1, 1)",
+                          obs_model = "gaussian") {
       checkmate::assert_character(id_var, min.chars = 1)
       checkmate::assert_class(formula, "formula")
+      checkmate::assert_string(obs_model, min.chars = 1)
 
       # Handle adding the baseline term
       complete <- complete_formula_lon(formula, id_var, baseline)
@@ -105,6 +107,7 @@ LonModel <- R6::R6Class("LonModel",
       self$term_list <- create_termlist(formula, prior_terms)
       self$y_var <- FormulaParser$new(formula)$get_y_name()
       self$id_var <- id_var
+      self$obs_model <- obs_model
 
       # Compile
       super$initialize(compile)
@@ -119,12 +122,11 @@ LonModel <- R6::R6Class("LonModel",
     #' @description
     #' The model description as a string
     string = function() {
-      str <- paste0(
-        class_name(self), ":\n    ",
-        self$y_var, " ~ N(f, sigma^2)"
-      )
       tls <- self$term_list$string()
-      paste0(str, ", where \n", "    f = ", tls)
+      paste0(
+        "LonModel, where \n", "    f = ", tls, "\n",
+        "obs_model = ", self$obs_model, "\n"
+      )
     },
 
     #' @description Get term names in Stan code.
