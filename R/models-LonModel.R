@@ -4,7 +4,7 @@
 #' @field term_list The additive model terms.
 #' @field y_var Name of the y variable.
 #' @field id_var Name of the subject identifier variable.
-#' @field prior_sigma Prior for the noise parameter.
+#' @field prior_disp Prior for the dispersion parameter.
 LonModel <- R6::R6Class("LonModel",
   inherit = StanModel,
 
@@ -55,7 +55,7 @@ LonModel <- R6::R6Class("LonModel",
       )
     },
     stancode_model_impl = function() {
-      c1 <- paste0("  sigma ~ ", self$prior_sigma, ";\n")
+      c1 <- paste0("  sigma ~ ", self$prior_disp, ";\n")
       c2 <- self$term_list$stancode_model()
       c3 <- stancode_loglik(private$loglik_suffix)
       paste(c1, c2, c3, sep = "\n")
@@ -71,7 +71,7 @@ LonModel <- R6::R6Class("LonModel",
     id_var = NULL,
     term_list = NULL,
     y_var = NULL,
-    prior_sigma = "lognormal(1, 1)",
+    prior_disp = "lognormal(1, 1)",
 
     #' @description
     #' Create model
@@ -80,7 +80,7 @@ LonModel <- R6::R6Class("LonModel",
     #' variable (longitudinal observation).
     #' @param id_var Name of the subject identifier variable.
     #' @param compile Should the 'Stan' model code be created and compiled.
-    #' @param prior_sigma Prior for sigma
+    #' @param prior_disp Prior for dispersion parameter.
     #' @param prior_terms A list with names equal to a subset of the
     #' names of the model terms. Can be used to edit priors of term parameters.
     #' @param prior_baseline Prior for the baseline term.
@@ -90,7 +90,7 @@ LonModel <- R6::R6Class("LonModel",
                           baseline = NULL,
                           prior_baseline = NULL,
                           prior_terms = NULL,
-                          prior_sigma = "lognormal(1, 1)") {
+                          prior_disp = "lognormal(1, 1)") {
       checkmate::assert_character(id_var, min.chars = 1)
       checkmate::assert_class(formula, "formula")
 
@@ -101,7 +101,7 @@ LonModel <- R6::R6Class("LonModel",
       prior_terms <- complete_prior_terms(prior_terms, prior_baseline, baseline)
 
       # Set fields
-      self$prior_sigma <- prior_sigma
+      self$prior_disp <- prior_disp
       self$term_list <- create_termlist(formula, prior_terms)
       self$y_var <- FormulaParser$new(formula)$get_y_name()
       self$id_var <- id_var

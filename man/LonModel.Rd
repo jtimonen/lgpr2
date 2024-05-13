@@ -20,7 +20,7 @@ Longitudinal model class (R6 class)
 
 \item{\code{id_var}}{Name of the subject identifier variable.}
 
-\item{\code{prior_sigma}}{Prior for the noise parameter.}
+\item{\code{prior_disp}}{Prior for the dispersion parameter.}
 }
 \if{html}{\out{</div>}}
 }
@@ -68,7 +68,7 @@ Create model
   baseline = NULL,
   prior_baseline = NULL,
   prior_terms = NULL,
-  prior_sigma = "lognormal(1, 1)"
+  prior_disp = "lognormal(1, 1)"
 )}\if{html}{\out{</div>}}
 }
 
@@ -90,7 +90,7 @@ on \code{id_var} if \code{NULL} (default).}
 \item{\code{prior_terms}}{A list with names equal to a subset of the
 names of the model terms. Can be used to edit priors of term parameters.}
 
-\item{\code{prior_sigma}}{Prior for sigma}
+\item{\code{prior_disp}}{Prior for dispersion parameter.}
 }
 \if{html}{\out{</div>}}
 }
