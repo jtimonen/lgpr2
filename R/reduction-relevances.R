@@ -1,3 +1,4 @@
+# Signal-to-noise decomposition
 compute_noise_amount <- function(y, h) {
   resid <- y - h
   signal_var <- stats::var(h)
@@ -8,29 +9,50 @@ compute_noise_amount <- function(y, h) {
 
 
 # Projection
-project_draws <- function(model, dat, h_df, formula) {
-  checkmate::assert_class(model, "LonModel")
+project_draws <- function(fit, dat, h_df, formula) {
+  checkmate::assert_class(fit, "LonModelFit")
   checkmate::assert_class(dat, "data.frame")
   checkmate::assert_class(h_df, "data.frame")
   checkmate::assert_class(formula, "formula")
+
+  # Extract things
+  model <- fit$get_model()
   udidx <- unique(h_df$.draw_idx)
+  sigma_ref <- posterior::as_draws_array(fit$draws("sigma"))
+  y_data <- dat[[model$y_var]] # actual data
+  h_df[[model$y_var]] <- h_df$value # ref model pred as data for proj
+
+  # Loop over draws
   S <- length(udidx)
   pb <- progress::progress_bar$new(total = S)
-  h_df[[model$y_var]] <- h_df$value # ref model pred as data
   projs <- list()
   for (s in 1:S) {
     pb$tick()
     h_s <- h_df %>% dplyr::filter(.draw_idx == udidx[s])
-    projs[[s]] <- project_draw(formula, h_s)
+    projs[[s]] <- project_draw(formula, y_data, h_s, sigma_ref[s])
   }
   projs
 }
 
 # Project single draw
-project_draw <- function(formula, df) {
+project_draw <- function(formula, y_dat, df, sigma_ref) {
   gam_fit <- project_gam.mgcv(formula, df)
-  h_proj <- as.numeric(predict(gam_fit))
-  h_proj
+  mu_proj <- as.numeric(predict(gam_fit))
+  mu_ref <- df$value
+  sigma_proj <- project_sigma(sigma_ref, mu_ref, mu_proj)
+  kl_div <- kl_divergence_gaussians(mu_ref, mu_proj, sigma_ref, sigma_proj)
+  loglik_ref <- loglik_gaussian(y_dat, mu_ref, sigma_ref)
+  loglik_proj <- loglik_gaussian(y_dat, mu_proj, sigma_proj)
+
+  # Return
+  list(
+    gam_fit = gam_fit,
+    kl_div = kl_div,
+    mu_proj = mu_proj,
+    mu_ref = mu_ref,
+    loglik_ref = loglik_ref,
+    loglik_proj = loglik_proj
+  )
 }
 
 
@@ -42,4 +64,35 @@ project_gam.mgcv <- function(form, dat, ...) {
     min_sp <- rep(min_sp, D)
   }
   mgcv::gam(form, data = dat, min.sp = min_sp, ...)
+}
+
+
+# Euclidean norm squared
+squared_euc_norm <- function(x) {
+  v <- as.vector(x)
+  sum(v * v)
+}
+
+# Project sigma
+project_sigma <- function(sigma, mu, mu_proj) {
+  v <- mu_proj - mu
+  n <- length(v)
+  sigma_proj2 <- sigma^2 + 1 / n * squared_euc_norm(v)
+  sqrt(sigma_proj2)
+}
+
+# KL divergence of multivariate normals with S = s^2 I
+kl_divergence_gaussians <- function(mu, mu_proj, sigma, sigma_proj) {
+  term1 <- log(sigma_proj / sigma) + (sigma^2) / (2 * sigma_proj^2) - 0.5
+  term2 <- squared_euc_norm(mu - mu_proj) / (2 * sigma_proj^2)
+  length(mu) * term1 + term2
+}
+
+# log likelihood at each point
+loglik_gaussian <- function(y, mu, sigma) {
+  stats::dnorm(y,
+    mean = mu,
+    sd = sigma,
+    log = TRUE
+  )
 }

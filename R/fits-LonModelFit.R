@@ -243,7 +243,7 @@ LonModelFit <- R6::R6Class("LonModelFit",
       }
       h_df <- h_ref$as_data_frame_long()
       h_df <- h_df %>% dplyr::filter(.draw_idx %in% draw_inds)
-      project_draws(self$get_model(), self$get_data(), h_df, form)
+      project_draws(self, self$get_data(), h_df, form)
     }
   )
 )
