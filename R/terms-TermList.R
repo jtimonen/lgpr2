@@ -93,8 +93,12 @@ TermList <- R6::R6Class("TermList",
     #'
     #' @param L domain size
     #' @param B number of basis functions
-    as_gam_formula = function(L, B) {
-      a <- sapply(self$terms, function(x) x$as_gam_term(L, B))
+    #' @param term_inds term indices
+    as_gam_formula = function(L, B, term_inds = NULL) {
+      if (is.null(term_inds)) {
+        term_inds <- seq_len(length(self$terms))
+      }
+      a <- sapply(self$terms[term_inds], function(x) x$as_gam_term(L, B))
       paste(a, collapse = " + ")
     },
 

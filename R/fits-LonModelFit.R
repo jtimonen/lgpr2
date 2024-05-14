@@ -227,6 +227,23 @@ LonModelFit <- R6::R6Class("LonModelFit",
         out <- posterior::rvar(out)
       }
       out
+    },
+
+    #' Project to submodel
+    #'
+    #' @param term_inds Which terms to include in submodel?
+    #' @param draw_inds Which posterior draws to use. If \code{NULL}, 10
+    #' draws are taken randomly.
+    project = function(term_inds, draw_inds = NULL) {
+      form <- m$as_gam_formula(term_inds = term_inds)
+      h_ref <- self$function_draws()
+      S <- h_ref$num_draws()
+      if (is.null(draw_inds)) {
+        draw_inds <- sample.int(S, size = 10)
+      }
+      h_df <- h_ref$as_data_frame_long()
+      h_df <- h_df %>% dplyr::filter(.draw_idx %in% draw_inds)
+      project_draws(self$get_model(), self$get_data(), h_df, form)
     }
   )
 )

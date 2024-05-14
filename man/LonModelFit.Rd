@@ -30,6 +30,7 @@ The 'LonModelFit' class
 \item \href{#method-LonModelFit-noise_amount}{\code{LonModelFit$noise_amount()}}
 \item \href{#method-LonModelFit-comp_vars}{\code{LonModelFit$comp_vars()}}
 \item \href{#method-LonModelFit-relevances}{\code{LonModelFit$relevances()}}
+\item \href{#method-LonModelFit-project}{\code{LonModelFit$project()}}
 \item \href{#method-LonModelFit-clone}{\code{LonModelFit$clone()}}
 }
 }
@@ -245,7 +246,27 @@ Estimate component relevances
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{rvar}}{return an \code{rvar} vector?}
+\item{\code{rvar}}{return an \code{rvar} vector?
+Project to submodel}
+}
+\if{html}{\out{</div>}}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-LonModelFit-project"></a>}}
+\if{latex}{\out{\hypertarget{method-LonModelFit-project}{}}}
+\subsection{Method \code{project()}}{
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{LonModelFit$project(term_inds, draw_inds = NULL)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{term_inds}}{Which terms to include in submodel?}
+
+\item{\code{draw_inds}}{Which posterior draws to use. If \code{NULL}, 10
+draws are taken randomly.}
 }
 \if{html}{\out{</div>}}
 }

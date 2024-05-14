@@ -245,9 +245,10 @@ LonModel <- R6::R6Class("LonModel",
     #'
     #' @param L domain size
     #' @param B number of basis functions
-    as_gam_formula = function(L = 1.5, B = 32) {
+    #' @param term_inds term indices
+    as_gam_formula = function(L = 1.5, B = 32, term_inds = NULL) {
       tl <- self$term_list
-      formula <- paste0(self$y_var, "~", tl$as_gam_formula(L = L, B = B))
+      formula <- paste0(self$y_var, "~", tl$as_gam_formula(L, B, term_inds))
       as.formula(formula)
     },
 

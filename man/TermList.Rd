@@ -56,7 +56,7 @@ function components.}
 \if{latex}{\out{\hypertarget{method-TermList-as_gam_formula}{}}}
 \subsection{Method \code{as_gam_formula()}}{
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{TermList$as_gam_formula(L, B)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{TermList$as_gam_formula(L, B, term_inds = NULL)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
@@ -65,6 +65,8 @@ function components.}
 \item{\code{L}}{domain size}
 
 \item{\code{B}}{number of basis functions}
+
+\item{\code{term_inds}}{term indices}
 }
 \if{html}{\out{</div>}}
 }

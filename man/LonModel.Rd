@@ -239,7 +239,7 @@ A corresponding GAM formula
 \if{latex}{\out{\hypertarget{method-LonModel-as_gam_formula}{}}}
 \subsection{Method \code{as_gam_formula()}}{
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{LonModel$as_gam_formula(L = 1.5, B = 32)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{LonModel$as_gam_formula(L = 1.5, B = 32, term_inds = NULL)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
@@ -247,7 +247,9 @@ A corresponding GAM formula
 \describe{
 \item{\code{L}}{domain size}
 
-\item{\code{B}}{number of basis functions
+\item{\code{B}}{number of basis functions}
+
+\item{\code{term_inds}}{term indices
 Fit as GAM}
 }
 \if{html}{\out{</div>}}
