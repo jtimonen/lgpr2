@@ -65,7 +65,7 @@ GaussianLikelihood <- R6::R6Class("GaussianLikelihood",
     #' @param dataname suffix
     stancode_data = function(stanname_y, dataname) {
       c0 <- "  // Observation model"
-      y_decl <- paste0("  vector<lower=0>[n_", dataname, "] ")
+      y_decl <- paste0("  vector[n_", dataname, "] ")
       c1 <- paste0(y_decl, stanname_y, "; // Longitudinal observations")
       c2 <- "  real c_hat; // fixed offset"
       paste(c0, c1, c2, sep = "\n")

@@ -1,0 +1,36 @@
+---
+title: "relevances"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{relevances}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(lgpr2)
+```
+
+## Data simulation
+
+```{r}
+dat <- simulate(40, 0.3, c(1, 1, 0, 0), 0.2)
+df <- data.frame(cbind(dat$x, dat$y))
+colnames(df)[ncol(df)] <- "y"
+```
+
+## Model
+
+```{r}
+mod <- LonModel$new(y ~ gp(x1) + gp(x2) + gp(x3) + gp(x4))
+fit <- mod$fit(data = df, chains = 1)
+```
+
+
