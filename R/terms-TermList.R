@@ -89,6 +89,15 @@ TermList <- R6::R6Class("TermList",
     terms = NULL,
     fsum_name = "f_sum",
 
+    #' GAM formula
+    #'
+    #' @param L domain size
+    #' @param B number of basis functions
+    as_gam_formula = function(L, B) {
+      a <- sapply(self$terms, function(x) x$as_gam_term(L, B))
+      paste(a, collapse = " + ")
+    },
+
     #' @description
     #' Create term list
     #'

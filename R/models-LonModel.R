@@ -238,6 +238,24 @@ LonModel <- R6::R6Class("LonModel",
       # Return
       dat_list <- list(LON = d$orig_data)
       LonModelFit$new(self, stan_fit, dat_list, d$stan_data, d$full_term_confs)
+    },
+
+    #' A corresponding GAM formula
+    #'
+    #' @param L domain size
+    #' @param B number of basis functions
+    as_gam_formula = function(L = 1.5, B = 32) {
+      tl <- self$term_list
+      formula <- paste0(self$y_var, "~", tl$as_gam_formula(L = L, B = B))
+      as.formula(formula)
+    },
+
+    #' Fit as GAM
+    #' @param ... arguments passed to \code{mgcv::gam}
+    #' @param data data
+    fit_gam = function(data, ...) {
+      form <- self$as_gam_formula()
+      mgcv::gam(form, data = data, ...)
     }
   )
 )

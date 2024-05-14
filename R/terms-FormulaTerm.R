@@ -67,6 +67,9 @@ FormulaTerm <- R6::R6Class("FormulaTerm",
         sep = ""
       )
     },
+    as_gam_term = function(L, B) {
+      stop("as_gam_term() not implemented for this term type")
+    },
     standata = function(datasets, conf) {
       list()
     },

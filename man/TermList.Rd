@@ -5,6 +5,7 @@
 \title{Additive terms (R6 class)}
 \description{
 A semi-parametric additive model (R6 class).
+GAM formula
 }
 \section{Super class}{
 \code{\link[lgpr2:StanCodeCreator]{lgpr2::StanCodeCreator}} -> \code{TermList}
@@ -22,6 +23,7 @@ function components.}
 \section{Methods}{
 \subsection{Public methods}{
 \itemize{
+\item \href{#method-TermList-as_gam_formula}{\code{TermList$as_gam_formula()}}
 \item \href{#method-TermList-new}{\code{TermList$new()}}
 \item \href{#method-TermList-string}{\code{TermList$string()}}
 \item \href{#method-TermList-input_vars}{\code{TermList$input_vars()}}
@@ -49,6 +51,24 @@ function components.}
 </ul>
 </details>
 }}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-TermList-as_gam_formula"></a>}}
+\if{latex}{\out{\hypertarget{method-TermList-as_gam_formula}{}}}
+\subsection{Method \code{as_gam_formula()}}{
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{TermList$as_gam_formula(L, B)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{L}}{domain size}
+
+\item{\code{B}}{number of basis functions}
+}
+\if{html}{\out{</div>}}
+}
+}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-TermList-new"></a>}}
 \if{latex}{\out{\hypertarget{method-TermList-new}{}}}

@@ -54,3 +54,20 @@ example <- function(num_bf = 32, scale_bf = 1.5, formula = "y ~ gp(x)",
   tc <- list(f_gp_x = tc1)
   m$fit(data = a, term_confs = tc, ...)
 }
+
+
+
+#' Run another example
+#'
+#' @description Fits a model to simple simulated data.
+#' @export
+#' @param formula The model formula.
+#' @param ... Other arguments to the \code{$fit()} method of
+#' \code{\link{LonModel}}.
+#' @return An \code{\link{LonModelFit}} object.
+example2 <- function(formula = "y ~ gp(time) + gp(time, arm)",
+                     ...) {
+  form <- stats::as.formula(formula)
+  m <- LonModel$new(form)
+  m$fit(data = testdata, ...)
+}
