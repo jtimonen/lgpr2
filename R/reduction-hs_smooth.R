@@ -38,6 +38,15 @@ get_domain_size <- function(object) {
   L
 }
 
+
+#' @importFrom mgcv smooth.construct
+#' @export
+mgcv::smooth.construct
+
+#' @importFrom mgcv Predict.matrix
+#' @export
+mgcv::Predict.matrix
+
 #' Hilbert space GP smooth
 #' @export
 smooth.construct.hs.smooth.spec <- function(object, data, knots) {
