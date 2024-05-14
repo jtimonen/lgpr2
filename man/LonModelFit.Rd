@@ -216,7 +216,7 @@ Estimate amount of noise
 }
 
 \subsection{Returns}{
-A vector with length equal to number of draws. Values
+A tibble with nrows equal to number of draws. Values
 are between 0 (no noise) and 1 (data is only noise).
 Estimate component variances for each draw
 }

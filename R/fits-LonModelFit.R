@@ -185,7 +185,7 @@ LonModelFit <- R6::R6Class("LonModelFit",
 
     #' Estimate amount of noise
     #'
-    #' @return A vector with length equal to number of draws. Values
+    #' @return A tibble with nrows equal to number of draws. Values
     #' are between 0 (no noise) and 1 (data is only noise).
     noise_amount = function() {
       m <- self$get_model()
@@ -193,12 +193,9 @@ LonModelFit <- R6::R6Class("LonModelFit",
       fd <- self$function_draws()
       S <- fd$num_draws()
       h <- fd$as_data_frame_long()
-      noise_amt <- rep(0, S)
-      for (s in 1:S) {
-        hs <- h %>% dplyr::filter(.draw_idx == s)
-        noise_amt[s] <- compute_noise_amount(y_data, hs$value)
-      }
-      noise_amt
+      h %>%
+        dplyr::group_by(.draw_idx) %>%
+        dplyr::summarize(p_noise = compute_noise_amount(y_data, value))
     },
 
     #' Estimate component variances for each draw
@@ -222,7 +219,7 @@ LonModelFit <- R6::R6Class("LonModelFit",
     #'
     #' @param rvar return an \code{rvar} vector?
     relevances = function(rvar = TRUE) {
-      p_noise <- self$noise_amount()
+      p_noise <- self$noise_amount()$p_noise
       p_comp <- self$comp_vars()
       p_comp <- p_comp / rowSums(p_comp) * (1 - p_noise)
       out <- cbind(p_comp, p_noise)
