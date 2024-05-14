@@ -4,13 +4,6 @@
 #' @field term_confs The term configurations used.
 LonModelFit <- R6::R6Class("LonModelFit",
   inherit = StanModelFit,
-  private = list(
-
-    # Extract one component as 'rvar'
-    extract_f_comp = function(f_name = "f") {
-      self$draws(name = f_name)
-    }
-  ),
   public = list(
     term_confs = NULL,
 
@@ -43,7 +36,7 @@ LonModelFit <- R6::R6Class("LonModelFit",
     #' getting a single component. If \code{NULL}, determined automatically
     #' from the component.
     #' @param dataname name of data set used to evaluate the function
-    function_draws = function(component = "f_sum", input_vars = NULL) {
+    function_draws = function(component = "h", input_vars = NULL) {
       mod <- self$get_model("lon")
       dat <- self$get_data("LON")
       if (is.numeric(component)) {
@@ -52,12 +45,13 @@ LonModelFit <- R6::R6Class("LonModelFit",
       }
       f_name <- component
 
-      if (f_name == "f_sum" || f_name == "y_log_pred") {
+      if (f_name == "f_sum" || f_name == "y_log_pred" || f_name == "h") {
         if (f_name == "y_log_pred") {
           f_name <- paste0(mod$y_var, "_log_pred")
         }
         # The total sum or predictive
-        f <- private$extract_f_comp(f_name)
+
+        f <- self$draws(f_name)
         covs <- mod$term_list$input_vars()
 
         x <- dat[, covs, drop = FALSE]
@@ -71,7 +65,7 @@ LonModelFit <- R6::R6Class("LonModelFit",
           covs <- input_vars
         }
         x <- dat[, covs, drop = FALSE]
-        f <- private$extract_f_comp(f_name)
+        f <- self$draws(f_name)
         fd <- FunctionDraws$new(x, f, f_name)
       }
       fd
@@ -100,7 +94,7 @@ LonModelFit <- R6::R6Class("LonModelFit",
       if (predictive) {
         f_name <- "y_log_pred"
       } else {
-        f_name <- "f_sum"
+        f_name <- "h"
       }
       f <- self$function_draws(component = f_name)
       plt <- f$plot(filter_by = filter_by, kept_vals = kept_vals, ...)
@@ -152,7 +146,8 @@ LonModelFit <- R6::R6Class("LonModelFit",
         scale_bf = NULL,
         skip_transform = NULL,
         prior_only = FALSE,
-        set_transforms = FALSE
+        set_transforms = FALSE,
+        set_c_hat = FALSE
       )
 
       # Call 'Stan'

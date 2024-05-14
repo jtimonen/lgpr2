@@ -21,6 +21,7 @@ Observation model class (R6 class)
 \section{Methods}{
 \subsection{Public methods}{
 \itemize{
+\item \href{#method-GaussianLikelihood-string}{\code{GaussianLikelihood$string()}}
 \item \href{#method-GaussianLikelihood-new}{\code{GaussianLikelihood$new()}}
 \item \href{#method-GaussianLikelihood-stancode_data}{\code{GaussianLikelihood$stancode_data()}}
 \item \href{#method-GaussianLikelihood-stancode_pars}{\code{GaussianLikelihood$stancode_pars()}}
@@ -28,6 +29,31 @@ Observation model class (R6 class)
 \item \href{#method-GaussianLikelihood-stancode_model}{\code{GaussianLikelihood$stancode_model()}}
 \item \href{#method-GaussianLikelihood-stancode_gq}{\code{GaussianLikelihood$stancode_gq()}}
 \item \href{#method-GaussianLikelihood-clone}{\code{GaussianLikelihood$clone()}}
+}
+}
+\if{html}{\out{
+<details open><summary>Inherited methods</summary>
+<ul>
+<li><span class="pkg-link" data-pkg="lgpr2" data-topic="Likelihood" data-id="get_c_hat"><a href='../../lgpr2/html/Likelihood.html#method-Likelihood-get_c_hat'><code>lgpr2::Likelihood$get_c_hat()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="lgpr2" data-topic="Likelihood" data-id="set_c_hat"><a href='../../lgpr2/html/Likelihood.html#method-Likelihood-set_c_hat'><code>lgpr2::Likelihood$set_c_hat()</code></a></span></li>
+</ul>
+</details>
+}}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-GaussianLikelihood-string"></a>}}
+\if{latex}{\out{\hypertarget{method-GaussianLikelihood-string}{}}}
+\subsection{Method \code{string()}}{
+The model description as a string
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{GaussianLikelihood$string(y_name = "y")}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{y_name}}{Name of y variable.}
+}
+\if{html}{\out{</div>}}
 }
 }
 \if{html}{\out{<hr>}}

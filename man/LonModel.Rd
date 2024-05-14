@@ -147,6 +147,7 @@ on continuous variables that are input to GP terms.
   skip_transform = NULL,
   prior_only = FALSE,
   set_transforms = TRUE,
+  set_c_hat = TRUE,
   dataname = "LON"
 )}\if{html}{\out{</div>}}
 }
@@ -174,6 +175,9 @@ skipped.}
 \item{\code{set_transforms}}{If data transforms should be set based on the given
 \code{data}. This should be \code{TRUE} when fitting a model, and
 \code{FALSE} when computing predictions using GQ.}
+
+\item{\code{set_c_hat}}{If \code{c_hat} should be set based on the given
+\code{data}. See the previous argument for when to use.}
 
 \item{\code{dataname}}{Name of dataset.}
 }

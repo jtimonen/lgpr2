@@ -117,8 +117,9 @@ LonModel <- R6::R6Class("LonModel",
     string = function() {
       tls <- self$term_list$string()
       paste0(
-        "LonModel, where \n", "    f = ", tls, "\n",
-        self$obs_model$string(), "\n"
+        "LonModel:\n",
+        self$obs_model$string(self$y_var), "\n",
+        "  f = ", tls, "\n"
       )
     },
 
@@ -146,6 +147,8 @@ LonModel <- R6::R6Class("LonModel",
     #' @param set_transforms If data transforms should be set based on the given
     #' \code{data}. This should be \code{TRUE} when fitting a model, and
     #' \code{FALSE} when computing predictions using GQ.
+    #' @param set_c_hat If \code{c_hat} should be set based on the given
+    #' \code{data}. See the previous argument for when to use.
     #' @param dataname Name of dataset.
     #' @return A list.
     create_standata = function(data,
@@ -155,6 +158,7 @@ LonModel <- R6::R6Class("LonModel",
                                skip_transform = NULL,
                                prior_only = FALSE,
                                set_transforms = TRUE,
+                               set_c_hat = TRUE,
                                dataname = "LON") {
       checkmate::assert_data_frame(data, col.names = "named")
       checkmate::assert_logical(set_transforms)
@@ -171,13 +175,17 @@ LonModel <- R6::R6Class("LonModel",
       if (set_transforms) {
         self$term_list$set_transforms(data, skip_transform)
       }
+      if (set_c_hat) {
+        self$obs_model$set_c_hat(data[[self$y_var]])
+      }
 
       # Prepare 'Stan' data
       data <- ensure_id_var_exists(data, self$id_var)
 
       # Create final data list
+      c_hat <- self$obs_model$get_c_hat()
       stan_data <- standata_lon(
-        data, dataname, self$term_list, full_term_confs, self$y_var
+        data, dataname, self$term_list, full_term_confs, self$y_var, c_hat
       )
 
       # Return
@@ -222,7 +230,7 @@ LonModel <- R6::R6Class("LonModel",
       # Create Stan input list
       d <- self$create_standata(
         data, term_confs, num_bf, scale_bf,
-        skip_transform, prior_only, TRUE
+        skip_transform, prior_only, TRUE, TRUE
       )
 
       # Call 'Stan'
@@ -244,6 +252,7 @@ LonModel <- R6::R6Class("LonModel",
     },
 
     #' Fit as GAM
+    #'
     #' @param ... arguments passed to \code{mgcv::gam}
     #' @param data data
     fit_gam = function(data, ...) {
@@ -255,10 +264,11 @@ LonModel <- R6::R6Class("LonModel",
 
 
 # Stan data for TS model
-standata_lon <- function(data, dataname, term_list, term_confs, y_name) {
+standata_lon <- function(data, dataname, term_list, term_confs, y_name, c_hat) {
   sd_y <- standata_lon_y(data, y_name)
   sd_x <- term_list$create_standata(data, dataname, term_confs)
-  sd <- c(sd_x, sd_y)
+  sd_misc <- list(c_hat = c_hat)
+  sd <- c(sd_x, sd_y, sd_misc)
   sd$prior_only <- 0
   sd
 }

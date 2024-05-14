@@ -89,7 +89,7 @@ Print object description.
 \subsection{Method \code{function_draws()}}{
 Extract one component as a \code{FunctionDraws} object.
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{LonModelFit$function_draws(component = "f_sum", input_vars = NULL)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{LonModelFit$function_draws(component = "h", input_vars = NULL)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{

@@ -11,7 +11,43 @@ Observation model class (R6 class)
 \section{Methods}{
 \subsection{Public methods}{
 \itemize{
+\item \href{#method-Likelihood-get_c_hat}{\code{Likelihood$get_c_hat()}}
+\item \href{#method-Likelihood-set_c_hat}{\code{Likelihood$set_c_hat()}}
 \item \href{#method-Likelihood-clone}{\code{Likelihood$clone()}}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-Likelihood-get_c_hat"></a>}}
+\if{latex}{\out{\hypertarget{method-Likelihood-get_c_hat}{}}}
+\subsection{Method \code{get_c_hat()}}{
+Get c_hat value
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{Likelihood$get_c_hat()}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{value}}{Value for c_hat.}
+}
+\if{html}{\out{</div>}}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-Likelihood-set_c_hat"></a>}}
+\if{latex}{\out{\hypertarget{method-Likelihood-set_c_hat}{}}}
+\subsection{Method \code{set_c_hat()}}{
+Set c_hat based on y
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{Likelihood$set_c_hat(y)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{y}}{Data vector.}
+}
+\if{html}{\out{</div>}}
 }
 }
 \if{html}{\out{<hr>}}
