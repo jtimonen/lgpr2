@@ -257,7 +257,7 @@ Project to submodel}
 \if{latex}{\out{\hypertarget{method-LonModelFit-project}{}}}
 \subsection{Method \code{project()}}{
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{LonModelFit$project(term_inds, draw_inds = NULL)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{LonModelFit$project(term_inds, draw_inds = NULL, eval_mode = TRUE)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
@@ -267,6 +267,8 @@ Project to submodel}
 
 \item{\code{draw_inds}}{Which posterior draws to use. If \code{NULL}, 30
 draws are taken randomly.}
+
+\item{\code{eval_mode}}{Model evaluation mode?}
 }
 \if{html}{\out{</div>}}
 }

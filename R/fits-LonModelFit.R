@@ -233,20 +233,56 @@ LonModelFit <- R6::R6Class("LonModelFit",
     #' @param term_inds Which terms to include in submodel?
     #' @param draw_inds Which posterior draws to use. If \code{NULL}, 30
     #' draws are taken randomly.
-    project = function(term_inds, draw_inds = NULL) {
+    #' @param eval_mode Model evaluation mode?
+    project = function(term_inds, draw_inds = NULL, eval_mode = TRUE) {
       m <- self$get_model()
       form <- m$as_gam_formula(term_inds = term_inds, B = 24)
-      print(form)
+
+      # Prepare
       h_ref <- self$function_draws()
       S <- h_ref$num_draws()
       if (is.null(draw_inds)) {
-        draw_inds <- sample.int(S, size = 30)
+        if (eval_mode) {
+          S <- 100
+        } else {
+          S <- 30
+        }
+        draw_inds <- sample.int(S, size = S)
       }
       h_df <- h_ref$as_data_frame_long()
       h_df <- h_df %>% dplyr::filter(.draw_idx %in% draw_inds)
       dat <- self$get_data()
       dat <- transform_df(m, dat)
-      project_draws(self, dat, h_df, form)
+
+      # Do the work
+      pd <- project_draws(self, dat, h_df, form)
+
+      # Metrics
+      loglik_mat <- pd$loglik_proj
+      elpd <- mean(colSums(loglik_mat))
+      if (eval_mode) {
+        loo <- loo::loo(t(loglik_mat))
+        loo_est <- as.numeric(loo$estimates[1, ])
+      } else {
+        loo <- NULL
+        loo_est <- c(NA, NA)
+      }
+
+      # Return
+      metrics <- data.frame(
+        kl = mean(pd$kl_div),
+        elpd = elpd,
+        elpd_loo = loo_est[1],
+        elpd_loo_se = loo_est[2]
+      )
+      list(
+        metrics = metrics,
+        mu_proj = pd$mu_proj,
+        mu_ref = pd$mu_ref,
+        num_fails = 0,
+        loglik = t(loglik_mat),
+        loo = loo
+      )
     }
   )
 )

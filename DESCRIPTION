@@ -37,7 +37,8 @@ Imports:
     magrittr (>= 2.0.3),
     mgcv (>= 1.9-0),
     progress (>= 1.2.3),
-    MASS (>= 7.3-60)
+    MASS (>= 7.3-60),
+    loo (>= 2.6.0)
 Suggests:
     covr,
     knitr,
