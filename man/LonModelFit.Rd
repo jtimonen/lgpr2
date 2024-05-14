@@ -265,7 +265,7 @@ Project to submodel}
 \describe{
 \item{\code{term_inds}}{Which terms to include in submodel?}
 
-\item{\code{draw_inds}}{Which posterior draws to use. If \code{NULL}, 20
+\item{\code{draw_inds}}{Which posterior draws to use. If \code{NULL}, 30
 draws are taken randomly.}
 }
 \if{html}{\out{</div>}}

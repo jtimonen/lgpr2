@@ -20,18 +20,19 @@ project_draws <- function(fit, dat, h_df, formula) {
   udidx <- unique(h_df$.draw_idx)
   sigma_ref <- posterior::as_draws_array(fit$draws("sigma"))
   y_data <- dat[[model$stanname_y()]] # actual data
-  h_df[[model$stanname_y()]] <- h_df$value # ref model pred as data for proj
 
   # Loop over draws
   S <- length(udidx)
   pb <- progress::progress_bar$new(total = S)
   projs <- list()
   for (s in 1:S) {
+    dat_mgcv <- dat
     pb$tick()
     h_s <- h_df %>% dplyr::filter(.draw_idx == udidx[s])
-    projs[[s]] <- project_draw(formula, y_data, h_s, sigma_ref[s])
+    mu_ref <- h_s$value
+    dat_mgcv[[model$stanname_y()]] <- mu_ref
+    projs[[s]] <- project_draw(formula, y_data, mu_ref, dat_mgcv, sigma_ref[s])
   }
-  projs
   kl_div <- sapply(projs, function(x) x$kl_div)
   metrics <- data.frame(udidx, kl_div)
   metrics$udidx <- as.factor(metrics$udidx)
@@ -47,7 +48,7 @@ project_draws <- function(fit, dat, h_df, formula) {
 }
 
 # Project single draw
-project_draw <- function(formula, y_dat, df, sigma_ref) {
+project_draw <- function(formula, y_dat, mu_ref, df, sigma_ref) {
   gam_fit <- project_gam.mgcv(formula, df)
   mu_proj <- as.numeric(predict(gam_fit))
   mu_ref <- df$value
