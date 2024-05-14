@@ -1,5 +1,5 @@
 test_that("creating a LonModel works", {
-  m <- LonModel$new(hello ~ gp(foo) + gp(foo, bar))
+  m <- LonModel$new(hello ~ gp(foo) + gp(foo, bar) + offset(id))
   expect_output(m$print(), "LonModel")
   expect_output(m$term_list$terms[[1]]$print())
   expect_equal(m$y_var, "hello")
@@ -10,7 +10,7 @@ test_that("creating a LonModel works", {
 })
 
 test_that("creating the Stan data works", {
-  m <- LonModel$new(hello ~ gp(foo) + gp(foo, bar), compile = F, id_var = "bar")
+  m <- LonModel$new(hello ~ gp(foo) + gp(foo, bar) + offset(bar), compile = F)
   a <- data.frame(
     foo = c(-100, 2, 3, 4),
     hello = c(0, 3, 2, 1),
@@ -27,7 +27,6 @@ test_that("creating the Stan data works", {
   expect_equal(max(sd$dat_foo_unit_LON), 1)
   expect_equal(min(sd$dat_foo_unit_LON), -1)
   expect_equal(sd$L_foo, sbf)
-  expect_equal(m$id_var, "bar")
 })
 
 
@@ -66,7 +65,7 @@ test_that("fitting a model and plotting function draws work", {
 
 test_that("a gp example works with predict", {
   r <- example(
-    formula = "y ~ gp(x)",
+    formula = "y ~ gp(x)+offset(id)",
     iter_warmup = 500, iter_sampling = 500, chains = 1
   )
   p1 <- r$plot()
@@ -91,8 +90,3 @@ test_that("a gp example works with predict", {
   )
 })
 
-test_that("simplest model with empty formula (only grouped offset) works", {
-  a <- LonModel$new(y ~ .)
-  r <- a$fit(testdata)
-  expect_equal(ncol(r$function_draws()$get_input()), 1)
-})
