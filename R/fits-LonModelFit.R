@@ -234,7 +234,8 @@ LonModelFit <- R6::R6Class("LonModelFit",
     #' @param draw_inds Which posterior draws to use. If \code{NULL}, 20
     #' draws are taken randomly.
     project = function(term_inds, draw_inds = NULL) {
-      form <- self$as_gam_formula(term_inds = term_inds)
+      m <- self$get_model()
+      form <- m$as_gam_formula(term_inds = term_inds)
       h_ref <- self$function_draws()
       S <- h_ref$num_draws()
       if (is.null(draw_inds)) {

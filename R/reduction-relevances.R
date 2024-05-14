@@ -32,6 +32,18 @@ project_draws <- function(fit, dat, h_df, formula) {
     projs[[s]] <- project_draw(formula, y_data, h_s, sigma_ref[s])
   }
   projs
+  kl_div <- sapply(projs, function(x) x$kl_div)
+  metrics <- data.frame(udidx, kl_div)
+  metrics$udidx <- as.factor(metrics$udidx)
+  colnames(metrics)[1] <- ".draw_idx"
+  list(
+    gam_fits = sapply(projs, function(x) x$gam_fit),
+    mu_ref = sapply(projs, function(x) x$mu_ref),
+    mu_proj = sapply(projs, function(x) x$mu_proj),
+    loglik_proj = sapply(projs, function(x) x$loglik_ref),
+    loglik_ref = sapply(projs, function(x) x$loglik_proj),
+    metrics = metrics
+  )
 }
 
 # Project single draw
