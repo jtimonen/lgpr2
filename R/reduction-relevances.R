@@ -51,7 +51,6 @@ project_draws <- function(fit, dat, h_df, formula) {
 project_draw <- function(formula, y_dat, mu_ref, df, sigma_ref) {
   gam_fit <- project_gam.mgcv(formula, df)
   mu_proj <- as.numeric(predict(gam_fit))
-  mu_ref <- df$value
   sigma_proj <- project_sigma(sigma_ref, mu_ref, mu_proj)
   kl_div <- kl_divergence_gaussians(mu_ref, mu_proj, sigma_ref, sigma_proj)
   loglik_ref <- loglik_gaussian(y_dat, mu_ref, sigma_ref)
