@@ -177,8 +177,7 @@ LonModelFit <- R6::R6Class("LonModelFit",
       dat_lon <- self$get_data("LON")
       y_name <- self$get_model()$y_var
       df_test <- create_df_predict_time(
-        dat_lon, t_test, t_var, t_var_copy,
-        y_test, y_name
+        dat_lon, t_test, t_var, t_var_copy, y_test, y_name
       )
       self$predict(df_test, ...)
     },

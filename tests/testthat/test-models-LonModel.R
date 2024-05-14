@@ -65,12 +65,12 @@ test_that("fitting a model and plotting function draws work", {
 
 test_that("a gp example works with predict", {
   r <- example(
-    formula = "y ~ gp(x)+offset(id)",
+    formula = "y ~ gp(x)",
     iter_warmup = 500, iter_sampling = 500, chains = 1
   )
   p1 <- r$plot()
   p2 <- (r$function_draws() - r$function_draws("f_gp_x"))$plot()
-  p3 <- (r$function_draws("f_gp_x") + r$function_draws("f_baseline_id"))$plot()
+  p3 <- (r$function_draws() + r$function_draws("f_gp_x"))$plot()
   expect_s3_class(p1, "ggplot")
   expect_s3_class(p2, "ggplot")
   expect_s3_class(p3, "ggplot")
@@ -89,4 +89,3 @@ test_that("a gp example works with predict", {
     " GP approximation not valid for this input"
   )
 })
-

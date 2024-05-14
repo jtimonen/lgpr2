@@ -7,8 +7,14 @@
 #' @return new data frame
 extend_df <- function(df, t, time_var) {
   u <- df_unique_factor_rows(df)
-  df <- df_replicate_rows(u, length(t))
-  df[[time_var]] <- rep(t, nrow(u))
+  rr <- nrow(u)
+  if (rr == 0) {
+    df <- data.frame(t)
+    colnames(df) <- time_var
+  } else {
+    df <- df_replicate_rows(u, length(t))
+    df[[time_var]] <- rep(t, rr)
+  }
   df
 }
 
