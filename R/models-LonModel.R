@@ -4,8 +4,7 @@
 #' @field term_list The additive model terms.
 #' @field y_var Name of the y variable.
 #' @field id_var Name of the subject identifier variable.
-#' @field obs_model Name of the observation model.
-#' @field prior_disp Prior for the dispersion parameter.
+#' @field obs_model Observation model.
 LonModel <- R6::R6Class("LonModel",
   inherit = StanModel,
 
@@ -30,7 +29,7 @@ LonModel <- R6::R6Class("LonModel",
       paste(
         paste(code, collapse = "\n"),
         self$term_list$stancode_data(datanames),
-        stancode_lon_data(self$stanname_y(), "LON"),
+        self$obs_model$stancode_data(self$stanname_y(), "LON"),
         sep = "\n"
       )
     },
@@ -39,28 +38,25 @@ LonModel <- R6::R6Class("LonModel",
       self$term_list$stancode_tdata(datanames)
     },
     stancode_pars_impl = function() {
-      c1 <- paste0("  real<lower=0> disp; // dispersion parameter \n")
+      c1 <- self$obs_model$stancode_pars()
       c2 <- self$term_list$stancode_pars()
       paste(c1, c2, sep = "\n")
     },
     stancode_tpars_impl = function(datanames) {
       datanames <- private$default_dataname(datanames)
-      code <- self$term_list$stancode_tpars(datanames)
-      dn_def <- private$default_dataname(NULL)
-      paste(code,
-        stancode_lon_likelihood(self$stanname_y(), dn_def, self$obs_model),
-        sep = "\n"
-      )
+      c1 <- self$term_list$stancode_tpars(datanames)
+      c2 <- self$obs_model$stancode_tpars(self$stanname_y(), "LON")
+      paste(c1, c2, sep = "\n")
     },
     stancode_model_impl = function() {
       c1 <- self$term_list$stancode_model()
-      c2 <- paste0("  disp ~ ", self$prior_disp, ";\n")
-      c3 <- stancode_loglik(private$loglik_suffix)
-      paste(c1, c2, c3, sep = "\n")
+      c2 <- self$obs_model$stancode_model()
+      paste(c1, c2, sep = "\n")
     },
     stancode_gq_impl = function() {
-      terms_gq <- self$term_list$stancode_gq()
-      stancode_lon_gq(self, self$stanname_y(), terms_gq)
+      c1 <- self$term_list$stancode_gq()
+      c2 <- self$obs_model$stancode_gq(self$y_var, self$stanname_y())
+      paste(c1, c2, sep = "\n")
     }
   ),
 
@@ -69,7 +65,6 @@ LonModel <- R6::R6Class("LonModel",
     id_var = NULL,
     term_list = NULL,
     y_var = NULL,
-    prior_disp = "lognormal(1, 1)",
     obs_model = NULL,
 
     #' @description
@@ -85,16 +80,15 @@ LonModel <- R6::R6Class("LonModel",
     #' @param prior_baseline Prior for the baseline term.
     #' @param baseline Baseline term definition. Created automatically based
     #' on \code{id_var} if \code{NULL} (default).
-    #' @param obs_model Name of the observation model.
+    #' @param obs_model Observation model.
     initialize = function(formula, id_var = "id", compile = TRUE,
                           baseline = NULL,
                           prior_baseline = NULL,
                           prior_terms = NULL,
-                          prior_disp = "lognormal(1, 1)",
-                          obs_model = "gaussian") {
+                          obs_model = GaussianLikelihood$new()) {
       checkmate::assert_character(id_var, min.chars = 1)
       checkmate::assert_class(formula, "formula")
-      checkmate::assert_string(obs_model, min.chars = 1)
+      checkmate::assert_class(obs_model, "Likelihood")
 
       # Handle adding the baseline term
       complete <- complete_formula_lon(formula, id_var, baseline)
@@ -103,11 +97,10 @@ LonModel <- R6::R6Class("LonModel",
       prior_terms <- complete_prior_terms(prior_terms, prior_baseline, baseline)
 
       # Set fields
-      self$prior_disp <- prior_disp
+      self$obs_model <- obs_model
       self$term_list <- create_termlist(formula, prior_terms)
       self$y_var <- FormulaParser$new(formula)$get_y_name()
       self$id_var <- id_var
-      self$obs_model <- obs_model
 
       # Compile
       super$initialize(compile)
@@ -125,7 +118,7 @@ LonModel <- R6::R6Class("LonModel",
       tls <- self$term_list$string()
       paste0(
         "LonModel, where \n", "    f = ", tls, "\n",
-        "obs_model = ", self$obs_model, "\n"
+        self$obs_model$string(), "\n"
       )
     },
 

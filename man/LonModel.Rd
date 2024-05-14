@@ -20,9 +20,7 @@ Longitudinal model class (R6 class)
 
 \item{\code{id_var}}{Name of the subject identifier variable.}
 
-\item{\code{obs_model}}{Name of the observation model.}
-
-\item{\code{prior_disp}}{Prior for the dispersion parameter.}
+\item{\code{obs_model}}{Observation model.}
 }
 \if{html}{\out{</div>}}
 }
@@ -72,8 +70,7 @@ Create model
   baseline = NULL,
   prior_baseline = NULL,
   prior_terms = NULL,
-  prior_disp = "lognormal(1, 1)",
-  obs_model = "gaussian"
+  obs_model = GaussianLikelihood$new()
 )}\if{html}{\out{</div>}}
 }
 
@@ -95,9 +92,9 @@ on \code{id_var} if \code{NULL} (default).}
 \item{\code{prior_terms}}{A list with names equal to a subset of the
 names of the model terms. Can be used to edit priors of term parameters.}
 
-\item{\code{prior_disp}}{Prior for dispersion parameter.}
+\item{\code{obs_model}}{Observation model.}
 
-\item{\code{obs_model}}{Name of the observation model.}
+\item{\code{prior_disp}}{Prior for dispersion parameter.}
 }
 \if{html}{\out{</div>}}
 }

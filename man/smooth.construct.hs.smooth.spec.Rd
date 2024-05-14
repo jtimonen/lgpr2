@@ -2,10 +2,10 @@
 % Please edit documentation in R/reduction-hs_smooth.R
 \name{smooth.construct.hs.smooth.spec}
 \alias{smooth.construct.hs.smooth.spec}
-\title{hilbert space GP}
+\title{Hilbert space GP smooth}
 \usage{
 \method{smooth.construct}{hs.smooth.spec}(object, data, knots)
 }
 \description{
-hilbert space GP
+Hilbert space GP smooth
 }

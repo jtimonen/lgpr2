@@ -38,7 +38,7 @@ get_domain_size <- function(object) {
   L
 }
 
-#' hilbert space GP
+#' Hilbert space GP smooth
 #' @export
 smooth.construct.hs.smooth.spec <- function(object, data, knots) {
   ## object$p.order = null space dimension
