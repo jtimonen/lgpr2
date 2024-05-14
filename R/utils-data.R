@@ -1,3 +1,18 @@
+#' Transform a data frame using a LonModel
+#'
+#' @export
+#' @param df original data frame
+#' @param model the model
+#' @return new data frame
+transform_df <- function(model, df) {
+  checkmate::assert_class(model, "LonModel")
+  sd <- model$create_standata(df)$stan_data
+  nams <- names(sd)
+  nams_keep <- nams[grep(nams, pattern = "dat")]
+  data.frame(sd[nams_keep])
+}
+
+
 #' Extend data frame
 #'
 #' @export

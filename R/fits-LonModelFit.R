@@ -235,7 +235,8 @@ LonModelFit <- R6::R6Class("LonModelFit",
     #' draws are taken randomly.
     project = function(term_inds, draw_inds = NULL) {
       m <- self$get_model()
-      form <- m$as_gam_formula(term_inds = term_inds)
+      form <- m$as_gam_formula(term_inds = term_inds, B = 24)
+      print(form)
       h_ref <- self$function_draws()
       S <- h_ref$num_draws()
       if (is.null(draw_inds)) {
@@ -243,7 +244,9 @@ LonModelFit <- R6::R6Class("LonModelFit",
       }
       h_df <- h_ref$as_data_frame_long()
       h_df <- h_df %>% dplyr::filter(.draw_idx %in% draw_inds)
-      project_draws(self, self$get_data(), h_df, form)
+      dat <- self$get_data()
+      dat <- transform_df(m, dat)
+      project_draws(self, dat, h_df, form)
     }
   )
 )

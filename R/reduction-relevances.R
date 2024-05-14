@@ -19,8 +19,8 @@ project_draws <- function(fit, dat, h_df, formula) {
   model <- fit$get_model()
   udidx <- unique(h_df$.draw_idx)
   sigma_ref <- posterior::as_draws_array(fit$draws("sigma"))
-  y_data <- dat[[model$y_var]] # actual data
-  h_df[[model$y_var]] <- h_df$value # ref model pred as data for proj
+  y_data <- dat[[model$stanname_y()]] # actual data
+  h_df[[model$stanname_y()]] <- h_df$value # ref model pred as data for proj
 
   # Loop over draws
   S <- length(udidx)

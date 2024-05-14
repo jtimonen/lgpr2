@@ -45,5 +45,9 @@ fit$relevances()
 
 
 ```{r}
-p <- fit$project(1)
+draw_inds <- c(1:20)
+p1 <- fit$project(1, draw_inds = draw_inds)
+p12 <- fit$project(c(1, 2), draw_inds = draw_inds)
+p123 <- fit$project(c(1, 2, 3), draw_inds = draw_inds)
+p1234 <- fit$project(c(1, 2, 3, 4), draw_inds = draw_inds)
 ```

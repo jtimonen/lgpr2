@@ -37,6 +37,9 @@ FormulaTerm <- R6::R6Class("FormulaTerm",
       paste0(self$x_transform$add_suffix(x_name), "_", datanames)
     },
     stanname_z = function(datanames) {
+      if (is.null(self$z_name)) {
+        return(NULL)
+      }
       paste0("dat_", self$z_name, "_", datanames)
     },
     stanname_h = function(datanames) {
