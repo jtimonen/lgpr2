@@ -18,8 +18,6 @@ Longitudinal model class (R6 class)
 
 \item{\code{y_var}}{Name of the y variable.}
 
-\item{\code{id_var}}{Name of the subject identifier variable.}
-
 \item{\code{obs_model}}{Observation model.}
 }
 \if{html}{\out{</div>}}
@@ -65,10 +63,7 @@ Create model
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{LonModel$new(
   formula,
-  id_var = "id",
   compile = TRUE,
-  baseline = NULL,
-  prior_baseline = NULL,
   prior_terms = NULL,
   obs_model = GaussianLikelihood$new()
 )}\if{html}{\out{</div>}}
@@ -80,14 +75,7 @@ Create model
 \item{\code{formula}}{The model formula determining the terms and the y
 variable (longitudinal observation).}
 
-\item{\code{id_var}}{Name of the subject identifier variable.}
-
 \item{\code{compile}}{Should the 'Stan' model code be created and compiled.}
-
-\item{\code{baseline}}{Baseline term definition. Created automatically based
-on \code{id_var} if \code{NULL} (default).}
-
-\item{\code{prior_baseline}}{Prior for the baseline term.}
 
 \item{\code{prior_terms}}{A list with names equal to a subset of the
 names of the model terms. Can be used to edit priors of term parameters.}

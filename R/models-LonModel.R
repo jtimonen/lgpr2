@@ -3,7 +3,6 @@
 #' @export
 #' @field term_list The additive model terms.
 #' @field y_var Name of the y variable.
-#' @field id_var Name of the subject identifier variable.
 #' @field obs_model Observation model.
 LonModel <- R6::R6Class("LonModel",
   inherit = StanModel,
@@ -62,7 +61,6 @@ LonModel <- R6::R6Class("LonModel",
 
   # PUBLIC
   public = list(
-    id_var = NULL,
     term_list = NULL,
     y_var = NULL,
     obs_model = NULL,
@@ -72,35 +70,22 @@ LonModel <- R6::R6Class("LonModel",
     #'
     #' @param formula The model formula determining the terms and the y
     #' variable (longitudinal observation).
-    #' @param id_var Name of the subject identifier variable.
     #' @param compile Should the 'Stan' model code be created and compiled.
     #' @param prior_disp Prior for dispersion parameter.
     #' @param prior_terms A list with names equal to a subset of the
     #' names of the model terms. Can be used to edit priors of term parameters.
-    #' @param prior_baseline Prior for the baseline term.
-    #' @param baseline Baseline term definition. Created automatically based
-    #' on \code{id_var} if \code{NULL} (default).
     #' @param obs_model Observation model.
-    initialize = function(formula, id_var = "id", compile = TRUE,
-                          baseline = NULL,
-                          prior_baseline = NULL,
+    initialize = function(formula,
+                          compile = TRUE,
                           prior_terms = NULL,
                           obs_model = GaussianLikelihood$new()) {
-      checkmate::assert_character(id_var, min.chars = 1)
       checkmate::assert_class(formula, "formula")
       checkmate::assert_class(obs_model, "Likelihood")
-
-      # Handle adding the baseline term
-      complete <- complete_formula_lon(formula, id_var, baseline)
-      formula <- complete$formula
-      baseline <- complete$baseline
-      prior_terms <- complete_prior_terms(prior_terms, prior_baseline, baseline)
 
       # Set fields
       self$obs_model <- obs_model
       self$term_list <- create_termlist(formula, prior_terms)
       self$y_var <- FormulaParser$new(formula)$get_y_name()
-      self$id_var <- id_var
 
       # Compile
       super$initialize(compile)
@@ -178,9 +163,6 @@ LonModel <- R6::R6Class("LonModel",
       if (set_c_hat) {
         self$obs_model$set_c_hat(data[[self$y_var]])
       }
-
-      # Prepare 'Stan' data
-      data <- ensure_id_var_exists(data, self$id_var)
 
       # Create final data list
       c_hat <- self$obs_model$get_c_hat()
@@ -282,48 +264,4 @@ standata_lon_y <- function(data, y_name) {
   out <- list(y)
   names(out) <- paste0("dat_", y_name)
   out
-}
-
-# Ensure that data has id specifier
-ensure_id_var_exists <- function(data, id_var) {
-  id_var_given <- id_var %in% colnames(data)
-  msg <- paste0(id_var, " not found in data, assuming data are from same id")
-  if (!(id_var_given)) {
-    message(msg)
-    data[[id_var]] <- as.factor(rep(1, nrow(data)))
-  }
-  data
-}
-
-# Complete the formula for TS model
-complete_formula_lon <- function(formula, id_var, baseline) {
-  ff <- as.character(formula)
-  if (is.null(baseline)) {
-    baseline <- paste0("offset(", id_var, ")")
-  }
-  checkmate::assert_character(baseline, min.chars = 1)
-  if (ff[3] == ".") {
-    formula <- as.formula(paste0(ff[2], " ~ ", baseline))
-  } else {
-    dpf <- deparse(formula)
-    dpf <- paste(dpf, collapse = "")
-    formula <- as.formula(paste(dpf, "+", baseline))
-  }
-  list(
-    formula = formula,
-    baseline = baseline
-  )
-}
-
-# Complete the prior list for terms, handle baseline separately
-complete_prior_terms <- function(prior_terms, prior_baseline, baseline) {
-  baseline_stan <- term_to_code(baseline)
-  if (baseline_stan %in% names(prior_terms)) {
-    stop(
-      "prior for baseline should not be given in prior_terms, instead use ",
-      "prior_baseline"
-    )
-  }
-  prior_terms[[baseline_stan]] <- prior_baseline
-  prior_terms
 }
