@@ -3,7 +3,7 @@ ForwardSearch <- R6Class(
   classname = "ForwardSearch",
   public = list(
     num_comps = NULL,
-    num_steps = 1,
+    num_steps = NULL,
     verbosity = 0,
     score_name = "unknown",
     mlpd = list(),
@@ -76,8 +76,8 @@ ProjectionForwardSearch <- R6Class(
     score_name = "negative_KL",
 
     # Score a model
-    score = function(model, refmod, eval_mode, kl0, elpd_loo_ref) {
-      res <- refmod$project(model, eval_mode = eval_mode)
+    score = function(model, fit_ref, eval_mode, kl0, elpd_loo_ref) {
+      res <- fit_ref$project(model, eval_mode = eval_mode)
       res <- res$metrics
       res$score <- -res$kl
       if (is.null(kl0)) {
@@ -90,15 +90,15 @@ ProjectionForwardSearch <- R6Class(
     },
 
     # Choose best candidate
-    step = function(model, candidates, refmod) {
+    step = function(model, candidates, fit_ref) {
       if (length(candidates) == 1) {
         return(1)
       }
       df <- NULL
-      elpd_loo_ref <- refmod$get_loo_estimates()
+      elpd_loo_ref <- fit_ref$loo_estimate()
       for (ca in candidates) {
         c_model <- c(model, ca)
-        res <- self$score(c_model, refmod, FALSE, NULL, elpd_loo_ref)
+        res <- self$score(c_model, fit_ref, FALSE, NULL, elpd_loo_ref)
         df <- rbind(df, res)
       }
       df <- data.frame(df)
@@ -107,13 +107,13 @@ ProjectionForwardSearch <- R6Class(
     },
 
     # Perform search
-    run = function(refmod, ...) {
+    run = function(fit_ref, ...) {
       J <- self$num_comps
       model <- NULL
       score <- NULL
       elpd <- NULL
-      elpd_loo_ref <- refmod$get_loo_estimates()
-      history <- self$score(model, refmod, TRUE, NULL, elpd_loo_ref)
+      elpd_loo_ref <- fit_ref$loo_estimate()
+      history <- self$score(model, fit_ref, TRUE, NULL, elpd_loo_ref)
       kl0 <- history$kl
       # thresh <- getOption("pp.threshold", default = 0.95)
 
@@ -126,11 +126,11 @@ ProjectionForwardSearch <- R6Class(
 
         # Choose best candidate
         cands <- self$get_candidates(model, J)
-        i_best <- self$step(model, cands, refmod)
+        i_best <- self$step(model, cands, fit_ref)
 
         # Score the best candidate
         new_model <- c(model, cands[i_best])
-        new_row <- self$score(new_model, refmod, TRUE, kl0, elpd_loo_ref)
+        new_row <- self$score(new_model, fit_ref, TRUE, kl0, elpd_loo_ref)
         print(new_row)
 
         # Update history
@@ -138,8 +138,14 @@ ProjectionForwardSearch <- R6Class(
         model <- c(model, cands[i_best])
         edr <- new_row$elpd_loo_rel_diff
         cat("elpd_loo_rel_diff = ", edr, "\n", sep = "")
-        if (j >= self$num_steps) {
-          break
+        if (is.null(self$num_steps)) {
+          if (edr < 1) {
+            break
+          }
+        } else {
+          if (j >= self$num_steps) {
+            break
+          }
         }
       }
 
@@ -150,14 +156,27 @@ ProjectionForwardSearch <- R6Class(
 )
 
 
-# Projection predictive forward search
-pp_forward_search <- function(refmod, path, num_steps) {
-  J <- length(refmod$get_model()$term_list$terms)
+#' Run projection predictive forward search
+#'
+#' @export
+#' @param fit_ref The reference model fit.
+#' @param path Pre-defined search path. If \code{NULL}, path is
+#' not pre-defined.
+#' @param num_steps Number of steps to run. If \code{NULL}, the search stops
+#' when predictive performance of the submodel is close to that of reference
+#' model.
+pp_forward_search <- function(fit_ref, path = NULL, num_steps = NULL) {
+  checkmate::assert_class(fit_ref, "LonModelFit")
+  J <- length(fit_ref$get_model()$term_list$terms)
   a <- ProjectionForwardSearch$new(J, path, num_steps = num_steps)
-  a$run(refmod)
+  a$run(fit_ref)
 }
 
-# Plot result of above
+#' Plot result of projection predictive forward search (p_explained)
+#'
+#' @export
+#' @param res The list returned by \code{\link{pp_forward_search}}
+#' @param thresh A horizontal line.
 plot_pp_pexp <- function(res, thresh = 0.95) {
   J <- length(res$path)
   num_vars <- c(0, 1:J)
@@ -171,7 +190,11 @@ plot_pp_pexp <- function(res, thresh = 0.95) {
   return(out)
 }
 
-# Plot result of above
+#' Plot result of projection predictive forward search (ELPD)
+#'
+#' @export
+#' @param res The list returned by \code{\link{pp_forward_search}}
+#' @param elpd_ref ELPD of reference model (estimate and SE)
 plot_pp_elpd <- function(res, elpd_ref) {
   J <- length(res$path)
   num_vars <- c(0, 1:J)

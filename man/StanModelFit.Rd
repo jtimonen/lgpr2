@@ -8,13 +8,6 @@ The Fit class
 
 The Fit class
 }
-\section{Public fields}{
-\if{html}{\out{<div class="r6-fields">}}
-\describe{
-\item{\code{loo}}{a \code{loo} object}
-}
-\if{html}{\out{</div>}}
-}
 \section{Methods}{
 \subsection{Public methods}{
 \itemize{
@@ -26,7 +19,7 @@ The Fit class
 \item \href{#method-StanModelFit-get_stan_data}{\code{StanModelFit$get_stan_data()}}
 \item \href{#method-StanModelFit-draws}{\code{StanModelFit$draws()}}
 \item \href{#method-StanModelFit-loglik}{\code{StanModelFit$loglik()}}
-\item \href{#method-StanModelFit-get_loo_estimates}{\code{StanModelFit$get_loo_estimates()}}
+\item \href{#method-StanModelFit-loo_estimate}{\code{StanModelFit$loo_estimate()}}
 \item \href{#method-StanModelFit-gq}{\code{StanModelFit$gq()}}
 \item \href{#method-StanModelFit-clone}{\code{StanModelFit$clone()}}
 }
@@ -147,14 +140,24 @@ Extract log likelihood as 'rvars'.
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-StanModelFit-get_loo_estimates"></a>}}
-\if{latex}{\out{\hypertarget{method-StanModelFit-get_loo_estimates}{}}}
-\subsection{Method \code{get_loo_estimates()}}{
+\if{html}{\out{<a id="method-StanModelFit-loo_estimate"></a>}}
+\if{latex}{\out{\hypertarget{method-StanModelFit-loo_estimate}{}}}
+\subsection{Method \code{loo_estimate()}}{
 Returns estimate and standard error for ELPD
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{StanModelFit$get_loo_estimates()}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{StanModelFit$loo_estimate(rerun = FALSE, ...)}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{rerun}}{Re-run loo even if its result is already cached.}
+
+\item{\code{...}}{Arguments passed to \code{loo:loo()}. Will only matter
+if re-running or running loo for the first time.}
+}
+\if{html}{\out{</div>}}
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-StanModelFit-gq"></a>}}

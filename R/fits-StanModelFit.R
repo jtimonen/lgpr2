@@ -1,16 +1,15 @@
 #' The Fit class
 #'
 #' @export
-#' @field loo a \code{loo} object
 StanModelFit <- R6::R6Class("StanModelFit",
   private = list(
     stan_fit = NULL,
     stan_data = NULL,
     datasets = NULL,
-    model = NULL
+    model = NULL,
+    loo = NULL
   ),
   public = list(
-    loo = NULL,
 
 
     #' @description
@@ -53,8 +52,6 @@ StanModelFit <- R6::R6Class("StanModelFit",
       private$datasets <- datasets
       private$stan_fit <- stan_fit
       private$stan_data <- stan_data
-      log_lik <- self$loglik()
-      self$loo <- loo::loo(posterior::as_draws_matrix(log_lik))
     },
 
     #' @description Get the underlying 'Stan' fit object.
@@ -87,8 +84,17 @@ StanModelFit <- R6::R6Class("StanModelFit",
 
     #' @description
     #' Returns estimate and standard error for ELPD
-    get_loo_estimates = function() {
-      as.numeric(self$loo$estimates[1, ])
+    #'
+    #' @param rerun Re-run loo even if its result is already cached.
+    #' @param ... Arguments passed to \code{loo:loo()}. Will only matter
+    #' if re-running or running loo for the first time.
+    loo_estimate = function(rerun = FALSE, ...) {
+      if (is.null(self$loo) || rerun) {
+        message("loo not run yet, running it now...")
+        log_lik <- self$loglik()
+        private$loo <- loo::loo(posterior::as_draws_matrix(log_lik), ...)
+      }
+      as.numeric(private$loo$estimates[1, ])
     },
 
     #' @description Generate quantities using the fit.

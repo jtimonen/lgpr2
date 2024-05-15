@@ -40,12 +40,12 @@ The 'LonModelFit' class
 <li><span class="pkg-link" data-pkg="lgpr2" data-topic="StanModelFit" data-id="datanames"><a href='../../lgpr2/html/StanModelFit.html#method-StanModelFit-datanames'><code>lgpr2::StanModelFit$datanames()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="lgpr2" data-topic="StanModelFit" data-id="draws"><a href='../../lgpr2/html/StanModelFit.html#method-StanModelFit-draws'><code>lgpr2::StanModelFit$draws()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="lgpr2" data-topic="StanModelFit" data-id="get_data"><a href='../../lgpr2/html/StanModelFit.html#method-StanModelFit-get_data'><code>lgpr2::StanModelFit$get_data()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="lgpr2" data-topic="StanModelFit" data-id="get_loo_estimates"><a href='../../lgpr2/html/StanModelFit.html#method-StanModelFit-get_loo_estimates'><code>lgpr2::StanModelFit$get_loo_estimates()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="lgpr2" data-topic="StanModelFit" data-id="get_model"><a href='../../lgpr2/html/StanModelFit.html#method-StanModelFit-get_model'><code>lgpr2::StanModelFit$get_model()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="lgpr2" data-topic="StanModelFit" data-id="get_stan_data"><a href='../../lgpr2/html/StanModelFit.html#method-StanModelFit-get_stan_data'><code>lgpr2::StanModelFit$get_stan_data()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="lgpr2" data-topic="StanModelFit" data-id="get_stan_fit"><a href='../../lgpr2/html/StanModelFit.html#method-StanModelFit-get_stan_fit'><code>lgpr2::StanModelFit$get_stan_fit()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="lgpr2" data-topic="StanModelFit" data-id="gq"><a href='../../lgpr2/html/StanModelFit.html#method-StanModelFit-gq'><code>lgpr2::StanModelFit$gq()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="lgpr2" data-topic="StanModelFit" data-id="loglik"><a href='../../lgpr2/html/StanModelFit.html#method-StanModelFit-loglik'><code>lgpr2::StanModelFit$loglik()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="lgpr2" data-topic="StanModelFit" data-id="loo_estimate"><a href='../../lgpr2/html/StanModelFit.html#method-StanModelFit-loo_estimate'><code>lgpr2::StanModelFit$loo_estimate()</code></a></span></li>
 </ul>
 </details>
 }}
