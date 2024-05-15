@@ -4,17 +4,6 @@ hs_bf <- function(x, b, L) {
   1 / sqrt(L) * sin(k * (x + L))
 }
 
-# Spectral density at eigenvalue
-multiplier_s <- function(alpha, ell, b, L) {
-  alpha^2 * ell * sqrt(2 * pi) * exp(-ell^2 * pi^2 * b^2 / (8 * L^2))
-}
-
-# Hilbert space basis functions multiplied by spectral density
-hs_bf_sd <- function(x, b, L, alpha, ell) {
-  s2 <- multiplier_s(alpha, ell, b, L)
-  sqrt(s2) * hs_bf(x, b, L)
-}
-
 # Wiggliness penalty
 hs_wiggliness_diag <- function(m, L) {
   a <- (pi * m) / (2 * L)

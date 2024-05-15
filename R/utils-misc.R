@@ -1,14 +1,3 @@
-#' Name of a term in the formula syntax to its Stan code name
-#'
-#' @export
-#' @param term A string.
-term_to_code <- function(term) {
-  checkmate::assert_character(term)
-  form <- as.formula(paste0("y~", term))
-  a <- create_termlist(form, NULL)
-  a$terms[[1]]$stanname_base()
-}
-
 #' Create a 'Stan' model with only given functions in it
 #'
 #' @param stan_file Path to the Stan file relative to the directory

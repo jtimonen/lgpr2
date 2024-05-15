@@ -6,7 +6,6 @@ ForwardSearch <- R6Class(
     num_steps = NULL,
     verbosity = 0,
     score_name = "unknown",
-    mlpd = list(),
     path = NULL, # possible predefined path
 
     # Init
@@ -19,21 +18,12 @@ ForwardSearch <- R6Class(
 
     # Score a model
     score = function(model, ...) {
-      cat("* Inheriting class should override the score method!\n")
-      return(runif(1))
+      stop("Inheriting class should override the score method!\n")
     },
 
     # Compute score for each candidate
     step = function(model, candidates, ...) {
-      scores <- rep(0, length(candidates))
-      jj <- 0
-      for (ca in candidates) {
-        jj <- jj + 1
-        c_model <- c(model, ca)
-        scores[jj] <- self$score(c_model, ...)
-      }
-
-      scores
+      stop("Inheriting class should override the step method!\n")
     },
 
     # Get candidate models at current step
