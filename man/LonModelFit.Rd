@@ -40,6 +40,7 @@ The 'LonModelFit' class
 <li><span class="pkg-link" data-pkg="lgpr2" data-topic="StanModelFit" data-id="datanames"><a href='../../lgpr2/html/StanModelFit.html#method-StanModelFit-datanames'><code>lgpr2::StanModelFit$datanames()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="lgpr2" data-topic="StanModelFit" data-id="draws"><a href='../../lgpr2/html/StanModelFit.html#method-StanModelFit-draws'><code>lgpr2::StanModelFit$draws()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="lgpr2" data-topic="StanModelFit" data-id="get_data"><a href='../../lgpr2/html/StanModelFit.html#method-StanModelFit-get_data'><code>lgpr2::StanModelFit$get_data()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="lgpr2" data-topic="StanModelFit" data-id="get_loo_estimates"><a href='../../lgpr2/html/StanModelFit.html#method-StanModelFit-get_loo_estimates'><code>lgpr2::StanModelFit$get_loo_estimates()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="lgpr2" data-topic="StanModelFit" data-id="get_model"><a href='../../lgpr2/html/StanModelFit.html#method-StanModelFit-get_model'><code>lgpr2::StanModelFit$get_model()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="lgpr2" data-topic="StanModelFit" data-id="get_stan_data"><a href='../../lgpr2/html/StanModelFit.html#method-StanModelFit-get_stan_data'><code>lgpr2::StanModelFit$get_stan_data()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="lgpr2" data-topic="StanModelFit" data-id="get_stan_fit"><a href='../../lgpr2/html/StanModelFit.html#method-StanModelFit-get_stan_fit'><code>lgpr2::StanModelFit$get_stan_fit()</code></a></span></li>
@@ -257,7 +258,12 @@ Project to submodel}
 \if{latex}{\out{\hypertarget{method-LonModelFit-project}{}}}
 \subsection{Method \code{project()}}{
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{LonModelFit$project(term_inds, draw_inds = NULL, eval_mode = TRUE)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{LonModelFit$project(
+  term_inds = NULL,
+  draw_inds = NULL,
+  eval_mode = TRUE,
+  B = 20
+)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
@@ -269,6 +275,8 @@ Project to submodel}
 draws are taken randomly.}
 
 \item{\code{eval_mode}}{Model evaluation mode?}
+
+\item{\code{B}}{number of basis functions}
 }
 \if{html}{\out{</div>}}
 }

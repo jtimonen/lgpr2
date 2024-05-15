@@ -7,6 +7,7 @@ LonModelFit <- R6::R6Class("LonModelFit",
   public = list(
     term_confs = NULL,
 
+
     #' @description
     #' Create model fit object
     #'
@@ -234,9 +235,11 @@ LonModelFit <- R6::R6Class("LonModelFit",
     #' @param draw_inds Which posterior draws to use. If \code{NULL}, 30
     #' draws are taken randomly.
     #' @param eval_mode Model evaluation mode?
-    project = function(term_inds, draw_inds = NULL, eval_mode = TRUE) {
+    #' @param B number of basis functions
+    project = function(term_inds = NULL, draw_inds = NULL, eval_mode = TRUE,
+                       B = 20) {
       m <- self$get_model()
-      form <- m$as_gam_formula(term_inds = term_inds, B = 24)
+      form <- m$as_gam_formula(term_inds = term_inds, B = B)
 
       # Prepare
       h_ref <- self$function_draws()

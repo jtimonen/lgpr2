@@ -1,6 +1,7 @@
 #' The Fit class
 #'
 #' @export
+#' @field loo a \code{loo} object
 StanModelFit <- R6::R6Class("StanModelFit",
   private = list(
     stan_fit = NULL,
@@ -9,6 +10,7 @@ StanModelFit <- R6::R6Class("StanModelFit",
     model = NULL
   ),
   public = list(
+    loo = NULL,
 
 
     #' @description
@@ -51,6 +53,8 @@ StanModelFit <- R6::R6Class("StanModelFit",
       private$datasets <- datasets
       private$stan_fit <- stan_fit
       private$stan_data <- stan_data
+      log_lik <- self$loglik()
+      self$loo <- loo::loo(posterior::as_draws_matrix(log_lik))
     },
 
     #' @description Get the underlying 'Stan' fit object.
@@ -79,6 +83,12 @@ StanModelFit <- R6::R6Class("StanModelFit",
     #' Extract log likelihood as 'rvars'.
     loglik = function() {
       self$draws("log_lik")
+    },
+
+    #' @description
+    #' Returns estimate and standard error for ELPD
+    get_loo_estimates = function() {
+      as.numeric(self$loo$estimates[1, ])
     },
 
     #' @description Generate quantities using the fit.

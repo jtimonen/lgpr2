@@ -96,7 +96,7 @@ TermList <- R6::R6Class("TermList",
     #' @param term_inds term indices
     as_gam_formula = function(L, B, term_inds = NULL) {
       if (is.null(term_inds)) {
-        term_inds <- seq_len(length(self$terms))
+        return("1")
       }
       a <- sapply(self$terms[term_inds], function(x) x$as_gam_term(L, B))
       paste(a, collapse = " + ")

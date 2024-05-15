@@ -21,7 +21,6 @@ Likelihood <- R6::R6Class("Likelihood",
     #' @param y Data vector.
     set_c_hat = function(y) {
       value <- mean(y)
-      message("set c_hat = ", value)
       private$c_hat <- value
     }
   )
@@ -115,9 +114,13 @@ GaussianLikelihood <- R6::R6Class("GaussianLikelihood",
       def_yp <- paste0("  vector[n_LON] ", sylp, ";")
       line_h <- paste0("  vector[n_LON] h = h_LON;")
       line_yp <- paste0(
-        "    ", sylp, "[i] = normal_rng(", "h[i], sigma);"
+        "    ", sylp, "[i] = normal_rng(", "h[i], sigma);\n"
       )
-      loop <- paste0("  for(i in 1:n_LON) {\n", line_yp, "\n  }")
+      line_ll <- paste0(
+        "    log_lik[i] = normal_lpdf(",
+        stanname_y, "[i] | h_LON[i], sigma);\n"
+      )
+      loop <- paste0("  for(i in 1:n_LON) {\n", line_yp, line_ll, "\n  }")
       paste("  // Other generated quantities",
         line_h,
         def_ll, def_yp, loop,

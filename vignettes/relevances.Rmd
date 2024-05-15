@@ -51,3 +51,12 @@ p12 <- fit$project(c(1, 2), draw_inds = draw_inds)
 p123 <- fit$project(c(1, 2, 3), draw_inds = draw_inds)
 p1234 <- fit$project(c(1, 2, 3, 4), draw_inds = draw_inds)
 ```
+## Search
+
+
+```{r, fig.width=7, fig.height=4}
+fs <- pp_forward_search(fit, NULL, 3)
+
+plot_pp_pexp(fs)
+plot_pp_elpd(fs, fit$get_loo_estimates())
+```
