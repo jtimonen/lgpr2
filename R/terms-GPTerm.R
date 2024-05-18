@@ -59,7 +59,7 @@ GPTerm <- R6::R6Class("GPTerm",
       if (!self$has_z()) {
         code <- paste0(code, "\n  vector[B_", tn, "] xi_", tn, "; // auxiliary")
       } else {
-        code <- paste0(code, "\n  matrix[", gn, ", B_", tn, "] xi_", tn, ";")
+        code <- paste0(code, "\n  matrix[", gn, " - 1, B_", tn, "] xi_", tn, ";")
       }
       paste0(code, "\n")
     },
