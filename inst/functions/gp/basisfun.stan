@@ -20,3 +20,43 @@
     return exp(0.5*log_spd_eq(alpha, ell, 0.5*pi()*seq_B/L));
   }
 
+
+  // Basis function matrix (zerosum kernel)
+  matrix bf_zs(array[] int z, int G) {
+    int N = size(z);
+    int Gm1 = G - 1;
+    matrix[N, G-1] VARPHI;
+    matrix[G, G] H = helmert(G);
+    for(g in 2:G){
+      VARPHI[:, g-1] = H[z, g];
+    }
+    return(VARPHI);
+  }
+
+  // Compute the multipliers d_g
+  vector bf_zs_multips(int G){
+    int Gm1 = G - 1;
+    real d = sqrt(1+1/Gm1);
+    return(rep_vector(d, Gm1));
+  }
+
+  // Helmert contrast matrix
+  matrix helmert(int G){
+    matrix[G, G] H;
+    for(r in 1:G){
+      for(c in 1:G){
+        if(c == 1){
+          H[r,c] = 1;
+        } else {
+          if(r < c){
+            H[r,c] = -1;
+          } else if (r==c) {
+            H[r,c] = c-1;
+          } else {
+            H[r,c] = 0;
+          }
+        }
+      }
+    }
+    return(H);
+  }

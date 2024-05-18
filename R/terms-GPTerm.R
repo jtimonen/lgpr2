@@ -49,7 +49,15 @@ GPTerm <- R6::R6Class("GPTerm",
       c1 <- paste0("  vector[", bn, "] ", sn, " = seq_len(", bn, ");\n")
       c2 <- paste0("  ", stancode_B_matrix(datanames, bn, mn, sn), ";\n")
       c3 <- paste0("  ", stancode_PHI_matrix(datanames, bn, mn, tn, xn), ";\n")
-      paste0(c(c1, c2, c3), collapse = "")
+      if (!is.null(self$z_name)) {
+        zn <- self$stanname_z(datanames)
+        gn <- paste0("G_", self$z_name)
+        c4 <- paste0("  ", stancode_VARPHI_matrix(datanames, gn, tn, zn), ";\n")
+      } else {
+        c4 <- ""
+      }
+
+      paste0(c(c1, c2, c3, c4), collapse = "")
     },
     stancode_pars = function() {
       tn <- private$suffix
@@ -67,9 +75,12 @@ GPTerm <- R6::R6Class("GPTerm",
       sfx <- private$suffix
       sn <- self$stanname(datanames)
       zn <- self$stanname_z(datanames)
-      c1 <- stancall_bf(sfx)
+      c1 <- stancall_bf_eq_multips(sfx)
       if (self$has_z()) {
-        c2 <- stancall_gp_group(datanames, sn, sfx, zn)
+        gn <- paste0("G_", self$z_name)
+        c2 <- stancall_bf_zs_multips(gn, sfx)
+        c2b <- stancall_gp_group(datanames, sn, sfx, zn)
+        c2 <- paste(c2, c2b, sep = "\n")
       } else {
         c2 <- stancall_gp_shared(datanames, sn, sfx)
       }
@@ -137,6 +148,16 @@ stancode_PHI_matrix <- function(datasets, bn, mn, tn, xn) {
   )
 }
 
+# Helper
+stancode_VARPHI_matrix <- function(datasets, gn, tn, zn) {
+  nn <- paste0("n_", datasets)
+  tn_sfx <- paste0(tn, "_", datasets)
+  paste0(
+    "matrix[", nn, ", ", gn, " - 1] VARPHI_", tn_sfx, " = bf_zs(", zn, ", ", gn, ")"
+  )
+}
+
+
 # Prevent improper use
 ensure_gp_approx_is_valid <- function(dat_x_unit, x_name, L, term_name) {
   max_abs_x <- max(abs(dat_x_unit))
@@ -180,11 +201,18 @@ stanlines_data_hsgp <- function(suffix) {
 }
 
 # Basis function multipliers
-stancall_bf <- function(sfx) {
+stancall_bf_eq_multips <- function(sfx) {
   paste0(
     "  vector[B_", sfx, "] s_", sfx,
     " = bf_eq_multips(alpha_", sfx, ", ell_", sfx,
     ", seq_B_", sfx, ", L_", sfx, ");\n"
+  )
+}
+
+# Basis function multipliers
+stancall_bf_zs_multips <- function(gn, sfx) {
+  paste0(
+    "  vector[", gn, " - 1] d_", sfx, " = bf_zs_multips(", gn, ");\n"
   )
 }
 
@@ -205,6 +233,6 @@ stancall_gp_group <- function(datanames, sn, sfx, zn) {
   paste0(
     "  vector[", nn, "] ", sn,
     " = compute_f_group(xi_", sfx, ", PHI_", sfx_full, ", s_", sfx,
-    ", ", zn, ");\n"
+    ", VARPHI_", sfx_full, ", d_", sfx, ");\n"
   )
 }
