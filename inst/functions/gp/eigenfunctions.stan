@@ -1,3 +1,17 @@
+  // Eigen functions for shared term
+  matrix eigfun_shared(vector x, data matrix mat_B, data real L){
+    return(bf_eq(x, mat_B, L));
+  }
+
+  // Eigen functions for grouped term
+  matrix eigfun_grouped(vector x, data matrix mat_B, data real L,
+      data array[] int z, data int G){
+    int N = num_elements(x);
+    int B = cols(mat_B);
+    matrix[N, B] PHI = bf_eq(x, mat_B, L);
+    matrix[N, G-1] VARPHI = bf_zs(z, G);
+    return(bf_eqXzs(PHI, VARPHI));
+  }
 
   // Basis function matrix (EQ kernel)
   matrix bf_eq(vector x, data matrix mat_B, data real L) {
@@ -8,8 +22,8 @@
     return(PHI);
   }
 
-    // Basis function matrix (zerosum kernel)
-  matrix bf_zs(array[] int z, int G) {
+  // Basis function matrix (zerosum kernel)
+  matrix bf_zs(data array[] int z, data int G) {
     int N = size(z);
     int Gm1 = G - 1;
     matrix[N, G-1] VARPHI;
@@ -38,41 +52,7 @@
     return(PSI);
   }
 
-  // Compute spectral density of EQ kernel
-  vector log_spd_eq(real alpha, real ell, vector omega){
-    return 2*log(alpha)+log(ell)+0.5*log(2*pi())-0.5*ell^2*omega .* omega;
-  }
 
-  // Compute the multipliers s_b
-  vector bf_eq_multips(real alpha, real ell, data vector seq_B,
-      data real L)
-  {
-    return exp(0.5*log_spd_eq(alpha, ell, 0.5*pi()*seq_B/L));
-  }
-
-  // Compute the multipliers d_g
-  vector bf_zs_multips(int G){
-    int Gm1 = G - 1;
-    real d = sqrt(1.0+1.0/Gm1);
-    return(rep_vector(d, Gm1));
-  }
-
-  // Compute the multipliers d_h * s_b
-  // - s = sqrts. of eigenvalues of the basis functions (size num_bf)
-  // - d = sqrts. of eigenvalues of the basis functions (size num_groups)
-  vector bf_eqXzs_multips(vector s, vector d) {
-    int Gm1 = rows(xi);
-    int B = num_elements(s);
-    int N = rows(PHI);
-    vector[N] f = rep_vector(0, N);
-
-    for(g in 1:Gm1){
-      for(b in 1:B){
-        f = f + xi[g,b] * s[b] * d[g] * PHI[:,b] .* VARPHI[:, g];
-      }
-    }
-    return(f);
-  }
 
   // Helmert contrast matrix (with column of ones added as first column)
   matrix ones_cbind_helmert(int G){

@@ -4,7 +4,7 @@ GPTerm <- R6::R6Class("GPTerm",
   lock_class = TRUE,
   private = list(
     stanfiles_functions_impl = function() {
-      c("gp/basisfun", "gp/shared", "gp/group")
+      c("gp/eigenfunctions", "gp/eigenvalues")
     }
   ),
   public = list(
@@ -48,16 +48,15 @@ GPTerm <- R6::R6Class("GPTerm",
       sn <- paste0("seq_B_", tn)
       c1 <- paste0("  vector[", bn, "] ", sn, " = seq_len(", bn, ");\n")
       c2 <- paste0("  ", stancode_B_matrix(datanames, bn, mn, sn), ";\n")
-      c3 <- paste0("  ", stancode_PHI_matrix(datanames, bn, mn, tn, xn), ";\n")
-      if (!is.null(self$z_name)) {
+      if (self$has_z()) {
         zn <- self$stanname_z(datanames)
         gn <- paste0("G_", self$z_name)
-        c4 <- paste0("  ", stancode_VARPHI_matrix(datanames, gn, tn, zn), ";\n")
+        c3 <- paste0("  ", stancode_PSI_grouped(datanames, xn, tn, bn, mn, gn, zn), ";\n")
       } else {
-        c4 <- ""
+        c3 <- paste0("  ", stancode_PSI_shared(datanames, xn, tn, bn, mn), ";\n")
       }
 
-      paste0(c(c1, c2, c3, c4), collapse = "")
+      paste0(c(c1, c2, c3), collapse = "")
     },
     stancode_pars = function() {
       tn <- private$suffix
@@ -67,30 +66,29 @@ GPTerm <- R6::R6Class("GPTerm",
       if (!self$has_z()) {
         code <- paste0(code, "\n  vector[B_", tn, "] xi_", tn, "; // auxiliary")
       } else {
-        code <- paste0(code, "\n  matrix[", gn, " - 1, B_", tn, "] xi_", tn, ";")
+        code <- paste0(code, "\n  vector[(", gn, " - 1) * B_", tn, "] xi_", tn, ";")
       }
       paste0(code, "\n")
     },
     stancode_tpars = function(datanames) {
       sfx <- private$suffix
       sn <- self$stanname(datanames)
-      zn <- self$stanname_z(datanames)
-      c1 <- stancall_bf_eq_multips(sfx)
+      mn <- paste0("seq_B_", sfx)
+      bn <- paste0("B_", sfx)
       if (self$has_z()) {
         gn <- paste0("G_", self$z_name)
-        c2 <- stancall_bf_zs_multips(gn, sfx)
-        c2b <- stancall_gp_group(datanames, sn, sfx, zn)
-        c2 <- paste(c2, c2b, sep = "\n")
+        c1 <- stancode_DELTA_grouped(sfx, bn, mn, gn)
       } else {
-        c2 <- stancall_gp_shared(datanames, sn, sfx)
+        c1 <- stancode_DELTA_shared(sfx, bn, mn)
       }
+      c2 <- stancall_gp_eval(datanames, sn, sfx)
       paste0(c(c1, c2), collapse = "")
     },
     stancode_model = function() {
       tn <- private$suffix
       code <- paste0("\n  alpha_", tn, " ~ student_t(20, 0, 1);")
       code <- paste0(code, "\n  ell_", tn, " ~ lognormal(0, 1);")
-      code <- paste0(code, "\n  to_vector(xi_", tn, ") ~ normal(0, 1);")
+      code <- paste0(code, "\n  xi_", tn, " ~ normal(0, 1);")
       paste0(code, "\n")
     },
     standata = function(datasets, conf) {
@@ -138,25 +136,45 @@ stancode_B_matrix <- function(datasets, bn, mn, sn) {
   )
 }
 
+
 # Helper
-stancode_PHI_matrix <- function(datasets, bn, mn, tn, xn) {
+stancode_PSI_shared <- function(datasets, xn, tn, bn, mn) {
   nn <- paste0("n_", datasets)
   tn_sfx <- paste0(tn, "_", datasets)
   paste0(
-    "matrix[", nn, ", ", bn, "] PHI_", tn_sfx,
-    " = bf_eq(", xn, ", ", mn, ", L_", tn, ")"
+    "matrix[", nn, ", ", bn, "] PSI_", tn_sfx,
+    " = eigfun_shared(", xn, ", ", mn, ", L_", tn, ")"
   )
 }
 
 # Helper
-stancode_VARPHI_matrix <- function(datasets, gn, tn, zn) {
+stancode_PSI_grouped <- function(datasets, xn, tn, bn, mn, gn, zn) {
   nn <- paste0("n_", datasets)
   tn_sfx <- paste0(tn, "_", datasets)
   paste0(
-    "matrix[", nn, ", ", gn, " - 1] VARPHI_", tn_sfx, " = bf_zs(", zn, ", ", gn, ")"
+    "matrix[", nn, ", ", bn, " * (", gn, " - 1)] PSI_", tn_sfx,
+    " = eigfun_grouped(", xn, ", ", mn, ", L_", tn,
+    ", ", zn, ", ", gn, " )"
   )
 }
 
+
+# Helper
+stancode_DELTA_shared <- function(tn, bn, sn) {
+  paste0(
+    "vector[", bn, "] DELTA_", tn,
+    " = eigval_shared(alpha_", tn, ", ell_", tn, " , ", sn, ", L_", tn, ");\n"
+  )
+}
+
+# Helper
+stancode_DELTA_grouped <- function(tn, bn, sn, gn) {
+  paste0(
+    "vector[", bn, " * (", gn, " - 1)] DELTA_", tn,
+    " = eigval_grouped(alpha_", tn, ", ell_", tn, " , ", sn, ", L_", tn,
+    ", ", gn, " );\n"
+  )
+}
 
 # Prevent improper use
 ensure_gp_approx_is_valid <- function(dat_x_unit, x_name, L, term_name) {
@@ -217,12 +235,12 @@ stancall_bf_zs_multips <- function(gn, sfx) {
 }
 
 # Shared GP term
-stancall_gp_shared <- function(datanames, sn, sfx) {
+stancall_gp_eval <- function(datanames, sn, sfx) {
   nn <- paste0("n_", datanames)
   sfx_full <- paste0(sfx, "_", datanames)
   paste0(
     "  vector[", nn, "] ", sn,
-    " = compute_f_shared(xi_", sfx, ", PHI_", sfx_full, ", s_", sfx, ");\n"
+    " = PSI_", sfx_full, " * (xi_", sfx, " .* DELTA_", sfx, ");\n"
   )
 }
 
