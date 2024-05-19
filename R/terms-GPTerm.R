@@ -77,9 +77,9 @@ GPTerm <- R6::R6Class("GPTerm",
       bn <- paste0("B_", sfx)
       if (self$has_z()) {
         gn <- paste0("G_", self$z_name)
-        c1 <- stancode_DELTA_grouped(sfx, bn, mn, gn)
+        c1 <- stancall_DELTA_grouped(sfx, bn, mn, gn)
       } else {
-        c1 <- stancode_DELTA_shared(sfx, bn, mn)
+        c1 <- stancall_DELTA_shared(sfx, bn, mn)
       }
       c2 <- stancall_gp_eval(datanames, sn, sfx)
       paste0(c(c1, c2), collapse = "")
@@ -160,7 +160,7 @@ stancode_PSI_grouped <- function(datasets, xn, tn, bn, mn, gn, zn) {
 
 
 # Helper
-stancode_DELTA_shared <- function(tn, bn, sn) {
+stancall_DELTA_shared <- function(tn, bn, sn) {
   paste0(
     "vector[", bn, "] DELTA_", tn,
     " = eigval_shared(alpha_", tn, ", ell_", tn, " , ", sn, ", L_", tn, ");\n"
@@ -168,7 +168,7 @@ stancode_DELTA_shared <- function(tn, bn, sn) {
 }
 
 # Helper
-stancode_DELTA_grouped <- function(tn, bn, sn, gn) {
+stancall_DELTA_grouped <- function(tn, bn, sn, gn) {
   paste0(
     "vector[", bn, " * (", gn, " - 1)] DELTA_", tn,
     " = eigval_grouped(alpha_", tn, ", ell_", tn, " , ", sn, ", L_", tn,
@@ -215,22 +215,6 @@ stanlines_data_hsgp <- function(suffix) {
   list(
     lines = lines,
     stannames = unlist(dn)
-  )
-}
-
-# Basis function multipliers
-stancall_bf_eq_multips <- function(sfx) {
-  paste0(
-    "  vector[B_", sfx, "] s_", sfx,
-    " = bf_eq_multips(alpha_", sfx, ", ell_", sfx,
-    ", seq_B_", sfx, ", L_", sfx, ");\n"
-  )
-}
-
-# Basis function multipliers
-stancall_bf_zs_multips <- function(gn, sfx) {
-  paste0(
-    "  vector[", gn, " - 1] d_", sfx, " = bf_zs_multips(", gn, ");\n"
   )
 }
 
