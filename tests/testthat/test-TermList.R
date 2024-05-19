@@ -6,7 +6,7 @@ test_that("a TermList can be created", {
   sn <- a$stan_names()
   t <- a$get_term(sn[2])
   expect_match(t$stanname_base(), "f_gp_x")
-  expect_equal(length(a$stanfiles_functions()), 4)
+  expect_equal(length(a$stanfiles_functions()), 3)
 })
 
 test_that("creating Stan code from TermList works", {
