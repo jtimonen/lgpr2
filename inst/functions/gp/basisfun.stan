@@ -37,7 +37,7 @@
   // Compute the multipliers d_g
   vector bf_zs_multips(int G){
     int Gm1 = G - 1;
-    real d = sqrt(1+1/Gm1);
+    real d = sqrt(1.0+1.0/Gm1);
     return(rep_vector(d, Gm1));
   }
 
