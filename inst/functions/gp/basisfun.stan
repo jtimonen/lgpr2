@@ -26,7 +26,8 @@
     int N = size(z);
     int Gm1 = G - 1;
     matrix[N, G-1] VARPHI;
-    matrix[G, G] H = helmert(G);
+    matrix[G, G] H = ones_cbind_helmert_norm(G);
+    print("H = ", H);
     for(g in 2:G){
       VARPHI[:, g-1] = H[z, g];
     }
@@ -40,8 +41,8 @@
     return(rep_vector(d, Gm1));
   }
 
-  // Helmert contrast matrix
-  matrix helmert(int G){
+  // Helmert contrast matrix (with column of ones added as first column)
+  matrix ones_cbind_helmert(int G){
     matrix[G, G] H;
     for(r in 1:G){
       for(c in 1:G){
@@ -57,6 +58,16 @@
           }
         }
       }
+    }
+    return(H);
+  }
+
+
+  // Helmert contrast matrix with normalized rows (with col of 1s as 1st col)
+  matrix ones_cbind_helmert_norm(int G){
+    matrix[G, G] H = ones_cbind_helmert(G);
+    for(g in 2:G){
+      H[:,g] = H[:,g]/norm2(H[:,g]);
     }
     return(H);
   }
