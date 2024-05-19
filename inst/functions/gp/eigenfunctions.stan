@@ -27,22 +27,22 @@
     int N = size(z);
     int Gm1 = G - 1;
     matrix[N, G-1] VARPHI;
-    matrix[G, G] H = ones_cbind_helmert_norm(G);
+    matrix[G, G-1] H = helmert_norm(G);
     for(g in 2:G){
-      VARPHI[:, g-1] = H[z, g];
+      VARPHI[:, g-1] = H[z, g-1];
     }
     return(VARPHI);
   }
 
   // Compute product basis functions (interaction)
   // - PHI = the evaluated basis functions (size num_obs x num_bf)
-  // - VARPHI = the evaluated cat basis functions (size num_obs x num_groups)
+  // - VARPHI = the evaluated cat basis functions (size num_obs x (G-1))
   matrix bf_eqXzs(matrix PHI, matrix VARPHI) {
     int N = rows(PHI);
     int B = cols(PHI);
-    int Gm1 = cols(VARPHI)-1;
+    int Gm1 = cols(VARPHI);
     matrix[N, B*Gm1] PSI;
-    int idx = 0;
+    int idx;
     for(g in 1:Gm1){
       for(b in 1:B){
         idx = (g-1)*B + b;
@@ -54,32 +54,28 @@
 
 
 
-  // Helmert contrast matrix (with column of ones added as first column)
-  matrix ones_cbind_helmert(int G){
-    matrix[G, G] H;
+  // Helmert contrast matrix
+  matrix helmert(int G){
+    matrix[G, G-1] H;
     for(r in 1:G){
-      for(c in 1:G){
-        if(c == 1){
-          H[r,c] = 1;
+      for(c in 2:G){
+        if(r < c){
+          H[r,c-1] = -1;
+        } else if (r==c) {
+          H[r,c-1] = c-1;
         } else {
-          if(r < c){
-            H[r,c] = -1;
-          } else if (r==c) {
-            H[r,c] = c-1;
-          } else {
-            H[r,c] = 0;
-          }
+          H[r,c-1] = 0;
         }
       }
     }
     return(H);
   }
 
-  // Helmert contrast matrix with normalized rows (with col of 1s as 1st col)
-  matrix ones_cbind_helmert_norm(int G){
-    matrix[G, G] H = ones_cbind_helmert(G);
+  // Helmert contrast matrix with normalized columns
+  matrix helmert_norm(int G){
+    matrix[G, G-1] H = helmert(G);
     for(g in 2:G){
-      H[:,g] = H[:,g]/norm2(H[:,g]);
+      H[:,g-1] = H[:,g-1]/norm2(H[:,g-1]);
     }
     return(H);
   }

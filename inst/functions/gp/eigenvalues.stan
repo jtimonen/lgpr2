@@ -37,7 +37,7 @@
     int G = num_elements(d);
     vector[B*G] delt = rep_vector(0, B*G);
     for(g in 1:G){
-      delt[((g-1)*B):(g*B)] = s * d[g];
+      delt[((g-1)*B+1):(g*B)] = s * d[g];
     }
     return(delt);
   }
