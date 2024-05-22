@@ -23,6 +23,8 @@ The 'LonModelFit' class
 \itemize{
 \item \href{#method-LonModelFit-new}{\code{LonModelFit$new()}}
 \item \href{#method-LonModelFit-print}{\code{LonModelFit$print()}}
+\item \href{#method-LonModelFit-stan_variables}{\code{LonModelFit$stan_variables()}}
+\item \href{#method-LonModelFit-diagnose}{\code{LonModelFit$diagnose()}}
 \item \href{#method-LonModelFit-function_draws}{\code{LonModelFit$function_draws()}}
 \item \href{#method-LonModelFit-plot}{\code{LonModelFit$plot()}}
 \item \href{#method-LonModelFit-predict}{\code{LonModelFit$predict()}}
@@ -82,6 +84,34 @@ debugging.}
 Print object description.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{LonModelFit$print()}\if{html}{\out{</div>}}
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-LonModelFit-stan_variables"></a>}}
+\if{latex}{\out{\hypertarget{method-LonModelFit-stan_variables}{}}}
+\subsection{Method \code{stan_variables()}}{
+Stan variable names.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{LonModelFit$stan_variables(all = TRUE)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{all}}{Return all Stan variable names. If \code{FALSE}, returns only
+ones that are not large transformed parameters.}
+}
+\if{html}{\out{</div>}}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-LonModelFit-diagnose"></a>}}
+\if{latex}{\out{\hypertarget{method-LonModelFit-diagnose}{}}}
+\subsection{Method \code{diagnose()}}{
+A diagnostic summary.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{LonModelFit$diagnose()}\if{html}{\out{</div>}}
 }
 
 }

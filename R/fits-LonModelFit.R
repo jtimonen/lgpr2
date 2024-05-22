@@ -27,6 +27,31 @@ LonModelFit <- R6::R6Class("LonModelFit",
       cat("An R6 object of class LonModelFit.\n")
     },
 
+    #' @description Stan variable names.
+    #' @param all Return all Stan variable names. If \code{FALSE}, returns only
+    #' ones that are not large transformed parameters.
+    stan_variables = function(all = TRUE) {
+      md <- self$get_stan_fit()$metadata()
+      sv <- md$stan_variables
+      if (all) {
+        return(sv)
+      }
+      pattern <- "^(?!f_|DELTA_).*$"
+      grep(pattern, sv, value = TRUE, perl = TRUE)
+    },
+
+    #' @description
+    #' A diagnostic summary.
+    diagnose = function() {
+      sf <- self$get_stan_fit()
+      vars <- self$stan_variables(all = FALSE)
+      rhat <- sf$summary(vars)$rhat
+      diag <- unlist(sf$diagnostic_summary())
+      out <- c(diag, max(rhat))
+      names(out)[length(out)] <- "max_rhat"
+      out
+    },
+
     #' @description
     #' Extract one component as a \code{FunctionDraws} object.
     #'
