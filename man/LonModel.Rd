@@ -80,8 +80,6 @@ variable (longitudinal observation).}
 names of the model terms. Can be used to edit priors of term parameters.}
 
 \item{\code{obs_model}}{Observation model.}
-
-\item{\code{prior_disp}}{Prior for dispersion parameter.}
 }
 \if{html}{\out{</div>}}
 }

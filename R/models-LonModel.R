@@ -71,7 +71,6 @@ LonModel <- R6::R6Class("LonModel",
     #' @param formula The model formula determining the terms and the y
     #' variable (longitudinal observation).
     #' @param compile Should the 'Stan' model code be created and compiled.
-    #' @param prior_disp Prior for dispersion parameter.
     #' @param prior_terms A list with names equal to a subset of the
     #' names of the model terms. Can be used to edit priors of term parameters.
     #' @param obs_model Observation model.

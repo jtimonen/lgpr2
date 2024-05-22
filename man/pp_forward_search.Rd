@@ -4,7 +4,7 @@
 \alias{pp_forward_search}
 \title{Run projection predictive forward search}
 \usage{
-pp_forward_search(fit_ref, path = NULL, num_steps = NULL)
+pp_forward_search(fit_ref, path = NULL, num_steps = NULL, S = 30, S_eval = 100)
 }
 \arguments{
 \item{fit_ref}{The reference model fit.}
@@ -15,6 +15,10 @@ not pre-defined.}
 \item{num_steps}{Number of steps to run. If \code{NULL}, the search stops
 when predictive performance of the submodel is close to that of reference
 model.}
+
+\item{S}{Number of draws to project when selecting next step.}
+
+\item{S_eval}{Number of draws to project when evaluating step.}
 }
 \description{
 Run projection predictive forward search

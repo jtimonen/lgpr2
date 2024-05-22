@@ -76,6 +76,11 @@ StanModelFit <- R6::R6Class("StanModelFit",
       d[[name]]
     },
 
+    #' @description Get total number of draws.
+    num_draws = function() {
+      posterior::ndraws(self$loglik())
+    },
+
     #' @description
     #' Extract log likelihood as 'rvars'.
     loglik = function() {
@@ -89,7 +94,7 @@ StanModelFit <- R6::R6Class("StanModelFit",
     #' @param ... Arguments passed to \code{loo:loo()}. Will only matter
     #' if re-running or running loo for the first time.
     loo_estimate = function(rerun = FALSE, ...) {
-      if (is.null(self$loo) || rerun) {
+      if (is.null(private$loo) || rerun) {
         message("loo not run yet, running it now...")
         log_lik <- self$loglik()
         private$loo <- loo::loo(posterior::as_draws_matrix(log_lik), ...)

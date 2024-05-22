@@ -18,6 +18,7 @@ The Fit class
 \item \href{#method-StanModelFit-get_stan_fit}{\code{StanModelFit$get_stan_fit()}}
 \item \href{#method-StanModelFit-get_stan_data}{\code{StanModelFit$get_stan_data()}}
 \item \href{#method-StanModelFit-draws}{\code{StanModelFit$draws()}}
+\item \href{#method-StanModelFit-num_draws}{\code{StanModelFit$num_draws()}}
 \item \href{#method-StanModelFit-loglik}{\code{StanModelFit$loglik()}}
 \item \href{#method-StanModelFit-loo_estimate}{\code{StanModelFit$loo_estimate()}}
 \item \href{#method-StanModelFit-gq}{\code{StanModelFit$gq()}}
@@ -128,6 +129,16 @@ Extract draws as \code{rvar}s
 }
 \if{html}{\out{</div>}}
 }
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-StanModelFit-num_draws"></a>}}
+\if{latex}{\out{\hypertarget{method-StanModelFit-num_draws}{}}}
+\subsection{Method \code{num_draws()}}{
+Get total number of draws.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{StanModelFit$num_draws()}\if{html}{\out{</div>}}
+}
+
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-StanModelFit-loglik"></a>}}

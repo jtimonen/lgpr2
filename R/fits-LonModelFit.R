@@ -75,8 +75,8 @@ LonModelFit <- R6::R6Class("LonModelFit",
         if (f_name == "y_log_pred") {
           f_name <- paste0(mod$y_var, "_log_pred")
         }
-        # The total sum or predictive
 
+        # The total sum or predictive
         f <- self$draws(f_name)
         covs <- mod$term_list$input_vars()
 
@@ -210,13 +210,12 @@ LonModelFit <- R6::R6Class("LonModelFit",
 
     #' Estimate amount of noise
     #'
-    #' @return A tibble with nrows equal to number of draws. Values
+    #' @return A tibble with num of rows equal to number of draws. Values
     #' are between 0 (no noise) and 1 (data is only noise).
     noise_amount = function() {
       m <- self$get_model()
       y_data <- self$get_data()[[m$y_var]]
       fd <- self$function_draws()
-      S <- fd$num_draws()
       h <- fd$as_data_frame_long()
       h %>%
         dplyr::group_by(.draw_idx) %>%
@@ -262,7 +261,7 @@ LonModelFit <- R6::R6Class("LonModelFit",
     #' @param eval_mode Model evaluation mode?
     #' @param B number of basis functions
     project = function(term_inds = NULL, draw_inds = NULL, eval_mode = TRUE,
-                       B = 24) {
+                       B = 30) {
       m <- self$get_model()
       form <- m$as_gam_formula(term_inds = term_inds, B = B)
 

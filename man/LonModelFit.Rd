@@ -48,6 +48,7 @@ The 'LonModelFit' class
 <li><span class="pkg-link" data-pkg="lgpr2" data-topic="StanModelFit" data-id="gq"><a href='../../lgpr2/html/StanModelFit.html#method-StanModelFit-gq'><code>lgpr2::StanModelFit$gq()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="lgpr2" data-topic="StanModelFit" data-id="loglik"><a href='../../lgpr2/html/StanModelFit.html#method-StanModelFit-loglik'><code>lgpr2::StanModelFit$loglik()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="lgpr2" data-topic="StanModelFit" data-id="loo_estimate"><a href='../../lgpr2/html/StanModelFit.html#method-StanModelFit-loo_estimate'><code>lgpr2::StanModelFit$loo_estimate()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="lgpr2" data-topic="StanModelFit" data-id="num_draws"><a href='../../lgpr2/html/StanModelFit.html#method-StanModelFit-num_draws'><code>lgpr2::StanModelFit$num_draws()</code></a></span></li>
 </ul>
 </details>
 }}
@@ -248,7 +249,7 @@ Estimate amount of noise
 }
 
 \subsection{Returns}{
-A tibble with nrows equal to number of draws. Values
+A tibble with num of rows equal to number of draws. Values
 are between 0 (no noise) and 1 (data is only noise).
 Estimate component variances for each draw
 }
@@ -292,7 +293,7 @@ Project to submodel}
   term_inds = NULL,
   draw_inds = NULL,
   eval_mode = TRUE,
-  B = 24
+  B = 30
 )}\if{html}{\out{</div>}}
 }
 

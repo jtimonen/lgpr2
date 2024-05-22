@@ -7,13 +7,18 @@ ForwardSearch <- R6Class(
     verbosity = 0,
     score_name = "unknown",
     path = NULL, # possible predefined path
+    draw_inds = NULL,
+    draw_inds_eval = NULL,
 
     # Init
-    initialize = function(J, path = NULL, verbosity = 1, num_steps = 1) {
+    initialize = function(J, draw_inds, draw_inds_eval, path = NULL,
+                          num_steps = 1) {
       self$num_comps <- J
-      self$verbosity <- verbosity
+      self$verbosity <- 1
       self$path <- path
       self$num_steps <- num_steps
+      self$draw_inds <- draw_inds
+      self$draw_inds_eval <- draw_inds_eval
     },
 
     # Score a model
@@ -67,7 +72,12 @@ ProjectionForwardSearch <- R6Class(
 
     # Score a model
     score = function(model, fit_ref, eval_mode, kl0, elpd_loo_ref) {
-      res <- fit_ref$project(model, eval_mode = eval_mode)
+      if (!eval_mode) {
+        di <- self$draw_inds
+      } else {
+        di <- self$draw_inds_eval
+      }
+      res <- fit_ref$project(model, eval_mode = eval_mode, draw_inds = di)
       res <- res$metrics
       res$score <- -res$kl
       if (is.null(kl0)) {
@@ -155,10 +165,22 @@ ProjectionForwardSearch <- R6Class(
 #' @param num_steps Number of steps to run. If \code{NULL}, the search stops
 #' when predictive performance of the submodel is close to that of reference
 #' model.
-pp_forward_search <- function(fit_ref, path = NULL, num_steps = NULL) {
+#' @param S Number of draws to project when selecting next step.
+#' @param S_eval Number of draws to project when evaluating step.
+pp_forward_search <- function(fit_ref, path = NULL, num_steps = NULL,
+                              S = 30, S_eval = 100) {
   checkmate::assert_class(fit_ref, "LonModelFit")
   J <- length(fit_ref$get_model()$term_list$terms)
-  a <- ProjectionForwardSearch$new(J, path, num_steps = num_steps)
+  S_tot <- fit_ref$num_draws()
+  message(
+    "Using ", S, " (", S_eval, ") out of ", S_tot, " draws for ",
+    "search (evaluation)"
+  )
+  draw_inds <- sample.int(S_tot, S)
+  draw_inds_eval <- sample.int(S_tot, S_eval)
+  a <- ProjectionForwardSearch$new(
+    J, draw_inds, draw_inds_eval, path, num_steps
+  )
   a$run(fit_ref)
 }
 
