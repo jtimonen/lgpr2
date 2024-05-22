@@ -262,7 +262,7 @@ LonModelFit <- R6::R6Class("LonModelFit",
     #' @param eval_mode Model evaluation mode?
     #' @param B number of basis functions
     project = function(term_inds = NULL, draw_inds = NULL, eval_mode = TRUE,
-                       B = 20) {
+                       B = 24) {
       m <- self$get_model()
       form <- m$as_gam_formula(term_inds = term_inds, B = B)
 

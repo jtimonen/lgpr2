@@ -292,7 +292,7 @@ Project to submodel}
   term_inds = NULL,
   draw_inds = NULL,
   eval_mode = TRUE,
-  B = 20
+  B = 24
 )}\if{html}{\out{</div>}}
 }
 

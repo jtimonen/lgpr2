@@ -32,7 +32,6 @@ Longitudinal model class (R6 class)
 \item \href{#method-LonModel-create_standata}{\code{LonModel$create_standata()}}
 \item \href{#method-LonModel-fit}{\code{LonModel$fit()}}
 \item \href{#method-LonModel-as_gam_formula}{\code{LonModel$as_gam_formula()}}
-\item \href{#method-LonModel-fit_gam}{\code{LonModel$fit_gam()}}
 \item \href{#method-LonModel-clone}{\code{LonModel$clone()}}
 }
 }
@@ -227,7 +226,7 @@ A corresponding GAM formula
 \if{latex}{\out{\hypertarget{method-LonModel-as_gam_formula}{}}}
 \subsection{Method \code{as_gam_formula()}}{
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{LonModel$as_gam_formula(L = 1.5, B = 32, term_inds = NULL)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{LonModel$as_gam_formula(L = 1.5, B = 24, term_inds = NULL)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
@@ -237,26 +236,7 @@ A corresponding GAM formula
 
 \item{\code{B}}{number of basis functions}
 
-\item{\code{term_inds}}{term indices
-Fit as GAM}
-}
-\if{html}{\out{</div>}}
-}
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-LonModel-fit_gam"></a>}}
-\if{latex}{\out{\hypertarget{method-LonModel-fit_gam}{}}}
-\subsection{Method \code{fit_gam()}}{
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{LonModel$fit_gam(data, ...)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{data}}{data}
-
-\item{\code{...}}{arguments passed to \code{mgcv::gam}}
+\item{\code{term_inds}}{term indices}
 }
 \if{html}{\out{</div>}}
 }

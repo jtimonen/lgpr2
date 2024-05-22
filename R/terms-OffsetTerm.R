@@ -66,7 +66,7 @@ GroupedOffsetTerm <- R6::R6Class("GroupedOffsetTerm",
       self$create_standata_z(datasets)
     },
     as_gam_term = function(L, B) {
-      self$z_name
+      self$stanname_z("LON")
     }
   )
 )

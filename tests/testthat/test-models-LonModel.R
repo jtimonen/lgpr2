@@ -68,6 +68,8 @@ test_that("a gp example works with predict", {
     formula = "y ~ gp(x)",
     iter_warmup = 500, iter_sampling = 500, chains = 1
   )
+  d <- r$diagnose()
+  expect_equal(length(d), 4)
   p1 <- r$plot()
   p2 <- (r$function_draws() - r$function_draws("f_gp_x"))$plot()
   p3 <- (r$function_draws() + r$function_draws("f_gp_x"))$plot()
