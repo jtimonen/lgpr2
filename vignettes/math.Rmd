@@ -30,11 +30,13 @@ This section describes mathematically the model corresponding to
 the `LonModel` class.
 
 ## Observation model
-The likelihood of observation $i$ is
+
+With `GaussianLikelihood`, the likelihood of observation $i$ is
 $$
-y_i\sim \mathcal{N}(f_i, \sigma^2),
+y_i\sim \mathcal{N}(h_i, \sigma^2),
 $$
-where 
+where $h_i = f_i + \hat{C}$, $\hat{C}$ being set to the mean of the 
+$y_i$ data and
 
 $$
 f_i = f(\mathbf{x}_i)= \sum_{j=1}^J f^{(j)}(\mathbf{x}_i),
@@ -53,7 +55,7 @@ components and they are detailed next.
 
 ```{r}
 create_term <- function(term_str) {
-  m <- LonModel$new(y ~ ., baseline = term_str, compile = FALSE)
+  m <- LonModel$new(as.formula(paste0("y ~ ", term_str)), compile = FALSE)
   m$term_list$terms[[1]]
 }
 ```

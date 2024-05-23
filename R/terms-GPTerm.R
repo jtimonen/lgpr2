@@ -122,7 +122,9 @@ GPTerm <- R6::R6Class("GPTerm",
       c(dat, dat_z)
     },
     as_gam_term = function(L, B) {
-      create_hs_smooth(self$stanname_x("LON"), self$stanname_z("LON"), L, B)
+      s <- create_hs_smooth(self$stanname_x("LON"), self$stanname_z("LON"), L, B)
+      z <- self$stanname_z("LON")
+      paste0(s, " + ", z)
     }
   )
 )
