@@ -32,6 +32,8 @@ The 'LonModelFit' class
 \item \href{#method-LonModelFit-noise_amount}{\code{LonModelFit$noise_amount()}}
 \item \href{#method-LonModelFit-comp_vars}{\code{LonModelFit$comp_vars()}}
 \item \href{#method-LonModelFit-relevances}{\code{LonModelFit$relevances()}}
+\item \href{#method-LonModelFit-rank_terms}{\code{LonModelFit$rank_terms()}}
+\item \href{#method-LonModelFit-reduce}{\code{LonModelFit$reduce()}}
 \item \href{#method-LonModelFit-project}{\code{LonModelFit$project()}}
 \item \href{#method-LonModelFit-clone}{\code{LonModelFit$clone()}}
 }
@@ -278,7 +280,35 @@ Estimate component relevances
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{rvar}}{return an \code{rvar} vector?
+\item{\code{rvar}}{return an \code{rvar} vector?}
+}
+\if{html}{\out{</div>}}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-LonModelFit-rank_terms"></a>}}
+\if{latex}{\out{\hypertarget{method-LonModelFit-rank_terms}{}}}
+\subsection{Method \code{rank_terms()}}{
+Rank model terms based on relevance
+
+Reduce model
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{LonModelFit$rank_terms()}\if{html}{\out{</div>}}
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-LonModelFit-reduce"></a>}}
+\if{latex}{\out{\hypertarget{method-LonModelFit-reduce}{}}}
+\subsection{Method \code{reduce()}}{
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{LonModelFit$reduce(thresh = 0.95)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{thresh}}{Threshold for explained variance.
 Project to submodel}
 }
 \if{html}{\out{</div>}}

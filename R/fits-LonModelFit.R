@@ -253,6 +253,31 @@ LonModelFit <- R6::R6Class("LonModelFit",
       out
     },
 
+
+    #' @description
+    #' Rank model terms based on relevance
+    #'
+    rank_terms = function() {
+      p_exp <- mean(self$relevances())
+      sort(p_exp, decreasing = TRUE, index.return = TRUE)
+    },
+
+
+    #' Reduce model
+    #'
+    #' @param thresh Threshold for explained variance.
+    reduce = function(thresh = 0.95) {
+      p_exp <- self$rank_terms()
+      num_sel <- length(which(cumsum(r$x) < thresh)) + 1
+      rels <- p_exp$x
+      list(
+        relevance = rels,
+        order = p_exp$ix,
+        num_sel = num_sel,
+        selected = names(rels)[seq_len(num_sel)]
+      )
+    },
+
     #' Project to submodel
     #'
     #' @param term_inds Which terms to include in submodel?
