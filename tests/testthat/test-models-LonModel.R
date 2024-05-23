@@ -70,6 +70,8 @@ test_that("a gp example works with predict", {
   )
   d <- r$diagnose()
   expect_equal(length(d), 4)
+  red <- r$reduce()
+  expect_equal(red$selected[1], "p_noise")
   p1 <- r$plot()
   p2 <- (r$function_draws() - r$function_draws("f_gp_x"))$plot()
   p3 <- (r$function_draws() + r$function_draws("f_gp_x"))$plot()

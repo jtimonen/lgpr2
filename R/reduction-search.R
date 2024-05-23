@@ -35,10 +35,8 @@ ForwardSearch <- R6Class(
     get_candidates = function(cur_model, J) {
       j <- length(cur_model) + 1
       if (!is.null(self$path)) {
-        message("Using pre-defined search path")
-        cands <- self$path[j] # use pre-defined path
+        cands <- self$path[j] # using pre-defined path
       } else {
-        message("Possibly many alternative models at this step")
         cands <- setdiff(seq_len(J), cur_model)
       }
     },
@@ -115,7 +113,6 @@ ProjectionForwardSearch <- R6Class(
       elpd_loo_ref <- fit_ref$loo_estimate()
       history <- self$score(model, fit_ref, TRUE, NULL, elpd_loo_ref)
       kl0 <- history$kl
-      # thresh <- getOption("pp.threshold", default = 0.95)
 
       # Loop
       j <- 0

@@ -259,7 +259,16 @@ LonModelFit <- R6::R6Class("LonModelFit",
     #'
     rank_terms = function() {
       p_exp <- mean(self$relevances())
-      sort(p_exp, decreasing = TRUE, index.return = TRUE)
+      J <- length(p_exp)
+      p_noise <- p_exp[J]
+      p_exp <- p_exp[1:(J - 1)]
+      srt <- sort(p_exp, decreasing = TRUE, index.return = TRUE)
+      rels <- c(p_noise, srt$x)
+      names(rels)[1] <- "p_noise"
+      list(
+        relevances = rels,
+        order = srt$ix
+      )
     },
 
 
@@ -268,11 +277,11 @@ LonModelFit <- R6::R6Class("LonModelFit",
     #' @param thresh Threshold for explained variance.
     reduce = function(thresh = 0.95) {
       p_exp <- self$rank_terms()
-      num_sel <- length(which(cumsum(r$x) < thresh)) + 1
-      rels <- p_exp$x
+      num_sel <- length(which(cumsum(p_exp$relevances) < thresh)) + 1
+      rels <- p_exp$relevances
       list(
-        relevance = rels,
-        order = p_exp$ix,
+        relevance = p_exp$relevances,
+        order = p_exp$order,
         num_sel = num_sel,
         selected = names(rels)[seq_len(num_sel)]
       )
