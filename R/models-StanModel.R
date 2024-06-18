@@ -174,15 +174,7 @@ StanModel <- R6::R6Class("StanModel",
     create_stanmodel = function(dir = tempdir()) {
       code <- self$create_stancode(autoformat = FALSE)
       a <- cmdstanr::write_stan_file(code = code, dir = dir)
-
-      # silence compile warnings from cmdstan
-      utils::capture.output(
-        {
-          mod <- cmdstanr::cmdstan_model(a)
-        },
-        type = "message"
-      )
-      mod
+      cmdstanr::cmdstan_model(a)
     },
 
     #' @description
