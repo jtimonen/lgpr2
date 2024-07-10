@@ -4,20 +4,14 @@
 \alias{pp_forward_search}
 \title{Run projection predictive forward search}
 \usage{
-pp_forward_search(
-  fit_ref,
-  path = NULL,
-  num_steps = NULL,
-  S = 30,
-  S_eval = 100,
-  base_model = c()
-)
+pp_forward_search(fit_ref, path = NULL, num_steps = NULL, S = 30, S_eval = 100)
 }
 \arguments{
 \item{fit_ref}{The reference model fit.}
 
 \item{path}{Pre-defined search path. If \code{NULL}, path is
-not pre-defined.}
+not pre-defined. These indices are same as the index of the term in
+\code{fit_ref$get_model()$term_names()}.}
 
 \item{num_steps}{Number of steps to run. If \code{NULL}, the search stops
 when predictive performance of the submodel is close to that of reference
@@ -26,10 +20,6 @@ model.}
 \item{S}{Number of draws to project when selecting next step.}
 
 \item{S_eval}{Number of draws to project when evaluating step.}
-
-\item{base_model}{Indices of terms that should be in the model already
-in the beginning. These indices are same as the index of the term in
-\code{fit_ref$get_model()$term_names()}.}
 }
 \description{
 Run projection predictive forward search

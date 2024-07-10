@@ -45,24 +45,7 @@ ForwardSearch <- R6Class(
         cands <- setdiff(seq_len(J), cur_model)
         message("path not defined for this step -> possibly many candidates")
       }
-    },
-
-    # Perform search
-    run = function(...) {
-      J <- self$num_comps
-      model <- NULL
-      score <- NULL
-      while (length(model) < J) {
-        cands <- self$get_candidates(model, J)
-        cand_scores <- self$step(model, cands, ...)
-        i_best <- which(cand_scores == max(cand_scores))
-        score <- c(score, cand_scores[i_best])
-        model <- c(model, cands[i_best])
-        if (self$verbosity > 0) {
-          print(model)
-        }
-      }
-      list(path = model, score = score)
+      cands
     }
   )
 )
@@ -120,15 +103,17 @@ ProjectionForwardSearch <- R6Class(
       elpd_loo_ref <- fit_ref$loo_estimate()
       history <- self$score(model, fit_ref, TRUE, NULL, elpd_loo_ref)
       kl0 <- history$kl
+      j <- 0
 
       # Loop
       while (length(model) < J) {
-        j <- length(model)
+        j <- j + 1
         msg <- paste0("Step ", j, "/", J, ".")
         message(msg)
 
         # Choose best candidate
         cands <- self$get_candidates(model, J)
+        message("candidate terms: {", paste0(cands, collapse = ", "), "}")
         i_best <- self$step(model, cands, fit_ref)
 
         # Score the best candidate
