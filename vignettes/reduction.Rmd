@@ -48,14 +48,24 @@ fit$reduce()
 
 ## Search
 
+Here we pre-specify the search path completely based on relevances.
 
 ```{r, fig.width=7, fig.height=4}
-fs <- pp_forward_search(fit, rank$order, 4)
+path_rel <- rank$order
+print(path_rel)
+fs <- pp_forward_search(fit, path_rel, 4)
 
 plot_pp_pexp(fs)
 plot_pp_elpd(fs, fit$loo_estimate())
 ```
 
 
+Here we define only two steps of the path.
 
+```{r, fig.width=7, fig.height=4}
+fs2 <- pp_forward_search(fit, path = c(2, 3), 4)
+
+plot_pp_pexp(fs2)
+plot_pp_elpd(fs2, fit$loo_estimate())
+```
 

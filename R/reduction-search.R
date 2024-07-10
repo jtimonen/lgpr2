@@ -9,27 +9,20 @@ ForwardSearch <- R6Class(
     path = NULL, # possible predefined path
     draw_inds = NULL,
     draw_inds_eval = NULL,
-    base_model = NULL,
-
     # Init
     initialize = function(J, draw_inds, draw_inds_eval, path = NULL,
-                          num_steps = 1, base_model = c()) {
-      checkmate::assert_integerish(base_model, null.ok = TRUE)
+                          num_steps = 1) {
       checkmate::assert_integerish(path, null.ok = TRUE)
       checkmate::assert_integerish(num_steps, lower = 1)
       checkmate::assert_integerish(J, lower = 1)
       checkmate::assert_integerish(draw_inds, lower = 1)
       checkmate::assert_integerish(draw_inds_eval, lower = 1)
-      if (any(path %in% base_model)) {
-        stop("base_model should not be included in path")
-      }
       self$num_comps <- J
       self$verbosity <- 1
       self$path <- path
       self$num_steps <- num_steps
       self$draw_inds <- draw_inds
       self$draw_inds_eval <- draw_inds_eval
-      self$base_model <- base_model
     },
 
     # Score a model
@@ -45,17 +38,19 @@ ForwardSearch <- R6Class(
     # Get candidate models at current step
     get_candidates = function(cur_model, J) {
       j <- length(cur_model) + 1
-      if (!is.null(self$path)) {
+      if (length(self$path) >= j) {
         cands <- self$path[j] # using pre-defined path
+        message("path has been defined for this step")
       } else {
         cands <- setdiff(seq_len(J), cur_model)
+        message("path not defined for this step -> possibly many candidates")
       }
     },
 
     # Perform search
     run = function(...) {
       J <- self$num_comps
-      model <- self$base_model
+      model <- NULL
       score <- NULL
       while (length(model) < J) {
         cands <- self$get_candidates(model, J)
@@ -119,7 +114,7 @@ ProjectionForwardSearch <- R6Class(
     # Perform search
     run = function(fit_ref, ...) {
       J <- self$num_comps
-      model <- self$base_model
+      model <- NULL
       score <- NULL
       elpd <- NULL
       elpd_loo_ref <- fit_ref$loo_estimate()
@@ -127,9 +122,8 @@ ProjectionForwardSearch <- R6Class(
       kl0 <- history$kl
 
       # Loop
-      j <- 0
       while (length(model) < J) {
-        j <- j + 1
+        j <- length(model)
         msg <- paste0("Step ", j, "/", J, ".")
         message(msg)
 
@@ -170,17 +164,15 @@ ProjectionForwardSearch <- R6Class(
 #' @export
 #' @param fit_ref The reference model fit.
 #' @param path Pre-defined search path. If \code{NULL}, path is
-#' not pre-defined.
+#' not pre-defined. These indices are same as the index of the term in
+#' \code{fit_ref$get_model()$term_names()}.
 #' @param num_steps Number of steps to run. If \code{NULL}, the search stops
 #' when predictive performance of the submodel is close to that of reference
 #' model.
 #' @param S Number of draws to project when selecting next step.
 #' @param S_eval Number of draws to project when evaluating step.
-#' @param base_model Indices of terms that should be in the model already
-#' in the beginning. These indices are same as the index of the term in
-#' \code{fit_ref$get_model()$term_names()}.
 pp_forward_search <- function(fit_ref, path = NULL, num_steps = NULL,
-                              S = 30, S_eval = 100, base_model = c()) {
+                              S = 30, S_eval = 100) {
   checkmate::assert_class(fit_ref, "LonModelFit")
   J <- length(fit_ref$get_model()$term_list$terms)
   S_tot <- fit_ref$num_draws()
@@ -191,7 +183,7 @@ pp_forward_search <- function(fit_ref, path = NULL, num_steps = NULL,
   draw_inds <- sample.int(S_tot, S)
   draw_inds_eval <- sample.int(S_tot, S_eval)
   a <- ProjectionForwardSearch$new(
-    J, draw_inds, draw_inds_eval, path, num_steps, base_model
+    J, draw_inds, draw_inds_eval, path, num_steps
   )
   a$run(fit_ref)
 }
