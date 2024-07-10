@@ -187,7 +187,7 @@ plot_pp_pexp <- function(res, thresh = 0.95) {
     geom_hline(yintercept = thresh, color = "firebrick3", lty = 2) +
     ylab("1 - KL / KL0")
   out <- out + geom_line() + geom_point() +
-    xlab("Number of variables") + ggtitle("Forward search")
+    xlab("Number of terms") + ggtitle("Forward search")
   return(out)
 }
 
@@ -225,7 +225,7 @@ plot_pp_elpd <- function(res, elpd_ref) {
   )
   out <- out + geom_line() + geom_point() +
     geom_line(data = data.frame(num_vars, elpd), lty = 2, color = "firebrick3") +
-    xlab("Number of variables") +
+    xlab("Number of terms") +
     ggtitle("Forward search", subtitle = st)
   return(out)
 }
