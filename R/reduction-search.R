@@ -13,7 +13,6 @@ ForwardSearch <- R6Class(
     initialize = function(J, draw_inds, draw_inds_eval, path = NULL,
                           num_steps = 1) {
       checkmate::assert_integerish(path, null.ok = TRUE)
-      checkmate::assert_integerish(num_steps, lower = 1)
       checkmate::assert_integerish(J, lower = 1)
       checkmate::assert_integerish(draw_inds, lower = 1)
       checkmate::assert_integerish(draw_inds_eval, lower = 1)
