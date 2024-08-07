@@ -4,7 +4,15 @@
 \alias{pp_forward_search}
 \title{Run projection predictive forward search}
 \usage{
-pp_forward_search(fit_ref, path = NULL, num_steps = NULL, S = 30, S_eval = 100)
+pp_forward_search(
+  fit_ref,
+  path = NULL,
+  num_steps = NULL,
+  S = 30,
+  S_eval = 100,
+  B = 24,
+  random_idx = NULL
+)
 }
 \arguments{
 \item{fit_ref}{The reference model fit.}
@@ -20,6 +28,10 @@ model.}
 \item{S}{Number of draws to project when selecting next step.}
 
 \item{S_eval}{Number of draws to project when evaluating step.}
+
+\item{B}{number of basis functions}
+
+\item{random_idx}{index of the "random effect" term}
 }
 \description{
 Run projection predictive forward search

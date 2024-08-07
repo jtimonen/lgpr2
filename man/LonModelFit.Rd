@@ -323,7 +323,8 @@ Project to submodel}
   term_inds = NULL,
   draw_inds = NULL,
   eval_mode = TRUE,
-  B = 30
+  B = 24,
+  random_idx = NULL
 )}\if{html}{\out{</div>}}
 }
 
@@ -338,6 +339,9 @@ draws are taken randomly.}
 \item{\code{eval_mode}}{Model evaluation mode?}
 
 \item{\code{B}}{number of basis functions}
+
+\item{\code{random_idx}}{Index of random term. If used, the projection
+is a GAMM instead of a GAM.}
 }
 \if{html}{\out{</div>}}
 }

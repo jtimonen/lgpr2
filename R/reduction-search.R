@@ -9,13 +9,19 @@ ForwardSearch <- R6Class(
     path = NULL, # possible predefined path
     draw_inds = NULL,
     draw_inds_eval = NULL,
+    B = NULL,
+    random_idx = NULL,
+
     # Init
     initialize = function(J, draw_inds, draw_inds_eval, path = NULL,
-                          num_steps = 1) {
+                          num_steps = 1, B = 24, random_idx = NULL) {
       checkmate::assert_integerish(path, null.ok = TRUE)
       checkmate::assert_integerish(J, lower = 1)
       checkmate::assert_integerish(draw_inds, lower = 1)
       checkmate::assert_integerish(draw_inds_eval, lower = 1)
+      checkmate::assert_integerish(B, lower = 1)
+      self$B <- B
+      self$random_idx <- random_idx
       self$num_comps <- J
       self$verbosity <- 1
       self$path <- path
@@ -64,7 +70,10 @@ ProjectionForwardSearch <- R6Class(
       } else {
         di <- self$draw_inds_eval
       }
-      res <- fit_ref$project(model, eval_mode = eval_mode, draw_inds = di)
+      res <- fit_ref$project(model,
+        eval_mode = eval_mode, draw_inds = di,
+        B = self$B, random_idx = self$random_idx
+      )
       res <- res$metrics
       res$score <- -res$kl
       if (is.null(kl0)) {
@@ -155,8 +164,10 @@ ProjectionForwardSearch <- R6Class(
 #' model.
 #' @param S Number of draws to project when selecting next step.
 #' @param S_eval Number of draws to project when evaluating step.
+#' @param B number of basis functions
+#' @param random_idx index of the "random effect" term
 pp_forward_search <- function(fit_ref, path = NULL, num_steps = NULL,
-                              S = 30, S_eval = 100) {
+                              S = 30, S_eval = 100, B = 24, random_idx = NULL) {
   checkmate::assert_class(fit_ref, "LonModelFit")
   J <- length(fit_ref$get_model()$term_list$terms)
   S_tot <- fit_ref$num_draws()
@@ -167,7 +178,7 @@ pp_forward_search <- function(fit_ref, path = NULL, num_steps = NULL,
   draw_inds <- sample.int(S_tot, S)
   draw_inds_eval <- sample.int(S_tot, S_eval)
   a <- ProjectionForwardSearch$new(
-    J, draw_inds, draw_inds_eval, path, num_steps
+    J, draw_inds, draw_inds_eval, path, num_steps, B, random_idx
   )
   a$run(fit_ref)
 }

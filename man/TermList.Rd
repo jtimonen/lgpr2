@@ -24,6 +24,7 @@ function components.}
 \subsection{Public methods}{
 \itemize{
 \item \href{#method-TermList-as_gam_formula}{\code{TermList$as_gam_formula()}}
+\item \href{#method-TermList-as_random_offset_formula}{\code{TermList$as_random_offset_formula()}}
 \item \href{#method-TermList-new}{\code{TermList$new()}}
 \item \href{#method-TermList-string}{\code{TermList$string()}}
 \item \href{#method-TermList-input_vars}{\code{TermList$input_vars()}}
@@ -66,7 +67,24 @@ function components.}
 
 \item{\code{B}}{number of basis functions}
 
-\item{\code{term_inds}}{term indices}
+\item{\code{term_inds}}{term indices
+Random formula}
+}
+\if{html}{\out{</div>}}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-TermList-as_random_offset_formula"></a>}}
+\if{latex}{\out{\hypertarget{method-TermList-as_random_offset_formula}{}}}
+\subsection{Method \code{as_random_offset_formula()}}{
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{TermList$as_random_offset_formula(term_index = NULL)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{term_index}}{term index, use only categorical vars here}
 }
 \if{html}{\out{</div>}}
 }

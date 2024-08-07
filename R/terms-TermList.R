@@ -95,11 +95,21 @@ TermList <- R6::R6Class("TermList",
     #' @param B number of basis functions
     #' @param term_inds term indices
     as_gam_formula = function(L, B, term_inds = NULL) {
-      if (is.null(term_inds)) {
+      if (length(term_inds) == 0) {
         return("1")
       }
       a <- sapply(self$terms[term_inds], function(x) x$as_gam_term(L, B))
       paste(a, collapse = " + ")
+    },
+
+    #' Random formula
+    #'
+    #' @param term_index term index, use only categorical vars here
+    as_random_offset_formula = function(term_index = NULL) {
+      a <- self$terms[[term_index]]$as_gam_term(1, 1)
+      out <- list(~1)
+      names(out) <- a
+      out
     },
 
     #' @description

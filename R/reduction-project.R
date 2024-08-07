@@ -1,5 +1,5 @@
 # Projection
-project_draws <- function(fit, dat, h_df, formula) {
+project_draws <- function(fit, dat, h_df, formula, random_form) {
   checkmate::assert_class(fit, "LonModelFit")
   checkmate::assert_class(dat, "data.frame")
   checkmate::assert_class(h_df, "data.frame")
@@ -21,7 +21,10 @@ project_draws <- function(fit, dat, h_df, formula) {
     h_s <- h_df %>% dplyr::filter(.draw_idx == udidx[s])
     mu_ref <- h_s$value
     dat_mgcv[[model$stanname_y()]] <- mu_ref
-    projs[[s]] <- project_draw(formula, y_data, mu_ref, dat_mgcv, sigma_ref[s])
+    projs[[s]] <- project_draw(
+      formula, y_data, mu_ref, dat_mgcv, sigma_ref[s],
+      random_form
+    )
   }
   list(
     gam_fits = sapply(projs, function(x) x$gam_fit),
@@ -34,8 +37,13 @@ project_draws <- function(fit, dat, h_df, formula) {
 }
 
 # Project single draw
-project_draw <- function(formula, y_dat, mu_ref, df, sigma_ref) {
-  gam_fit <- project_gam.mgcv(formula, df)
+project_draw <- function(formula, y_dat, mu_ref, df, sigma_ref, random_form) {
+  if (is.null(random_form)) {
+    gam_fit <- project_gam.mgcv(formula, df)
+  } else {
+    gam_fit <- project_gamm.mgcv(formula, df, random_form)
+  }
+
   mu_proj <- as.numeric(predict(gam_fit))
   sigma_proj <- project_sigma(sigma_ref, mu_ref, mu_proj)
   kl_div <- kl_divergence_gaussians(mu_ref, mu_proj, sigma_ref, sigma_proj)
@@ -64,6 +72,19 @@ project_gam.mgcv <- function(form, dat, ...) {
   mgcv::gam(form, data = dat, min.sp = min_sp, ...)
 }
 
+# Project to a GAMM using gamm
+project_gamm.mgcv <- function(form, dat, random_form, ...) {
+  min_sp <- getOption("min.sp", default = NULL)
+  if (!is.null(min_sp)) {
+    D <- length(attr(terms(form), "term.labels"))
+    min_sp <- rep(min_sp, D)
+  }
+  res <- mgcv::gamm(form,
+    data = dat, random = random_form, min.sp = min_sp,
+    ...
+  )
+  res$gam
+}
 
 # Euclidean norm squared
 squared_euc_norm <- function(x) {

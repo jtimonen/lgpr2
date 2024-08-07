@@ -7,7 +7,6 @@ LonModelFit <- R6::R6Class("LonModelFit",
   public = list(
     term_confs = NULL,
 
-
     #' @description
     #' Create model fit object
     #'
@@ -294,10 +293,21 @@ LonModelFit <- R6::R6Class("LonModelFit",
     #' draws are taken randomly.
     #' @param eval_mode Model evaluation mode?
     #' @param B number of basis functions
+    #' @param random_idx Index of random term. If used, the projection
+    #' is a GAMM instead of a GAM.
     project = function(term_inds = NULL, draw_inds = NULL, eval_mode = TRUE,
-                       B = 30) {
+                       B = 24, random_idx = NULL) {
       m <- self$get_model()
+      term_inds <- setdiff(term_inds, random_idx)
       form <- m$as_gam_formula(term_inds = term_inds, B = B)
+      if (!is.null(random_idx)) {
+        random_form <- m$term_list$as_random_offset_formula(random_idx)
+      } else {
+        random_form <- NULL
+      }
+      print(form)
+      print(random_form)
+
 
       # Prepare
       h_ref <- self$function_draws()
@@ -316,7 +326,7 @@ LonModelFit <- R6::R6Class("LonModelFit",
       dat <- transform_df(m, dat)
 
       # Do the work
-      pd <- project_draws(self, dat, h_df, form)
+      pd <- project_draws(self, dat, h_df, form, random_form)
 
       # Metrics
       loglik_mat <- pd$loglik_proj
