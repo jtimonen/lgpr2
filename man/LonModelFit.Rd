@@ -334,7 +334,7 @@ Project to submodel}
 \item{\code{term_inds}}{Which terms to include in submodel?}
 
 \item{\code{draw_inds}}{Which posterior draws to use. If \code{NULL}, 30
-draws are taken randomly.}
+draws are taken randomly (100 in eval mode).}
 
 \item{\code{eval_mode}}{Model evaluation mode?}
 

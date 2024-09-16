@@ -290,7 +290,7 @@ LonModelFit <- R6::R6Class("LonModelFit",
     #'
     #' @param term_inds Which terms to include in submodel?
     #' @param draw_inds Which posterior draws to use. If \code{NULL}, 30
-    #' draws are taken randomly.
+    #' draws are taken randomly (100 in eval mode).
     #' @param eval_mode Model evaluation mode?
     #' @param B number of basis functions
     #' @param random_idx Index of random term. If used, the projection
@@ -308,7 +308,6 @@ LonModelFit <- R6::R6Class("LonModelFit",
       print(form)
       print(random_form)
 
-
       # Prepare
       h_ref <- self$function_draws()
       S <- h_ref$num_draws()
@@ -318,6 +317,7 @@ LonModelFit <- R6::R6Class("LonModelFit",
         } else {
           S <- 30
         }
+        message("draw_inds not given, using ", S, " subsampled draws")
         draw_inds <- sample.int(S, size = S)
       }
       h_df <- h_ref$as_data_frame_long()
