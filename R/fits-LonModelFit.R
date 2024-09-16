@@ -70,9 +70,9 @@ LonModelFit <- R6::R6Class("LonModelFit",
       }
       f_name <- component
 
-      if (f_name == "f_sum" || f_name == "y_log_pred" || f_name == "h") {
-        if (f_name == "y_log_pred") {
-          f_name <- paste0(mod$y_var, "_log_pred")
+      if (f_name == "f_sum" || f_name == "y_pred" || f_name == "h") {
+        if (f_name == "y_pred") {
+          f_name <- paste0(mod$y_var, "_pred")
         }
 
         # The total sum or predictive
@@ -117,7 +117,7 @@ LonModelFit <- R6::R6Class("LonModelFit",
       dat <- self$get_data("LON")
       yn <- self$get_model("lon")$y_var
       if (predictive) {
-        f_name <- "y_log_pred"
+        f_name <- "y_pred"
       } else {
         f_name <- "h"
       }

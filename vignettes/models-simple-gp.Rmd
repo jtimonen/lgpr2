@@ -1,9 +1,9 @@
 ---
-title: "Simple GP model"
+title: "Simple approximate GP model using lgpr2"
 author: "Juho Timonen"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Simple GP model}
+  %\VignetteIndexEntry{Simple approximate GP model using lgpr2}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

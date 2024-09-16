@@ -110,7 +110,7 @@ GaussianLikelihood <- R6::R6Class("GaussianLikelihood",
     stancode_gq = function(y_name, stanname_y) {
       y_var <- y_name
       def_ll <- paste0("  vector[n_LON] log_lik;")
-      sylp <- paste0(y_var, "_log_pred")
+      sylp <- paste0(y_var, "_pred")
       def_yp <- paste0("  vector[n_LON] ", sylp, ";")
       line_h <- paste0("  vector[n_LON] h = h_LON;")
       line_yp <- paste0(

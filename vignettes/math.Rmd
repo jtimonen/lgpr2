@@ -24,12 +24,11 @@ library(ggplot2)
 library(lgpr2)
 ```
 
-# Longitudinal model
 
 This section describes mathematically the model corresponding to 
 the `LonModel` class.
 
-## Observation model
+# Observation model
 
 With `GaussianLikelihood`, the likelihood of observation $i$ is
 $$
@@ -50,7 +49,7 @@ and possible other factors or continuous covariates.
 The functions $f^{(j)}$, $j=1, \ldots, J$ are the additive function
 components and they are detailed next.
 
-## Model terms
+# Model terms
 
 
 ```{r}
@@ -63,7 +62,7 @@ create_term <- function(term_str) {
 The model can have a different number $J$ of terms, depending on the 
 `formula` that is given.
 
-### `GroupedOffsetTerm`
+## `GroupedOffsetTerm`
 
 ```{r}
 term <- create_term("offset(g)")
@@ -79,7 +78,7 @@ parameter for each level of the grouping variable. These parameters have
 independent priors.
 
 
-### Shared GP terms (`GPTerm`)
+## Shared GP terms (`GPTerm`)
 
 ```{r}
 term <- create_term("gp(x)")
@@ -123,7 +122,7 @@ the interval $x \in (-L, L)$.
 The unknown parameters of a shared GP term are $\alpha, \ell$ and 
 $\mathbf{\xi} \in \mathbb{R}^B$.
 
-### Group-specific GP terms (`GPTerm`)
+## Group-specific GP terms (`GPTerm`)
 
 ```{r}
 term <- create_term("gp(x, z)")
