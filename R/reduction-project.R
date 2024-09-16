@@ -1,4 +1,4 @@
-# Projection
+# Projection (only works with Gaussian obs model currently)
 project_draws <- function(fit, dat, h_df, formula, random_form) {
   checkmate::assert_class(fit, "LonModelFit")
   checkmate::assert_class(dat, "data.frame")
@@ -7,7 +7,7 @@ project_draws <- function(fit, dat, h_df, formula, random_form) {
 
   # Extract things
   model <- fit$get_model()
-  udidx <- unique(h_df$.draw_idx)
+  udidx <- unique(h_df[[".draw_idx"]])
   sigma_ref <- posterior::as_draws_array(fit$draws("sigma"))
   y_data <- dat[[model$stanname_y()]] # actual data
 

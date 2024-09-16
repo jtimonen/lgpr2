@@ -49,7 +49,9 @@ The 'LonModelFit' class
 <li><span class="pkg-link" data-pkg="lgpr2" data-topic="StanModelFit" data-id="get_stan_fit"><a href='../../lgpr2/html/StanModelFit.html#method-StanModelFit-get_stan_fit'><code>lgpr2::StanModelFit$get_stan_fit()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="lgpr2" data-topic="StanModelFit" data-id="gq"><a href='../../lgpr2/html/StanModelFit.html#method-StanModelFit-gq'><code>lgpr2::StanModelFit$gq()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="lgpr2" data-topic="StanModelFit" data-id="loglik"><a href='../../lgpr2/html/StanModelFit.html#method-StanModelFit-loglik'><code>lgpr2::StanModelFit$loglik()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="lgpr2" data-topic="StanModelFit" data-id="loglik_matrix"><a href='../../lgpr2/html/StanModelFit.html#method-StanModelFit-loglik_matrix'><code>lgpr2::StanModelFit$loglik_matrix()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="lgpr2" data-topic="StanModelFit" data-id="loo_estimate"><a href='../../lgpr2/html/StanModelFit.html#method-StanModelFit-loo_estimate'><code>lgpr2::StanModelFit$loo_estimate()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="lgpr2" data-topic="StanModelFit" data-id="loo_object"><a href='../../lgpr2/html/StanModelFit.html#method-StanModelFit-loo_object'><code>lgpr2::StanModelFit$loo_object()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="lgpr2" data-topic="StanModelFit" data-id="num_draws"><a href='../../lgpr2/html/StanModelFit.html#method-StanModelFit-num_draws'><code>lgpr2::StanModelFit$num_draws()</code></a></span></li>
 </ul>
 </details>

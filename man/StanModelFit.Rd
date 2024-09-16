@@ -20,7 +20,9 @@ The Fit class
 \item \href{#method-StanModelFit-draws}{\code{StanModelFit$draws()}}
 \item \href{#method-StanModelFit-num_draws}{\code{StanModelFit$num_draws()}}
 \item \href{#method-StanModelFit-loglik}{\code{StanModelFit$loglik()}}
+\item \href{#method-StanModelFit-loglik_matrix}{\code{StanModelFit$loglik_matrix()}}
 \item \href{#method-StanModelFit-loo_estimate}{\code{StanModelFit$loo_estimate()}}
+\item \href{#method-StanModelFit-loo_object}{\code{StanModelFit$loo_object()}}
 \item \href{#method-StanModelFit-gq}{\code{StanModelFit$gq()}}
 \item \href{#method-StanModelFit-clone}{\code{StanModelFit$clone()}}
 }
@@ -151,12 +153,43 @@ Extract log likelihood as 'rvars'.
 
 }
 \if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-StanModelFit-loglik_matrix"></a>}}
+\if{latex}{\out{\hypertarget{method-StanModelFit-loglik_matrix}{}}}
+\subsection{Method \code{loglik_matrix()}}{
+Extract the log likelihood matrix with shape \code{n_draws} x
+\code{n_eval_points}.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{StanModelFit$loglik_matrix()}\if{html}{\out{</div>}}
+}
+
+}
+\if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-StanModelFit-loo_estimate"></a>}}
 \if{latex}{\out{\hypertarget{method-StanModelFit-loo_estimate}{}}}
 \subsection{Method \code{loo_estimate()}}{
 Returns estimate and standard error for ELPD
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{StanModelFit$loo_estimate(rerun = FALSE, ...)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{rerun}}{Re-run loo even if its result is already cached.}
+
+\item{\code{...}}{Arguments passed to \code{loo:loo()}. Will only matter
+if re-running or running loo for the first time.}
+}
+\if{html}{\out{</div>}}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-StanModelFit-loo_object"></a>}}
+\if{latex}{\out{\hypertarget{method-StanModelFit-loo_object}{}}}
+\subsection{Method \code{loo_object()}}{
+Returns loo object.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{StanModelFit$loo_object(rerun = FALSE, ...)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{

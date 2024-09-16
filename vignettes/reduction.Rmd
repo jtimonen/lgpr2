@@ -1,8 +1,8 @@
 ---
-title: "relevances"
+title: "Model reduction"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{relevances}
+  %\VignetteIndexEntry{Model reduction}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -26,6 +26,9 @@ mod <- LonModel$new(y ~ gp(x1) + gp(x2) + gp(x3) + gp(x4))
 
 ## Experiment
 
+Here we generate data with variables $x_1$, $x_2$, $x_3$ and $x_4$. Only
+$x_2$ is associated with the response $y$ and others are irrelevant.
+
 ```{r}
 run_experiment <- function(model, sigma = 0.2) {
   dat <- simulate(40, 0.3, c(0, 1, 0, 0), sigma)
@@ -33,12 +36,18 @@ run_experiment <- function(model, sigma = 0.2) {
   colnames(df)[ncol(df)] <- "y"
   model$fit(data = df, chains = 2, refresh = 0)
 }
+```
 
+We first fit a full model with all variables included.
+
+```{r}
 fit <- run_experiment(mod)
 ```
 
 ## Relevances
 
+Here we show how to rank components based on their relevance based on a 
+variance decomposition.
 
 ```{r}
 rank <- fit$rank_terms()
@@ -46,7 +55,7 @@ print(rank)
 fit$reduce()
 ```
 
-## Search
+## Projection predictive method
 
 Here we pre-specify the search path completely based on relevances.
 

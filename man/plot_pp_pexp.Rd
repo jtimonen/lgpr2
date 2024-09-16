@@ -2,7 +2,7 @@
 % Please edit documentation in R/reduction-search.R
 \name{plot_pp_pexp}
 \alias{plot_pp_pexp}
-\title{Plot result of projection predictive forward search (p_explained)}
+\title{Plot a result of projection predictive forward search (p_kl)}
 \usage{
 plot_pp_pexp(res, thresh = 0.95)
 }
@@ -12,5 +12,5 @@ plot_pp_pexp(res, thresh = 0.95)
 \item{thresh}{A horizontal line.}
 }
 \description{
-Plot result of projection predictive forward search (p_explained)
+Plot a result of projection predictive forward search (p_kl)
 }

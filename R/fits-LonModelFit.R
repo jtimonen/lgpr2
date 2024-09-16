@@ -305,8 +305,6 @@ LonModelFit <- R6::R6Class("LonModelFit",
       } else {
         random_form <- NULL
       }
-      print(form)
-      print(random_form)
 
       # Prepare
       h_ref <- self$function_draws()
@@ -330,21 +328,29 @@ LonModelFit <- R6::R6Class("LonModelFit",
 
       # Metrics
       loglik_mat <- pd$loglik_proj
-      elpd <- mean(colSums(loglik_mat))
+      mlpd <- mean(colSums(loglik_mat))
       if (eval_mode) {
         loo <- loo::loo(t(loglik_mat))
+        loo_ref <- self$loo_object()
+        loo_cmp <- loo::loo_compare(list(ref = loo_ref, sub = loo))
         loo_est <- as.numeric(loo$estimates[1, ])
+        loo_metrics <- loo_cmp[2, 1:4]
       } else {
         loo <- NULL
+        loo_metrics <- c(NA, NA, NA, NA)
         loo_est <- c(NA, NA)
       }
 
       # Return
       metrics <- data.frame(
         kl = mean(pd$kl_div),
-        elpd = elpd,
+        mlpd = mlpd,
         elpd_loo = loo_est[1],
-        elpd_loo_se = loo_est[2]
+        elpd_loo_se = loo_est[2],
+        elpd_loo2 = loo_metrics[3],
+        elpd_loo2_se = loo_metrics[4],
+        elpd_diff = -loo_metrics[1],
+        elpd_diff_se = loo_metrics[2]
       )
       list(
         metrics = metrics,

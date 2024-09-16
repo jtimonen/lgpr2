@@ -79,9 +79,12 @@ ProjectionForwardSearch <- R6Class(
       if (is.null(kl0)) {
         kl0 <- res$kl
       }
-      res$p_explained <- 1.0 - res$kl / kl0
+      res$p_kl <- 1.0 - res$kl / kl0
+      edr_alt <- res$elpd_diff / res$elpd_diff_se
       edr <- as.numeric((elpd_loo_ref[1] - res$elpd_loo) / elpd_loo_ref[2])
+      res$elpd_loo_rel_diff_alt <- edr_alt
       res$elpd_loo_rel_diff <- edr
+      rownames(res) <- paste(model, collapse = "-")
       res
     },
 
@@ -133,7 +136,11 @@ ProjectionForwardSearch <- R6Class(
         history <- rbind(history, new_row)
         model <- c(model, cands[i_best])
         edr <- new_row$elpd_loo_rel_diff
-        cat("elpd_loo_rel_diff = ", edr, "\n", sep = "")
+        edr_alt <- new_row$elpd_loo_rel_diff_alt
+        message("elpd_loo_rel_diff = ", round(edr, 5),
+          " (alt. version = ", round(edr_alt, 5), ")",
+          sep = ""
+        )
         if (is.null(self$num_steps)) {
           if (edr < 1) {
             break
@@ -183,7 +190,7 @@ pp_forward_search <- function(fit_ref, path = NULL, num_steps = NULL,
   a$run(fit_ref)
 }
 
-#' Plot result of projection predictive forward search (p_explained)
+#' Plot a result of projection predictive forward search (p_kl)
 #'
 #' @export
 #' @param res The list returned by \code{\link{pp_forward_search}}
@@ -191,7 +198,7 @@ pp_forward_search <- function(fit_ref, path = NULL, num_steps = NULL,
 plot_pp_pexp <- function(res, thresh = 0.95) {
   J <- length(res$path)
   num_vars <- c(0, 1:J)
-  p_exp <- res$history$p_explained
+  p_exp <- res$history$p_kl
   df <- data.frame(num_vars, p_exp)
   out <- ggplot(df, aes(x = num_vars, y = p_exp)) +
     geom_hline(yintercept = thresh, color = "firebrick3", lty = 2) +
@@ -227,14 +234,17 @@ plot_pp_elpd <- function(res, elpd_ref) {
       lty = 1
     ) +
     ylab("ELPD")
-  elpd <- res$history$elpd
+  mlpd <- res$history$mlpd
   st <- paste0(
     "blue = ref. model PSIS-LOO, ",
     "black = submodel PSI-LOO, ",
-    "red = submodel full data"
+    "red = submodel full data MLPD"
   )
   out <- out + geom_line() + geom_point() +
-    geom_line(data = data.frame(num_vars, elpd), lty = 2, color = "firebrick3") +
+    geom_line(
+      data = data.frame(num_vars, mlpd), lty = 2, color = "firebrick3",
+      aes(x = num_vars, y = mlpd)
+    ) +
     xlab("Number of terms") +
     ggtitle("Forward search", subtitle = st)
   return(out)

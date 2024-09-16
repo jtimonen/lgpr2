@@ -88,18 +88,37 @@ StanModelFit <- R6::R6Class("StanModelFit",
     },
 
     #' @description
+    #' Extract the log likelihood matrix with shape \code{n_draws} x
+    #' \code{n_eval_points}.
+    loglik_matrix = function() {
+      sf <- self$get_stan_fit()
+      posterior::as_draws_matrix(sf$draws("log_lik"))
+    },
+
+    #' @description
     #' Returns estimate and standard error for ELPD
     #'
     #' @param rerun Re-run loo even if its result is already cached.
     #' @param ... Arguments passed to \code{loo:loo()}. Will only matter
     #' if re-running or running loo for the first time.
     loo_estimate = function(rerun = FALSE, ...) {
+      loo <- self$loo_object(rerun = rerun, ...)
+      as.numeric(loo$estimates[1, ])
+    },
+
+    #' @description
+    #' Returns loo object.
+    #'
+    #' @param rerun Re-run loo even if its result is already cached.
+    #' @param ... Arguments passed to \code{loo:loo()}. Will only matter
+    #' if re-running or running loo for the first time.
+    loo_object = function(rerun = FALSE, ...) {
       if (is.null(private$loo) || rerun) {
-        message("loo not run yet, running it now...")
+        message("loo not run yet or rerun=TRUE, running loo now...")
         log_lik <- self$loglik()
         private$loo <- loo::loo(posterior::as_draws_matrix(log_lik), ...)
       }
-      as.numeric(private$loo$estimates[1, ])
+      private$loo
     },
 
     #' @description Generate quantities using the fit.
