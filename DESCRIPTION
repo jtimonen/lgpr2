@@ -1,7 +1,7 @@
 Package: lgpr2
 Type: Package
-Title: Additive GP modeling
-Version: 0.0.5
+Title: Approximate additive GP modeling
+Version: 0.0.6
 Authors@R:
     c(person(given = "Juho",
            family = "Timonen",
@@ -13,7 +13,8 @@ Authors@R:
            role = c("cph", "fnd")
            )
     )
-Description: Approximate longitudinal Gaussian process modeling.
+Description: Approximate additive GP modeling and model reduction for 
+  longitudinal data.
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.3.1
