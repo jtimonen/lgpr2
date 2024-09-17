@@ -1,7 +1,12 @@
 ---
 title: "Simple approximate GP model using lgpr2"
 author: "Juho Timonen"
-output: rmarkdown::html_vignette
+date: 17th September 2024
+output: 
+  rmarkdown::html_vignette:
+    toc: true
+    toc_depth: 3
+    number_sections: true
 vignette: >
   %\VignetteIndexEntry{Simple approximate GP model using lgpr2}
   %\VignetteEngine{knitr::rmarkdown}
@@ -20,11 +25,8 @@ library(ggplot2)
 library(lgpr2)
 ```
 
-This is probably the simplest possible GP model.
-```{r model}
-m <- LonModel$new(y ~ gp(x))
-m
-```
+
+# Simulated data
 
 We create rapidly wiggling data.
 ```{r data}
@@ -35,6 +37,16 @@ yy <- ff + rnorm(n = length(xx), mean = 0, sd = 1)
 a <- data.frame(x = xx, y = yy)
 head(a)
 ```
+
+# Model definition
+
+This is probably the simplest possible GP model.
+```{r model}
+m <- LonModel$new(y ~ gp(x))
+m
+```
+
+# Model fitting
 
 We fit the model using different numbers of basis functions (`num_bf`).
 ```{r fits, fig.width=7, fig.height=4}
@@ -51,3 +63,9 @@ plots
 We notice that a too low number of basis functions is not enough to recover the
 true signal well.
 
+# Stan code
+
+We print the model Stan code here.
+```{r stancode}
+cat(m$create_stancode())
+```

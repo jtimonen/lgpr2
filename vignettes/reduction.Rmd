@@ -1,8 +1,14 @@
 ---
-title: "Model reduction"
-output: rmarkdown::html_vignette
+title: "Model reduction example using lgpr2"
+author: "Juho Timonen"
+date: 17th September 2024
+output: 
+  rmarkdown::html_vignette:
+    toc: true
+    toc_depth: 3
+    number_sections: true
 vignette: >
-  %\VignetteIndexEntry{Model reduction}
+  %\VignetteIndexEntry{Model reduction example using lgpr2}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -18,13 +24,8 @@ knitr::opts_chunk$set(
 library(lgpr2)
 ```
 
-## Model
 
-```{r}
-mod <- LonModel$new(y ~ gp(x1) + gp(x2) + gp(x3) + gp(x4))
-```
-
-## Experiment
+# Simulated data
 
 Here we generate data with variables $x_1$, $x_2$, $x_3$ and $x_4$. Only
 $x_2$ is associated with the response $y$ and others are irrelevant.
@@ -38,13 +39,20 @@ run_experiment <- function(model, sigma = 0.2) {
 }
 ```
 
+
+# Fitting a full reference model
+
 We first fit a full model with all variables included.
+
+```{r}
+mod <- LonModel$new(y ~ gp(x1) + gp(x2) + gp(x3) + gp(x4))
+```
 
 ```{r}
 fit <- run_experiment(mod)
 ```
 
-## Relevances
+# Relevances
 
 Here we show how to rank components based on their relevance based on a 
 variance decomposition.
@@ -55,7 +63,7 @@ print(rank)
 fit$reduce()
 ```
 
-## Projection predictive method
+# Projection predictive method
 
 Here we pre-specify the search path completely based on relevances.
 

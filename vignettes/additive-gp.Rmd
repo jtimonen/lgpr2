@@ -1,0 +1,87 @@
+---
+title: "An additive GP model using lgpr2"
+author: "Juho Timonen"
+date: 17th September 2024
+output: 
+  rmarkdown::html_vignette:
+    toc: true
+    toc_depth: 3
+    number_sections: true
+vignette: >
+  %\VignetteIndexEntry{An additive GP model using lgpr2}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(ggplot2)
+library(lgpr2)
+```
+
+# Test data
+
+We load test data.
+```{r data}
+dat <- testdata
+head(dat)
+```
+
+# Model definition
+
+We create an additive GP model with many terms.
+
+```{r model}
+m <- LonModel$new(y ~ gp(time) + gp(time, arm) + gp(time, id) + gp(time, sex) + gp(weight))
+```
+
+# Model fitting
+
+We fit the model.
+```{r fit, fig.width=7, fig.height=6}
+f <- m$fit(data = dat, chains = 1, iter_warmup = 600, iter_sampling = 600)
+f$plot(facet_by = "id")
+```
+
+# Visualizing the inferred effects
+
+We visualize individual components to understand effects of the covariates.
+
+```{r plots, fig.width=7, fig.height=3.7}
+f$function_draws("f_gp_time")$plot() # shared time effect
+f$function_draws("f_gp_timeXarm")$plot() # arm-specific time-effect
+f$function_draws("f_gp_timeXsex")$plot() # sex-specific time-effect
+```
+
+
+We see that the effects over different arms and sexes sum to zero at each
+time point, due to the zero-sum kernel.
+
+```{r pw, fig.width=6, fig.height=3.7}
+f$function_draws("f_gp_weight")$plot()
+```
+
+
+```{r plots2, fig.width=7, fig.height=6}
+f$function_draws("f_gp_timeXid")$plot() # individual-specific time-effect
+```
+
+The individual-specific effects also sum to zero at each
+time point, but it is harder to see it since there are so many subjects.
+
+
+# Stan code
+
+
+We print the model Stan code here.
+```{r stancode}
+cat(m$create_stancode())
+```
+
+

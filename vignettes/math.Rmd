@@ -1,6 +1,7 @@
 ---
 title: "Mathematical description of lgpr2 models"
 author: "Juho Timonen"
+date: 17th September 2024
 output: 
   rmarkdown::html_vignette:
     toc: true
@@ -132,18 +133,9 @@ print(term)
 Let $x$ be some continuous variable and $z$ some grouping factor, which can
 without loss of generality take integer values $z \in \{1, \ldots, G\}$. A 
 group-specific GP term is
+approximates the GP
 $$
-f^{\text{HSGP}}(x, z \mid \mathbf{\xi}_1, \ldots, \mathbf{\xi}_G, \alpha, \ell, B, L) = 
-\begin{cases}
-f^{\text{HSGP}}(x \mid \mathbf{\xi}_1, \alpha, \ell, B, L) & \text{if } z = 1\\
-\vdots \\
-f^{\text{HSGP}}(x \mid \mathbf{\xi}_G, \alpha, \ell, B, L) & \text{if } z = G
-\end{cases}
+f^{\text{GP}}(x,z) \sim \mathcal{GP}(0,\ k_{\text{ZS}}(z,z') \cdot k_{\text{EQ}}(x,x')),
 $$
-which approximates the GP
-$$
-f^{\text{GP}}(x,z) \sim \mathcal{GP}(0,\ k_{\text{CAT}}(z,z') \cdot k_{\text{EQ}}(x,x')),
-$$
-where $k_{\text{CAT}}(z,z') = 1$ if $z=z'$ and zero otherwise. The unknown
-parameters of a group-specific GP term are $\alpha, \ell$ and a different vector 
-$\mathbf{\xi}_g \in \mathbb{R}^B$ for each group $g=1, \ldots, G$.
+where $k_{\text{ZS}}(z,z')$ is the zero-sum kernel. This means the values $f^{\text{GP}}(x^*,z)$ over $z \in \{1, \ldots, G\}$ will at any input $x^*$
+sum to zero.
