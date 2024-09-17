@@ -4,12 +4,14 @@
 \alias{plot_pp_elpd}
 \title{Plot result of projection predictive forward search (ELPD)}
 \usage{
-plot_pp_elpd(res, elpd_ref)
+plot_pp_elpd(res, fit, ...)
 }
 \arguments{
 \item{res}{The list returned by \code{\link{pp_forward_search}}}
 
-\item{elpd_ref}{ELPD of reference model (estimate and SE)}
+\item{fit}{Reference model fit object.}
+
+\item{...}{Arguments passed to \code{fit$loo_estimate()}.}
 }
 \description{
 Plot result of projection predictive forward search (ELPD)

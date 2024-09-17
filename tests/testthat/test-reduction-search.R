@@ -8,8 +8,8 @@ test_that("projection predictive search works", {
 
   fs <- pp_forward_search(fit)
 
-  plt1 <- plot_pp_pexp(fs)
-  plt2 <- plot_pp_elpd(fs, fit$loo_estimate())
+  plt1 <- plot_pp_elpd_diff(fs)
+  plt2 <- plot_pp_elpd(fs, fit)
   expect_s3_class(plt1, "ggplot")
   expect_s3_class(plt2, "ggplot")
 })

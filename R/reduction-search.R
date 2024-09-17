@@ -190,37 +190,24 @@ pp_forward_search <- function(fit_ref, path = NULL, num_steps = NULL,
   a$run(fit_ref)
 }
 
-#' Plot a result of projection predictive forward search (p_kl)
-#'
-#' @export
-#' @param res The list returned by \code{\link{pp_forward_search}}
-#' @param thresh A horizontal line.
-plot_pp_pexp <- function(res, thresh = 0.95) {
-  J <- length(res$path)
-  num_vars <- c(0, 1:J)
-  p_exp <- res$history$p_kl
-  df <- data.frame(num_vars, p_exp)
-  out <- ggplot(df, aes(x = num_vars, y = p_exp)) +
-    geom_hline(yintercept = thresh, color = "firebrick3", lty = 2) +
-    ylab("1 - KL / KL0")
-  out <- out + geom_line() + geom_point() +
-    xlab("Number of terms") + ggtitle("Forward search")
-  return(out)
-}
 
 #' Plot result of projection predictive forward search (ELPD)
 #'
 #' @export
 #' @param res The list returned by \code{\link{pp_forward_search}}
-#' @param elpd_ref ELPD of reference model (estimate and SE)
-plot_pp_elpd <- function(res, elpd_ref) {
+#' @param fit Reference model fit object.
+#' @param ... Arguments passed to \code{fit$loo_estimate()}.
+plot_pp_elpd <- function(res, fit, ...) {
+  elpd_ref <- fit$loo_estimate(...)
   J <- length(res$path)
   num_vars <- c(0, 1:J)
   elpd <- res$history$elpd_loo
   elpd_se <- res$history$elpd_loo_se
   df <- data.frame(num_vars, elpd, elpd_se)
   out <- ggplot(df, aes(
-    x = num_vars, y = elpd, ymin = elpd - elpd_se,
+    x = num_vars,
+    y = elpd,
+    ymin = elpd - elpd_se,
     ymax = elpd + elpd_se
   )) +
     geom_errorbar(width = 0.1) +
@@ -246,6 +233,37 @@ plot_pp_elpd <- function(res, elpd_ref) {
       aes(x = num_vars, y = mlpd)
     ) +
     xlab("Number of terms") +
-    ggtitle("Forward search", subtitle = st)
+    ggtitle("ELPD", subtitle = st)
+  return(out)
+}
+
+
+#' Plot result of projection predictive forward search (ELPD rel diff)
+#'
+#' @export
+#' @param res The list returned by \code{\link{pp_forward_search}}
+plot_pp_elpd_diff <- function(res) {
+  J <- length(res$path)
+  num_vars <- c(0, 1:J)
+  edr1 <- res$history$elpd_loo_rel_diff
+  edr2 <- res$history$elpd_loo_rel_diff_alt
+  df <- data.frame(num_vars = c(num_vars, num_vars), value = c(edr1, edr2))
+  mn <- c(
+    "Relative to SE of ref. model ELPD",
+    "Relative to SE of ELPD difference"
+  )
+  df$method <- rep(mn, each = J + 1)
+  df$method <- as.factor(df$method)
+  out <- ggplot(df, aes(
+    x = num_vars,
+    y = value,
+    color = method
+  )) +
+    geom_hline(yintercept = c(-1, 1), color = "gray20", lty = 2) +
+    geom_line() +
+    geom_point() +
+    xlab("Number of terms") +
+    ggtitle("ELPD relative difference") +
+    theme(legend.position = "top", legend.title = element_blank())
   return(out)
 }
